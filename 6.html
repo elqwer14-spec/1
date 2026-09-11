@@ -1,0 +1,537 @@
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>اللينكات غير المفتوحة</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 15px;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            color: #222;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 22px;
+            margin: 10px 0 20px;
+        }
+
+        .loading,
+        .empty {
+            background: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 7px;
+            color: #777;
+        }
+
+        .user-card {
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .user-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 12px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .arrow {
+            width: 25px;
+            height: 25px;
+            border: 0;
+            background: #eee;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: transform 0.2s;
+        }
+
+        .arrow.open {
+            transform: rotate(90deg);
+        }
+
+        .username {
+            font-size: 14px;
+            font-weight: bold;
+            flex: 1;
+        }
+
+        .count {
+            background: #fff3cd;
+            color: #664d03;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+        }
+
+        .user-body {
+            display: none;
+            border-top: 1px solid #eee;
+            padding: 10px;
+        }
+
+        .user-body.open {
+            display: block;
+        }
+
+        .link-item {
+            display: grid;
+            grid-template-columns: 35px 1fr;
+            gap: 8px;
+            align-items: center;
+            background: #fafafa;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 9px;
+            margin-bottom: 7px;
+        }
+
+        .link-number {
+            text-align: center;
+            font-weight: bold;
+            font-size: 13px;
+            color: #555;
+        }
+
+        .link-content {
+            min-width: 0;
+        }
+
+        .link-name {
+            font-weight: bold;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .link-url {
+            display: block;
+            color: #0d6efd;
+            text-decoration: none;
+            font-size: 12px;
+            word-break: break-all;
+        }
+
+        .link-url:hover {
+            text-decoration: underline;
+        }
+
+        .link-notes {
+            color: #777;
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        .no-links {
+            text-align: center;
+            padding: 10px;
+            color: #198754;
+            background: #d1e7dd;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            .user-header {
+                padding: 10px;
+            }
+
+            .username {
+                font-size: 13px;
+            }
+
+            .count {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>اللينكات غير المفتوحة</h1>
+
+    <div id="usersContainer" class="loading">
+        جاري تحميل البيانات...
+    </div>
+
+</div>
+
+
+<script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+
+    import {
+        getDatabase,
+        ref,
+        onValue,
+        set
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+
+    // =========================
+    // Firebase
+    // =========================
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAB4wO937rCwc0OTWeJlGgoaxERWOdjaJM",
+        authDomain: "my-new-a6e9f.firebaseapp.com",
+        databaseURL: "https://my-new-a6e9f-default-rtdb.firebaseio.com",
+        projectId: "my-new-a6e9f",
+        storageBucket: "my-new-a6e9f.firebasestorage.app",
+        messagingSenderId: "1034729064842",
+        appId: "1:1034729064842:web:5b3d42fe7b5c0f3a3ae073"
+    };
+
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+
+    // =========================
+    // Firebase References
+    // =========================
+
+    const usersRef = ref(db, "users");
+    const linksRef = ref(db, "links");
+
+
+    let users = {};
+    let links = {};
+
+    // حفظ المستخدمين المفتوحين
+    let openedUsers = {};
+
+
+    // =========================
+    // تحميل المستخدمين
+    // =========================
+
+    onValue(usersRef, (snapshot) => {
+
+        users = snapshot.val() || {};
+
+        displayUsers();
+
+    });
+
+
+    // =========================
+    // تحميل اللينكات
+    // =========================
+
+    onValue(linksRef, (snapshot) => {
+
+        links = snapshot.val() || {};
+
+        displayUsers();
+
+    });
+
+
+    // =========================
+    // عرض المستخدمين
+    // =========================
+
+    function displayUsers() {
+
+        const container = document.getElementById("usersContainer");
+
+        if (!Object.keys(users).length) {
+
+            container.className = "empty";
+            container.innerHTML = "لا يوجد مستخدمين حالياً";
+
+            return;
+        }
+
+
+        container.className = "";
+        container.innerHTML = "";
+
+
+        Object.entries(users).forEach(([userId, user]) => {
+
+            const visited = user.visited || {};
+
+            /*
+             * نجيب فقط اللينكات التي:
+             * 1- موجودة في links
+             * 2- المستخدم لم يفتحها
+             */
+
+            const unopenedLinks = Object.entries(links)
+                .filter(([linkId]) => !visited[linkId])
+                .sort((a, b) => {
+
+                    const linkA = a[1];
+                    const linkB = b[1];
+
+                    const orderA =
+                        linkA.order === null ||
+                        linkA.order === undefined ||
+                        linkA.order === ""
+                            ? Infinity
+                            : Number(linkA.order);
+
+                    const orderB =
+                        linkB.order === null ||
+                        linkB.order === undefined ||
+                        linkB.order === ""
+                            ? Infinity
+                            : Number(linkB.order);
+
+
+                    if (orderA !== orderB) {
+                        return orderA - orderB;
+                    }
+
+
+                    return (linkA.createdAt || 0) - (linkB.createdAt || 0);
+
+                });
+
+
+            const card = document.createElement("div");
+
+            card.className = "user-card";
+
+
+            // =========================
+            // Header
+            // =========================
+
+            const header = document.createElement("div");
+
+            header.className = "user-header";
+
+
+            const arrow = document.createElement("button");
+
+            arrow.className = "arrow";
+
+            arrow.textContent = "▶";
+
+
+            const username = document.createElement("div");
+
+            username.className = "username";
+
+            username.innerHTML =
+                escapeHTML(user.username || userId);
+
+
+            const count = document.createElement("div");
+
+            count.className = "count";
+
+            count.textContent =
+                unopenedLinks.length + " لينك";
+
+
+            header.appendChild(arrow);
+            header.appendChild(username);
+            header.appendChild(count);
+
+
+            // =========================
+            // Body
+            // =========================
+
+            const body = document.createElement("div");
+
+            body.className = "user-body";
+
+
+            if (unopenedLinks.length === 0) {
+
+                body.innerHTML = `
+                    <div class="no-links">
+                        لا توجد لينكات غير مفتوحة لهذا المستخدم
+                    </div>
+                `;
+
+            } else {
+
+                unopenedLinks.forEach(([linkId, link], index) => {
+
+                    const item = document.createElement("div");
+
+                    item.className = "link-item";
+
+
+                    const number = document.createElement("div");
+
+                    number.className = "link-number";
+
+                    number.textContent = index + 1;
+
+
+                    const content = document.createElement("div");
+
+                    content.className = "link-content";
+
+
+                    const name = document.createElement("div");
+
+                    name.className = "link-name";
+
+                    name.textContent =
+                        link.name || "بدون اسم";
+
+
+                    const url = document.createElement("a");
+
+                    url.className = "link-url";
+
+                    url.href = link.url || "#";
+
+                    url.target = "_blank";
+
+                    url.rel = "noopener noreferrer";
+
+                    url.textContent =
+                        link.url || "بدون لينك";
+
+
+                    const notes = document.createElement("div");
+
+                    notes.className = "link-notes";
+
+                    if (link.notes) {
+                        notes.textContent = link.notes;
+                    }
+
+
+                    content.appendChild(name);
+
+                    if (link.url) {
+                        content.appendChild(url);
+                    }
+
+                    if (link.notes) {
+                        content.appendChild(notes);
+                    }
+
+
+                    item.appendChild(number);
+                    item.appendChild(content);
+
+
+                    /*
+                     * عند الضغط على اللينك:
+                     * نسجل أن المستخدم فتحه
+                     */
+
+                    url.addEventListener("click", async () => {
+
+                        try {
+
+                            const visitedRef = ref(
+                                db,
+                                "users/" +
+                                userId +
+                                "/visited/" +
+                                linkId
+                            );
+
+                            await set(visitedRef, true);
+
+                        } catch (error) {
+
+                            console.error(
+                                "خطأ في تسجيل اللينك:",
+                                error
+                            );
+
+                        }
+
+                    });
+
+
+                    body.appendChild(item);
+
+                });
+
+            }
+
+
+            // =========================
+            // فتح وإغلاق المستخدم
+            // =========================
+
+            header.addEventListener("click", () => {
+
+                const isOpen =
+                    body.classList.contains("open");
+
+
+                body.classList.toggle("open", !isOpen);
+
+                arrow.classList.toggle("open", !isOpen);
+
+            });
+
+
+            card.appendChild(header);
+            card.appendChild(body);
+
+            container.appendChild(card);
+
+        });
+
+    }
+
+
+    // =========================
+    // حماية HTML
+    // =========================
+
+    function escapeHTML(text) {
+
+        const div = document.createElement("div");
+
+        div.textContent = text ?? "";
+
+        return div.innerHTML;
+
+    }
+
+</script>
+
+</body>
+</html>
+```
