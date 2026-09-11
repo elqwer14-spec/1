@@ -1,0 +1,251 @@
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>آخر مستخدم</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+}
+
+.container {
+    max-width: 500px;
+    margin: 50px auto;
+}
+
+.box {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.1);
+    text-align: center;
+}
+
+h1 {
+    margin-top: 0;
+    font-size: 24px;
+}
+
+.user {
+    margin-top: 20px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.username {
+    font-size: 22px;
+    font-weight: bold;
+    color: #0d6efd;
+}
+
+.time {
+    margin-top: 10px;
+    color: #777;
+    font-size: 14px;
+}
+
+.no-user {
+    color: #777;
+    padding: 20px;
+}
+
+.refresh-btn {
+    margin-top: 20px;
+    border: 0;
+    background: #198754;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="box">
+
+        <h1>👤 آخر مستخدم سجل دخول</h1>
+
+        <div id="userContainer">
+            جاري تحميل المستخدم...
+        </div>
+
+        <button
+            class="refresh-btn"
+            onclick="location.reload()"
+        >
+            تحديث
+        </button>
+
+    </div>
+
+</div>
+
+
+<script type="module">
+
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+
+import {
+    getDatabase,
+    ref,
+    onValue
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+
+/* Firebase */
+
+const firebaseConfig = {
+
+    apiKey: "AIzaSyAB4wO937rCwc0OTWeJlGgoaxErWOdjaJM",
+
+    authDomain:
+        "my-new-a6e9f.firebaseapp.com",
+
+    databaseURL:
+        "https://my-new-a6e9f-default-rtdb.firebaseio.com",
+
+    projectId:
+        "my-new-a6e9f",
+
+    storageBucket:
+        "my-new-a6e9f.firebasestorage.app",
+
+    messagingSenderId:
+        "1034729064842",
+
+    appId:
+        "1:1034729064842:web:5b3d42fe7b5c0f3a3ae073"
+};
+
+
+const app =
+    initializeApp(firebaseConfig);
+
+const db =
+    getDatabase(app);
+
+
+/* مسار آخر مستخدم */
+
+const lastUserRef =
+    ref(db, "lastUser");
+
+
+/* قراءة آخر مستخدم */
+
+onValue(lastUserRef, (snapshot) => {
+
+    const container =
+        document.getElementById("userContainer");
+
+
+    if (!snapshot.exists()) {
+
+        container.innerHTML = `
+            <div class="no-user">
+                لا يوجد مستخدم سجل دخول حتى الآن
+            </div>
+        `;
+
+        return;
+    }
+
+
+    const user =
+        snapshot.val();
+
+
+    const username =
+        user.username || "غير معروف";
+
+
+    const loginTime =
+        user.loginTime || null;
+
+
+    let timeHTML = "";
+
+
+    if (loginTime) {
+
+        const date =
+            new Date(loginTime);
+
+
+        timeHTML = `
+            <div class="time">
+                آخر تسجيل دخول:
+                ${date.toLocaleString("ar-EG")}
+            </div>
+        `;
+
+    }
+
+
+    container.innerHTML = `
+
+        <div class="user">
+
+            <div>
+                المستخدم الحالي
+            </div>
+
+            <div class="username">
+                ${escapeHTML(username)}
+            </div>
+
+            ${timeHTML}
+
+        </div>
+
+    `;
+
+});
+
+
+/* حماية النص */
+
+function escapeHTML(text) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent =
+        String(text ?? "");
+
+    return div.innerHTML;
+
+}
+
+</script>
+
+</body>
+
+</html>
+```
