@@ -151,6 +151,27 @@
             margin-top: 0;
         }
 
+
+        /* البحث */
+
+        .search-box {
+            margin-bottom: 12px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 9px 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .search-box input:focus {
+            border-color: #0d6efd;
+        }
+
+
         .link-item {
             display: grid;
 
@@ -203,6 +224,7 @@
             font-size: 11px;
             margin-top: 3px;
         }
+
 
         /* السعر */
 
@@ -420,6 +442,21 @@
     <div class="links-box">
 
         <h2>اللينكات</h2>
+
+
+        <!-- البحث برقم الترتيب -->
+
+        <div class="search-box">
+
+            <input
+                type="number"
+                id="searchOrder"
+                placeholder="🔎 ابحث برقم الترتيب..."
+                min="1"
+            >
+
+        </div>
+
 
         <div
             id="linksContainer"
@@ -908,6 +945,17 @@ async function addLink() {
 
 
 
+/* البحث برقم الترتيب */
+
+document
+.getElementById("searchOrder")
+.addEventListener(
+    "input",
+    displayLinks
+);
+
+
+
 /* عرض اللينكات */
 
 function displayLinks() {
@@ -923,12 +971,51 @@ function displayLinks() {
 
     /*
        تحويل Firebase إلى Array
-       ثم الترتيب من الأصغر للأكبر
     */
 
-    const linkEntries =
+    let linkEntries =
         Object.entries(links);
 
+
+
+    /*
+       قيمة البحث
+    */
+
+    const searchValue =
+        document
+        .getElementById("searchOrder")
+        .value
+        .trim();
+
+
+
+    /*
+       فلترة حسب رقم الترتيب
+    */
+
+    if (searchValue) {
+
+        linkEntries =
+            linkEntries.filter(
+                ([linkId, item]) => {
+
+                    return (
+                        String(item.order)
+                        ===
+                        searchValue
+                    );
+
+                }
+            );
+
+    }
+
+
+
+    /*
+       الترتيب من الأصغر للأكبر
+    */
 
     linkEntries.sort(
         ([idA, itemA], [idB, itemB]) => {
@@ -981,12 +1068,26 @@ function displayLinks() {
 
 
 
+    /*
+       لا توجد نتائج
+    */
+
     if (linkEntries.length === 0) {
+
+        const searchText =
+            searchValue
+            ?
+            `لا يوجد لينك ترتيبه ${escapeHTML(searchValue)}`
+            :
+            "لا توجد لينكات حالياً";
+
 
         container.innerHTML =
 
             `<div class="empty">
-                لا توجد لينكات حالياً
+
+                ${searchText}
+
             </div>`;
 
         return;
@@ -994,6 +1095,10 @@ function displayLinks() {
     }
 
 
+
+    /*
+       عرض اللينكات
+    */
 
     linkEntries.forEach(
         ([linkId, item], index) => {
