@@ -1,0 +1,936 @@
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>العملاء</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 15px;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 23px;
+            margin-bottom: 15px;
+        }
+
+
+        /* صندوق الإضافة */
+
+        .add-box {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 5px #ddd;
+        }
+
+        .add-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 7px;
+            margin-bottom: 7px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 9px 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-family: Arial;
+            font-size: 13px;
+        }
+
+        textarea {
+            min-height: 70px;
+            resize: vertical;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #0d6efd;
+        }
+
+        .add-btn {
+            width: 100%;
+            border: none;
+            background: #198754;
+            color: white;
+            padding: 9px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .add-btn:hover {
+            background: #157347;
+        }
+
+
+        /* صندوق العملاء */
+
+        .clients-box {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 1px 5px #ddd;
+        }
+
+        .clients-title {
+            font-size: 17px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+
+        /* العميل */
+
+        .client-card {
+            background: #fafafa;
+            border: 1px solid #ddd;
+            border-radius: 7px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+
+        .client-content {
+            padding: 11px;
+        }
+
+        .client-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        .client-notes {
+            color: #666;
+            font-size: 13px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+
+        /* الأزرار */
+
+        .actions {
+            display: flex;
+            gap: 6px;
+            padding: 8px 11px;
+            border-top: 1px solid #eee;
+            background: white;
+        }
+
+        .edit-btn,
+        .delete-btn,
+        .save-btn,
+        .cancel-btn {
+            border: none;
+            color: white;
+            padding: 7px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .edit-btn {
+            background: #0d6efd;
+        }
+
+        .edit-btn:hover {
+            background: #0b5ed7;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+        }
+
+        .delete-btn:hover {
+            background: #bb2d3b;
+        }
+
+        .save-btn {
+            background: #198754;
+        }
+
+        .cancel-btn {
+            background: #6c757d;
+        }
+
+
+        /* التعديل */
+
+        .edit-content {
+            padding: 11px;
+        }
+
+        .edit-content input {
+            margin-bottom: 7px;
+        }
+
+        .edit-content textarea {
+            margin-bottom: 7px;
+        }
+
+        .edit-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+
+        .loading,
+        .empty {
+            text-align: center;
+            color: #777;
+            padding: 20px;
+        }
+
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 10px;
+            }
+
+            .form-row {
+                flex-direction: column;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .edit-actions {
+                flex-direction: column;
+            }
+
+            .edit-btn,
+            .delete-btn,
+            .save-btn,
+            .cancel-btn {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <h1>
+        العملاء
+    </h1>
+
+
+    <!-- إضافة عميل -->
+
+    <div class="add-box">
+
+        <div class="add-title">
+            إضافة عميل
+        </div>
+
+
+        <div class="form-row">
+
+            <input
+                type="text"
+                id="clientName"
+                placeholder="اسم العميل"
+            >
+
+        </div>
+
+
+        <div class="form-row">
+
+            <textarea
+                id="clientNotes"
+                placeholder="ملاحظات"
+            ></textarea>
+
+        </div>
+
+
+        <button
+            class="add-btn"
+            id="addBtn"
+        >
+            إضافة العميل
+        </button>
+
+    </div>
+
+
+    <!-- قائمة العملاء -->
+
+    <div class="clients-box">
+
+        <div class="clients-title">
+            قائمة العملاء
+        </div>
+
+
+        <div id="clientsContainer">
+
+            <div class="loading">
+                جاري تحميل العملاء...
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+<script type="module">
+
+
+/* =====================================================
+   Firebase
+===================================================== */
+
+import {
+    initializeApp
+}
+from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+
+
+import {
+    getDatabase,
+    ref,
+    push,
+    set,
+    onValue,
+    update,
+    remove
+}
+from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+
+
+/* =====================================================
+   Firebase Config
+===================================================== */
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyAB4wO937rCwc0OTWeJlGgoaxERWOdjaJM",
+
+    authDomain:
+        "my-new-a6e9f.firebaseapp.com",
+
+    databaseURL:
+        "https://my-new-a6e9f-default-rtdb.firebaseio.com",
+
+    projectId:
+        "my-new-a6e9f",
+
+    storageBucket:
+        "my-new-a6e9f.firebasestorage.app",
+
+    messagingSenderId:
+        "1034729064842",
+
+    appId:
+        "1:1034729064842:web:5b3d42fe7b5c0f3a3ae073"
+
+};
+
+
+
+/* تشغيل Firebase */
+
+const app =
+    initializeApp(firebaseConfig);
+
+
+const db =
+    getDatabase(app);
+
+
+
+/* =====================================================
+   مسار العملاء
+===================================================== */
+
+const clientsRef =
+    ref(db, "clients");
+
+
+let clients = {};
+
+
+
+/* =====================================================
+   تحميل العملاء
+===================================================== */
+
+onValue(
+    clientsRef,
+    (snapshot) => {
+
+        clients =
+            snapshot.val() || {};
+
+        displayClients();
+
+    }
+);
+
+
+
+/* =====================================================
+   إضافة عميل
+===================================================== */
+
+document
+.getElementById("addBtn")
+.addEventListener(
+    "click",
+    addClient
+);
+
+
+async function addClient() {
+
+    const name =
+        document
+        .getElementById("clientName")
+        .value
+        .trim();
+
+
+    const notes =
+        document
+        .getElementById("clientNotes")
+        .value
+        .trim();
+
+
+    if (!name) {
+
+        alert("اكتب اسم العميل أولاً");
+
+        return;
+
+    }
+
+
+    try {
+
+        const newClientRef =
+            push(clientsRef);
+
+
+        await set(
+            newClientRef,
+            {
+
+                name: name,
+
+                notes: notes,
+
+                createdAt: Date.now()
+
+            }
+        );
+
+
+        /* تنظيف الحقول */
+
+        document
+        .getElementById("clientName")
+        .value = "";
+
+
+        document
+        .getElementById("clientNotes")
+        .value = "";
+
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        alert(
+            "حدث خطأ أثناء إضافة العميل:\n"
+            + error.message
+        );
+
+    }
+
+}
+
+
+
+/* =====================================================
+   عرض العملاء
+===================================================== */
+
+function displayClients() {
+
+    const container =
+        document.getElementById(
+            "clientsContainer"
+        );
+
+
+    container.innerHTML = "";
+
+
+    let entries =
+        Object.entries(clients);
+
+
+    if (entries.length === 0) {
+
+        container.innerHTML = `
+
+            <div class="empty">
+
+                لا يوجد عملاء حتى الآن
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    /* الأحدث أولاً */
+
+    entries.sort((a, b) => {
+
+        return (
+            Number(b[1].createdAt || 0)
+            -
+            Number(a[1].createdAt || 0)
+        );
+
+    });
+
+
+    entries.forEach(
+        ([id, client]) => {
+
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "client-card";
+
+
+            card.dataset.id =
+                id;
+
+
+            card.innerHTML = `
+
+                <div class="client-content">
+
+                    <div class="client-name">
+
+                        👤
+                        ${escapeHTML(
+                            client.name || ""
+                        )}
+
+                    </div>
+
+
+                    ${
+                        client.notes
+
+                        ?
+
+                        `<div class="client-notes">
+                            ${escapeHTML(client.notes)}
+                        </div>`
+
+                        :
+
+                        `<div class="client-notes">
+                            لا توجد ملاحظات
+                        </div>`
+                    }
+
+                </div>
+
+
+                <div class="actions">
+
+                    <button
+                        class="edit-btn"
+                        data-edit-id="${id}"
+                    >
+                        تعديل
+                    </button>
+
+
+                    <button
+                        class="delete-btn"
+                        data-delete-id="${id}"
+                    >
+                        حذف
+                    </button>
+
+                </div>
+
+            `;
+
+
+            container.appendChild(card);
+
+
+            /* زر التعديل */
+
+            const editButton =
+                card.querySelector(
+                    "[data-edit-id]"
+                );
+
+
+            editButton.addEventListener(
+                "click",
+                () => {
+
+                    editClient(
+                        id
+                    );
+
+                }
+            );
+
+
+            /* زر الحذف */
+
+            const deleteButton =
+                card.querySelector(
+                    "[data-delete-id]"
+                );
+
+
+            deleteButton.addEventListener(
+                "click",
+                () => {
+
+                    deleteClient(
+                        id
+                    );
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+
+/* =====================================================
+   تعديل العميل
+===================================================== */
+
+function editClient(id) {
+
+    const client =
+        clients[id];
+
+
+    if (!client) {
+        return;
+    }
+
+
+    const card =
+        document.querySelector(
+            `.client-card[data-id="${id}"]`
+        );
+
+
+    card.innerHTML = `
+
+        <div class="edit-content">
+
+            <input
+                type="text"
+                id="editName_${id}"
+                value="${escapeAttribute(
+                    client.name || ""
+                )}"
+                placeholder="اسم العميل"
+            >
+
+
+            <textarea
+                id="editNotes_${id}"
+                placeholder="ملاحظات"
+            >${escapeHTML(
+                client.notes || ""
+            )}</textarea>
+
+
+            <div class="edit-actions">
+
+                <button
+                    class="save-btn"
+                    id="save_${id}"
+                >
+                    حفظ التعديل
+                </button>
+
+
+                <button
+                    class="cancel-btn"
+                    id="cancel_${id}"
+                >
+                    إلغاء
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    /* حفظ */
+
+    document
+    .getElementById(`save_${id}`)
+    .addEventListener(
+        "click",
+        () => {
+
+            saveClientEdit(id);
+
+        }
+    );
+
+
+    /* إلغاء */
+
+    document
+    .getElementById(`cancel_${id}`)
+    .addEventListener(
+        "click",
+        () => {
+
+            displayClients();
+
+        }
+    );
+
+}
+
+
+
+/* =====================================================
+   حفظ تعديل العميل
+===================================================== */
+
+async function saveClientEdit(id) {
+
+    const name =
+        document
+        .getElementById(`editName_${id}`)
+        .value
+        .trim();
+
+
+    const notes =
+        document
+        .getElementById(`editNotes_${id}`)
+        .value
+        .trim();
+
+
+    if (!name) {
+
+        alert("اكتب اسم العميل");
+
+        return;
+
+    }
+
+
+    try {
+
+        await update(
+            ref(
+                db,
+                "clients/" + id
+            ),
+            {
+
+                name: name,
+
+                notes: notes
+
+            }
+        );
+
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        alert(
+            "حدث خطأ أثناء حفظ التعديل:\n"
+            + error.message
+        );
+
+    }
+
+}
+
+
+
+/* =====================================================
+   حذف العميل
+===================================================== */
+
+async function deleteClient(id) {
+
+    const client =
+        clients[id];
+
+
+    const name =
+        client?.name || "هذا العميل";
+
+
+    const confirmed =
+        confirm(
+            `هل تريد حذف العميل "${name}"؟`
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    try {
+
+        await remove(
+            ref(
+                db,
+                "clients/" + id
+            )
+        );
+
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        alert(
+            "حدث خطأ أثناء حذف العميل:\n"
+            + error.message
+        );
+
+    }
+
+}
+
+
+
+/* =====================================================
+   حماية HTML
+===================================================== */
+
+function escapeHTML(text) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent =
+        String(text ?? "");
+
+    return div.innerHTML;
+
+}
+
+
+
+/* =====================================================
+   حماية قيمة input
+===================================================== */
+
+function escapeAttribute(text) {
+
+    return String(text ?? "")
+
+        .replace(/&/g, "&amp;")
+
+        .replace(/"/g, "&quot;")
+
+        .replace(/</g, "&lt;")
+
+        .replace(/>/g, "&gt;");
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>
+```
