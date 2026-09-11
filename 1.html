@@ -1,0 +1,1306 @@
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>إدارة اللينكات</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 15px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 24px;
+        }
+
+
+        /* =========================
+           المستخدم
+        ========================= */
+
+        .user-box {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 5px #ddd;
+        }
+
+        .user-box h2 {
+            font-size: 17px;
+            margin: 0 0 8px;
+        }
+
+        .user-row {
+            display: flex;
+            gap: 7px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 7px 9px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 13px;
+        }
+
+        .user-row input {
+            flex: 1;
+        }
+
+        .user-btn {
+            background: #0d6efd;
+            color: white;
+            border: none;
+            padding: 7px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .logout-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 7px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: none;
+        }
+
+        .user-status {
+            margin-top: 8px;
+            padding: 8px;
+            background: #f1f3f5;
+            border-radius: 5px;
+            font-size: 13px;
+        }
+
+
+        /* =========================
+           إضافة لينك
+        ========================= */
+
+        .add-box {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 5px #ddd;
+        }
+
+        .add-box h2 {
+            font-size: 17px;
+            margin: 0 0 10px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 7px;
+            margin-bottom: 7px;
+        }
+
+        .form-row input {
+            flex: 1;
+        }
+
+        textarea {
+            min-height: 50px;
+            resize: vertical;
+        }
+
+        .add-btn {
+            background: #198754;
+            color: white;
+            border: none;
+            padding: 7px 14px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+
+        /* =========================
+           اللينكات
+        ========================= */
+
+        .links-box {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 1px 5px #ddd;
+        }
+
+        .links-box h2 {
+            font-size: 18px;
+            margin-top: 0;
+        }
+
+        .link-item {
+            display: grid;
+
+            grid-template-columns:
+                45px
+                1fr
+                120px
+                60px;
+
+            gap: 8px;
+
+            align-items: center;
+
+            padding: 9px;
+
+            margin-bottom: 7px;
+
+            border: 1px solid #ddd;
+
+            border-radius: 6px;
+
+            background: #fafafa;
+        }
+
+        .number {
+            text-align: center;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .link-name {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+
+        .link-info a {
+            color: #0d6efd;
+            text-decoration: none;
+            font-size: 13px;
+            word-break: break-all;
+        }
+
+        .link-info a:hover {
+            text-decoration: underline;
+        }
+
+        .link-notes {
+            color: #777;
+            font-size: 11px;
+            margin-top: 3px;
+        }
+
+
+        /* =========================
+           الحالة
+        ========================= */
+
+        .status {
+            text-align: center;
+            font-size: 11px;
+            padding: 5px 6px;
+            border-radius: 12px;
+        }
+
+        .visited {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .not-visited {
+            background: #eee;
+            color: #666;
+        }
+
+        .no-user {
+            background: #fff3cd;
+            color: #664d03;
+        }
+
+
+        /* =========================
+           حذف
+        ========================= */
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 6px 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .empty {
+            text-align: center;
+            color: #777;
+            padding: 15px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 15px;
+            color: #777;
+        }
+
+
+        @media (max-width: 600px) {
+
+            .user-row {
+                flex-direction: column;
+            }
+
+            .link-item {
+                grid-template-columns:
+                    35px
+                    1fr;
+            }
+
+            .status,
+            .delete-btn {
+                grid-column: 2;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <h1>إدارة اللينكات</h1>
+
+
+    <!-- =========================
+         المستخدم
+    ========================= -->
+
+    <div class="user-box">
+
+        <h2>المستخدم الحالي</h2>
+
+        <div class="user-row">
+
+            <input
+                type="text"
+                id="username"
+                placeholder="اكتب اسم المستخدم"
+            >
+
+            <button
+                class="user-btn"
+                id="loginBtn"
+            >
+                دخول
+            </button>
+
+            <button
+                class="logout-btn"
+                id="logoutBtn"
+            >
+                خروج
+            </button>
+
+        </div>
+
+
+        <div
+            class="user-status"
+            id="userStatus"
+        >
+            لم يتم تسجيل أي مستخدم
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================
+         إضافة لينك
+    ========================= -->
+
+    <div class="add-box">
+
+        <h2>إضافة بيانات</h2>
+
+        <div class="form-row">
+
+            <input
+                type="text"
+                id="name"
+                placeholder="اسم اللينك - اختياري"
+            >
+
+            <input
+                type="url"
+                id="url"
+                placeholder="اللينك - اختياري"
+            >
+
+        </div>
+
+
+        <div class="form-row">
+
+            <textarea
+                id="notes"
+                placeholder="ملاحظات - اختياري"
+            ></textarea>
+
+        </div>
+
+
+        <button
+            class="add-btn"
+            id="addBtn"
+        >
+            + إضافة
+        </button>
+
+    </div>
+
+
+
+    <!-- =========================
+         اللينكات
+    ========================= -->
+
+    <div class="links-box">
+
+        <h2>اللينكات</h2>
+
+        <div
+            id="linksContainer"
+            class="loading"
+        >
+            جاري تحميل اللينكات...
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+<!-- =====================================================
+     Firebase
+===================================================== -->
+
+<script type="module">
+
+
+/* Firebase */
+
+import {
+    initializeApp
+}
+from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+
+
+import {
+    getDatabase,
+    ref,
+    push,
+    set,
+    get,
+    onValue,
+    update,
+    remove
+}
+from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+
+
+/* =====================================================
+   Firebase Config
+===================================================== */
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyAB4wO937rCwc0OTWeJlGgoaxErWOdjaJM",
+
+    authDomain:
+        "my-new-a6e9f.firebaseapp.com",
+
+    databaseURL:
+        "https://my-new-a6e9f-default-rtdb.firebaseio.com",
+
+    projectId:
+        "my-new-a6e9f",
+
+    storageBucket:
+        "my-new-a6e9f.firebasestorage.app",
+
+    messagingSenderId:
+        "1034729064842",
+
+    appId:
+        "1:1034729064842:web:5b3d42fe7b5c0f3a3ae073"
+
+};
+
+
+
+/* تشغيل Firebase */
+
+const app =
+    initializeApp(firebaseConfig);
+
+
+const db =
+    getDatabase(app);
+
+
+
+/* =====================================================
+   المتغيرات
+===================================================== */
+
+let links = {};
+
+let users = {};
+
+let currentUser = "";
+
+
+
+/* =====================================================
+   مراجع Firebase
+===================================================== */
+
+const linksRef =
+    ref(db, "links");
+
+
+const usersRef =
+    ref(db, "users");
+
+
+
+/* =====================================================
+   تحميل اللينكات تلقائياً
+===================================================== */
+
+onValue(
+    linksRef,
+    (snapshot) => {
+
+        links =
+            snapshot.val() || {};
+
+        displayLinks();
+
+    }
+);
+
+
+
+/* =====================================================
+   تحميل المستخدمين تلقائياً
+===================================================== */
+
+onValue(
+    usersRef,
+    (snapshot) => {
+
+        users =
+            snapshot.val() || {};
+
+        updateUserUI();
+
+        displayLinks();
+
+    }
+);
+
+
+
+/* =====================================================
+   دخول المستخدم
+===================================================== */
+
+document
+.getElementById("loginBtn")
+.addEventListener(
+    "click",
+    loginUser
+);
+
+
+
+async function loginUser() {
+
+
+    const input =
+        document
+        .getElementById("username");
+
+
+    const username =
+        input.value.trim();
+
+
+    if (!username) {
+
+        alert(
+            "اكتب اسم المستخدم أولاً"
+        );
+
+        return;
+
+    }
+
+
+    /*
+       نعمل مفتاح آمن لاسم المستخدم
+       حتى لا تحدث مشكلة في Firebase
+    */
+
+    const userKey =
+        makeUserKey(username);
+
+
+    currentUser = userKey;
+
+
+    /*
+       نشوف هل المستخدم موجود
+    */
+
+    const userRef =
+        ref(
+            db,
+            "users/" + userKey
+        );
+
+
+    const snapshot =
+        await get(userRef);
+
+
+    /*
+       مستخدم جديد
+    */
+
+    if (!snapshot.exists()) {
+
+        await set(
+            userRef,
+            {
+
+                username: username,
+
+                visited: {}
+
+            }
+        );
+
+    }
+
+
+    updateUserUI();
+
+    displayLinks();
+
+}
+
+
+
+/* =====================================================
+   تحديث بيانات المستخدم
+===================================================== */
+
+function updateUserUI() {
+
+
+    const input =
+        document
+        .getElementById("username");
+
+
+    const loginBtn =
+        document
+        .getElementById("loginBtn");
+
+
+    const logoutBtn =
+        document
+        .getElementById("logoutBtn");
+
+
+    const status =
+        document
+        .getElementById("userStatus");
+
+
+    if (!currentUser) {
+
+
+        input.disabled = false;
+
+        loginBtn.style.display =
+            "block";
+
+        logoutBtn.style.display =
+            "none";
+
+
+        status.innerHTML =
+            "لم يتم تسجيل أي مستخدم";
+
+
+        return;
+
+    }
+
+
+    const user =
+        users[currentUser];
+
+
+    input.value =
+        user?.username || "";
+
+
+    input.disabled = true;
+
+
+    loginBtn.style.display =
+        "none";
+
+
+    logoutBtn.style.display =
+        "block";
+
+
+    const visited =
+        user?.visited
+        ?
+        Object.keys(user.visited)
+        :
+        [];
+
+
+    if (visited.length === 0) {
+
+        status.innerHTML =
+
+            `المستخدم
+            <b>${escapeHTML(user.username)}</b>
+            لم يدخل على أي لينك حتى الآن.`;
+
+    }
+
+    else {
+
+        status.innerHTML =
+
+            `المستخدم
+            <b>${escapeHTML(user.username)}</b>
+            دخل على
+            <b>${visited.length}</b>
+            لينك.`;
+
+    }
+
+}
+
+
+
+/* =====================================================
+   خروج المستخدم
+===================================================== */
+
+document
+.getElementById("logoutBtn")
+.addEventListener(
+    "click",
+    logoutUser
+);
+
+
+function logoutUser() {
+
+    currentUser = "";
+
+    document
+    .getElementById("username")
+    .value = "";
+
+    updateUserUI();
+
+    displayLinks();
+
+}
+
+
+
+/* =====================================================
+   إضافة لينك
+===================================================== */
+
+document
+.getElementById("addBtn")
+.addEventListener(
+    "click",
+    addLink
+);
+
+
+
+async function addLink() {
+
+
+    const name =
+        document
+        .getElementById("name")
+        .value
+        .trim();
+
+
+    const url =
+        document
+        .getElementById("url")
+        .value
+        .trim();
+
+
+    const notes =
+        document
+        .getElementById("notes")
+        .value
+        .trim();
+
+
+    /*
+       كل الحقول اختيارية
+    */
+
+    if (!name && !url && !notes) {
+
+        alert(
+            "اكتب أي بيانات تريد إضافتها"
+        );
+
+        return;
+
+    }
+
+
+    /*
+       منع تكرار نفس اللينك
+    */
+
+    if (url) {
+
+        const duplicate =
+            Object.values(links)
+            .some(
+                item => item.url === url
+            );
+
+
+        if (duplicate) {
+
+            alert(
+                "هذا اللينك موجود بالفعل"
+            );
+
+            return;
+
+        }
+
+    }
+
+
+    /*
+       إنشاء ID جديد
+    */
+
+    const newLinkRef =
+        push(linksRef);
+
+
+    await set(
+        newLinkRef,
+        {
+
+            name: name,
+
+            url: url,
+
+            notes: notes,
+
+            createdAt:
+                Date.now()
+
+        }
+    );
+
+
+    /*
+       تنظيف الحقول
+    */
+
+    document
+    .getElementById("name")
+    .value = "";
+
+
+    document
+    .getElementById("url")
+    .value = "";
+
+
+    document
+    .getElementById("notes")
+    .value = "";
+
+}
+
+
+
+/* =====================================================
+   عرض اللينكات
+===================================================== */
+
+function displayLinks() {
+
+
+    const container =
+        document
+        .getElementById(
+            "linksContainer"
+        );
+
+
+    container.innerHTML = "";
+
+
+    const linkEntries =
+        Object.entries(links);
+
+
+    if (linkEntries.length === 0) {
+
+        container.innerHTML =
+
+            `<div class="empty">
+                لا توجد لينكات حالياً
+            </div>`;
+
+        return;
+
+    }
+
+
+    linkEntries.forEach(
+        ([linkId, item], index) => {
+
+
+            let statusHTML;
+
+
+            /*
+               بدون مستخدم
+            */
+
+            if (!currentUser) {
+
+                statusHTML =
+
+                    `<div class="status no-user">
+
+                        👤 بدون تسجيل دخول
+
+                    </div>`;
+
+            }
+
+            else {
+
+
+                const user =
+                    users[currentUser];
+
+
+                const visited =
+                    user
+                    &&
+                    user.visited
+                    &&
+                    user.visited[linkId];
+
+
+                if (visited) {
+
+                    statusHTML =
+
+                        `<div class="status visited">
+
+                            🟢 تم الدخول
+
+                        </div>`;
+
+                }
+
+                else {
+
+                    statusHTML =
+
+                        `<div class="status not-visited">
+
+                            ⚪ لم يتم الدخول
+
+                        </div>`;
+
+                }
+
+            }
+
+
+
+            const div =
+                document.createElement("div");
+
+
+            div.className =
+                "link-item";
+
+
+            div.innerHTML = `
+
+
+                <div class="number">
+
+                    ${index + 1}
+
+                </div>
+
+
+
+                <div class="link-info">
+
+
+                    ${
+                        item.name
+
+                        ?
+
+                        `<div class="link-name">
+
+                            ${escapeHTML(item.name)}
+
+                        </div>`
+
+                        :
+
+                        ""
+                    }
+
+
+
+                    ${
+                        item.url
+
+                        ?
+
+                        `<a
+                            href="${escapeHTML(item.url)}"
+                            target="_blank"
+                            data-link-id="${linkId}"
+                        >
+
+                            ${escapeHTML(item.url)}
+
+                        </a>`
+
+                        :
+
+                        ""
+                    }
+
+
+
+                    ${
+                        item.notes
+
+                        ?
+
+                        `<div class="link-notes">
+
+                            ${escapeHTML(item.notes)}
+
+                        </div>`
+
+                        :
+
+                        ""
+                    }
+
+
+                </div>
+
+
+
+                ${statusHTML}
+
+
+
+                <button
+                    class="delete-btn"
+                    data-delete-id="${linkId}"
+                >
+
+                    حذف
+
+                </button>
+
+            `;
+
+
+            /*
+               عند الضغط على اللينك
+            */
+
+            const linkElement =
+                div.querySelector(
+                    "[data-link-id]"
+                );
+
+
+            if (linkElement) {
+
+                linkElement.addEventListener(
+                    "click",
+                    () => {
+
+                        markVisited(linkId);
+
+                    }
+                );
+
+            }
+
+
+
+            /*
+               زر الحذف
+            */
+
+            const deleteButton =
+                div.querySelector(
+                    "[data-delete-id]"
+                );
+
+
+            deleteButton.addEventListener(
+                "click",
+                () => {
+
+                    deleteLink(linkId);
+
+                }
+            );
+
+
+            container.appendChild(div);
+
+        }
+    );
+
+}
+
+
+
+/* =====================================================
+   تسجيل دخول المستخدم على اللينك
+===================================================== */
+
+async function markVisited(linkId) {
+
+
+    /*
+       لو مفيش مستخدم
+       لا نسجل أي شيء
+    */
+
+    if (!currentUser) {
+
+        return;
+
+    }
+
+
+    const visitedRef =
+        ref(
+            db,
+            "users/"
+            + currentUser
+            + "/visited/"
+            + linkId
+        );
+
+
+    await set(
+        visitedRef,
+        true
+    );
+
+
+}
+
+
+
+/* =====================================================
+   حذف لينك
+===================================================== */
+
+async function deleteLink(linkId) {
+
+
+    if (
+        !confirm(
+            "هل تريد حذف هذا اللينك؟"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+       حذف اللينك من Firebase
+    */
+
+    const linkRef =
+        ref(
+            db,
+            "links/" + linkId
+        );
+
+
+    await remove(linkRef);
+
+
+    /*
+       حذف تسجيله من المستخدمين
+       حتى لا تبقى بيانات قديمة
+    */
+
+    const updates = {};
+
+
+    Object.keys(users)
+    .forEach(
+        username => {
+
+            updates[
+                "users/"
+                + username
+                + "/visited/"
+                + linkId
+            ] = null;
+
+        }
+    );
+
+
+    if (
+        Object.keys(updates).length
+    ) {
+
+        await update(
+            ref(db),
+            updates
+        );
+
+    }
+
+}
+
+
+
+/* =====================================================
+   تحويل اسم المستخدم إلى Firebase Key آمن
+===================================================== */
+
+function makeUserKey(username) {
+
+
+    return username
+
+        .trim()
+
+        .toLowerCase()
+
+        .replace(
+            /[.#$[\]/]/g,
+            "_"
+        )
+
+        .replace(
+            /\s+/g,
+            "_"
+        );
+
+}
+
+
+
+/* =====================================================
+   حماية HTML
+===================================================== */
+
+function escapeHTML(text) {
+
+    const div =
+        document.createElement("div");
+
+
+    div.textContent =
+        text;
+
+
+    return div.innerHTML;
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>
+```
