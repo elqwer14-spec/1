@@ -1,0 +1,939 @@
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>المحفظة</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 15px;
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+}
+
+.container {
+    max-width: 950px;
+    margin: auto;
+}
+
+h1 {
+    text-align: center;
+    font-size: 23px;
+    margin-bottom: 15px;
+}
+
+/* صندوق الإدخال */
+
+.form-box {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    box-shadow: 0 1px 5px rgba(0,0,0,.08);
+}
+
+.form-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+.form-row {
+    display: flex;
+    gap: 7px;
+    margin-bottom: 7px;
+}
+
+input {
+    width: 100%;
+    padding: 9px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: Arial;
+}
+
+input:focus {
+    outline: none;
+    border-color: #0d6efd;
+}
+
+.add-btn {
+    width: 100%;
+    border: 0;
+    background: #198754;
+    color: white;
+    padding: 9px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.add-btn:hover {
+    opacity: .9;
+}
+
+/* صندوق البيانات */
+
+.users-box {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 1px 5px rgba(0,0,0,.08);
+}
+
+.users-title {
+    font-size: 17px;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+/* المستخدم */
+
+.user-card {
+    border: 1px solid #ddd;
+    background: #fafafa;
+    border-radius: 7px;
+    padding: 11px;
+    margin-bottom: 8px;
+}
+
+.user-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+}
+
+.info {
+    background: white;
+    border: 1px solid #eee;
+    padding: 8px;
+    border-radius: 5px;
+}
+
+.info-label {
+    color: #777;
+    font-size: 11px;
+    margin-bottom: 3px;
+}
+
+.info-value {
+    font-size: 13px;
+    font-weight: bold;
+    word-break: break-all;
+}
+
+.wallet-number {
+    color: #0d6efd;
+}
+
+/* الأزرار */
+
+.actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 9px;
+}
+
+.edit-btn,
+.delete-btn,
+.save-btn,
+.cancel-btn {
+    border: 0;
+    color: white;
+    padding: 7px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.edit-btn {
+    background: #0d6efd;
+}
+
+.delete-btn {
+    background: #dc3545;
+}
+
+.save-btn {
+    background: #198754;
+}
+
+.cancel-btn {
+    background: #6c757d;
+}
+
+/* وضع التعديل */
+
+.edit-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+}
+
+.edit-form input {
+    background: white;
+}
+
+.edit-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 6px;
+}
+
+.empty {
+    text-align: center;
+    color: #777;
+    padding: 25px;
+    font-size: 13px;
+}
+
+.loading {
+    text-align: center;
+    color: #777;
+    padding: 20px;
+}
+
+@media (max-width: 600px) {
+
+    .form-row {
+        flex-direction: column;
+    }
+
+    .user-info {
+        grid-template-columns: 1fr;
+    }
+
+    .edit-form {
+        grid-template-columns: 1fr;
+    }
+
+    .edit-actions {
+        grid-column: auto;
+    }
+
+    .actions {
+        flex-direction: column;
+    }
+
+    .edit-btn,
+    .delete-btn {
+        width: 100%;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+    <h1>المحفظة</h1>
+
+
+    <!-- إضافة مستخدم -->
+
+    <div class="form-box">
+
+        <div class="form-title">
+            إضافة مستخدم
+        </div>
+
+
+        <div class="form-row">
+
+            <input
+                type="text"
+                id="username"
+                placeholder="اسم المستخدم"
+            >
+
+            <input
+                type="email"
+                id="userEmail"
+                placeholder="إيميل المستخدم"
+            >
+
+        </div>
+
+
+        <div class="form-row">
+
+            <input
+                type="text"
+                id="walletNumber"
+                placeholder="رقم المحفظة - أرقام وحروف"
+            >
+
+            <input
+                type="email"
+                id="walletEmail"
+                placeholder="إيميل المحفظة"
+            >
+
+        </div>
+
+
+        <button
+            class="add-btn"
+            id="addBtn"
+        >
+            إضافة المستخدم
+        </button>
+
+    </div>
+
+
+    <!-- المستخدمين -->
+
+    <div class="users-box">
+
+        <div class="users-title">
+            بيانات المستخدمين
+        </div>
+
+
+        <div id="usersContainer">
+
+            <div class="loading">
+                جاري تحميل البيانات...
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script type="module">
+
+
+/* Firebase */
+
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+
+
+import {
+    getDatabase,
+    ref,
+    push,
+    set,
+    onValue,
+    update,
+    remove
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+
+/* إعداد Firebase */
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyAB4wO937rCwc0OTWeJlGgoaxErWOdjaJM",
+
+    authDomain:
+        "my-new-a6e9f.firebaseapp.com",
+
+    databaseURL:
+        "https://my-new-a6e9f-default-rtdb.firebaseio.com",
+
+    projectId:
+        "my-new-a6e9f",
+
+    storageBucket:
+        "my-new-a6e9f.firebasestorage.app",
+
+    messagingSenderId:
+        "1034729064842",
+
+    appId:
+        "1:1034729064842:web:5b3d42fe7b5c0f3a3ae073"
+
+};
+
+
+const app =
+    initializeApp(firebaseConfig);
+
+
+const db =
+    getDatabase(app);
+
+
+/* مكان بيانات المحفظة */
+
+const walletsRef =
+    ref(db, "wallets");
+
+
+let wallets = {};
+
+
+/* تحميل البيانات تلقائياً */
+
+onValue(walletsRef, (snapshot) => {
+
+    wallets =
+        snapshot.val() || {};
+
+    displayUsers();
+
+});
+
+
+/* إضافة مستخدم */
+
+document
+.getElementById("addBtn")
+.addEventListener("click", addUser);
+
+
+async function addUser() {
+
+    const username =
+        document
+        .getElementById("username")
+        .value
+        .trim();
+
+
+    const userEmail =
+        document
+        .getElementById("userEmail")
+        .value
+        .trim();
+
+
+    const walletNumber =
+        document
+        .getElementById("walletNumber")
+        .value
+        .trim();
+
+
+    const walletEmail =
+        document
+        .getElementById("walletEmail")
+        .value
+        .trim();
+
+
+    /* التأكد من البيانات */
+
+    if (
+        !username ||
+        !userEmail ||
+        !walletNumber ||
+        !walletEmail
+    ) {
+
+        alert("اكتب جميع البيانات أولاً");
+
+        return;
+
+    }
+
+
+    /* منع تكرار رقم المحفظة */
+
+    const duplicate =
+        Object.values(wallets)
+        .some(item =>
+            String(item.walletNumber).toLowerCase()
+            === walletNumber.toLowerCase()
+        );
+
+
+    if (duplicate) {
+
+        alert("رقم المحفظة موجود بالفعل");
+
+        return;
+
+    }
+
+
+    /* إنشاء مستخدم جديد */
+
+    const newUserRef =
+        push(walletsRef);
+
+
+    await set(newUserRef, {
+
+        username: username,
+
+        userEmail: userEmail,
+
+        walletNumber: walletNumber,
+
+        walletEmail: walletEmail,
+
+        createdAt: Date.now()
+
+    });
+
+
+    /* تنظيف الحقول */
+
+    document.getElementById("username").value = "";
+
+    document.getElementById("userEmail").value = "";
+
+    document.getElementById("walletNumber").value = "";
+
+    document.getElementById("walletEmail").value = "";
+
+}
+
+
+/* عرض المستخدمين */
+
+function displayUsers() {
+
+    const container =
+        document.getElementById("usersContainer");
+
+
+    container.innerHTML = "";
+
+
+    const entries =
+        Object.entries(wallets);
+
+
+    if (entries.length === 0) {
+
+        container.innerHTML = `
+
+            <div class="empty">
+
+                لا توجد بيانات مستخدمين حالياً
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    /* الأحدث أولاً */
+
+    entries.sort((a, b) => {
+
+        return (
+            Number(b[1].createdAt || 0) -
+            Number(a[1].createdAt || 0)
+        );
+
+    });
+
+
+    entries.forEach(([id, user]) => {
+
+        const card =
+            document.createElement("div");
+
+
+        card.className =
+            "user-card";
+
+
+        card.dataset.id =
+            id;
+
+
+        card.innerHTML = `
+
+            <div class="user-info">
+
+                <div class="info">
+
+                    <div class="info-label">
+                        اسم المستخدم
+                    </div>
+
+                    <div class="info-value">
+                        ${escapeHTML(user.username)}
+                    </div>
+
+                </div>
+
+
+                <div class="info">
+
+                    <div class="info-label">
+                        إيميل المستخدم
+                    </div>
+
+                    <div class="info-value">
+                        ${escapeHTML(user.userEmail)}
+                    </div>
+
+                </div>
+
+
+                <div class="info">
+
+                    <div class="info-label">
+                        رقم المحفظة
+                    </div>
+
+                    <div class="info-value wallet-number">
+                        ${escapeHTML(user.walletNumber)}
+                    </div>
+
+                </div>
+
+
+                <div class="info">
+
+                    <div class="info-label">
+                        إيميل المحفظة
+                    </div>
+
+                    <div class="info-value">
+                        ${escapeHTML(user.walletEmail)}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="actions">
+
+                <button
+                    class="edit-btn"
+                    data-edit="${id}"
+                >
+                    تعديل
+                </button>
+
+
+                <button
+                    class="delete-btn"
+                    data-delete="${id}"
+                >
+                    حذف
+                </button>
+
+            </div>
+
+        `;
+
+
+        container.appendChild(card);
+
+    });
+
+
+    /* زر التعديل */
+
+    container
+    .querySelectorAll("[data-edit]")
+    .forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            editUser(
+                button.dataset.edit
+            );
+
+        });
+
+    });
+
+
+    /* زر الحذف */
+
+    container
+    .querySelectorAll("[data-delete]")
+    .forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            deleteUser(
+                button.dataset.delete
+            );
+
+        });
+
+    });
+
+}
+
+
+/* تعديل المستخدم */
+
+function editUser(id) {
+
+    const user =
+        wallets[id];
+
+
+    if (!user) return;
+
+
+    const card =
+        document.querySelector(
+            `.user-card[data-id="${id}"]`
+        );
+
+
+    card.innerHTML = `
+
+        <div class="edit-form">
+
+            <input
+                type="text"
+                id="editUsername_${id}"
+                value="${escapeAttribute(user.username)}"
+                placeholder="اسم المستخدم"
+            >
+
+
+            <input
+                type="email"
+                id="editUserEmail_${id}"
+                value="${escapeAttribute(user.userEmail)}"
+                placeholder="إيميل المستخدم"
+            >
+
+
+            <input
+                type="text"
+                id="editWalletNumber_${id}"
+                value="${escapeAttribute(user.walletNumber)}"
+                placeholder="رقم المحفظة"
+            >
+
+
+            <input
+                type="email"
+                id="editWalletEmail_${id}"
+                value="${escapeAttribute(user.walletEmail)}"
+                placeholder="إيميل المحفظة"
+            >
+
+
+            <div class="edit-actions">
+
+                <button
+                    class="save-btn"
+                    id="save_${id}"
+                >
+                    حفظ التعديل
+                </button>
+
+
+                <button
+                    class="cancel-btn"
+                    id="cancel_${id}"
+                >
+                    إلغاء
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    /* حفظ */
+
+    document
+    .getElementById(`save_${id}`)
+    .addEventListener("click", () => {
+
+        saveEdit(id);
+
+    });
+
+
+    /* إلغاء */
+
+    document
+    .getElementById(`cancel_${id}`)
+    .addEventListener("click", () => {
+
+        displayUsers();
+
+    });
+
+}
+
+
+/* حفظ التعديل */
+
+async function saveEdit(id) {
+
+    const username =
+        document
+        .getElementById(`editUsername_${id}`)
+        .value
+        .trim();
+
+
+    const userEmail =
+        document
+        .getElementById(`editUserEmail_${id}`)
+        .value
+        .trim();
+
+
+    const walletNumber =
+        document
+        .getElementById(`editWalletNumber_${id}`)
+        .value
+        .trim();
+
+
+    const walletEmail =
+        document
+        .getElementById(`editWalletEmail_${id}`)
+        .value
+        .trim();
+
+
+    if (
+        !username ||
+        !userEmail ||
+        !walletNumber ||
+        !walletEmail
+    ) {
+
+        alert("اكتب جميع البيانات");
+
+        return;
+
+    }
+
+
+    /* التأكد أن رقم المحفظة ليس مستخدماً لمستخدم آخر */
+
+    const duplicate =
+        Object.entries(wallets)
+        .some(([otherId, item]) => {
+
+            if (otherId === id) {
+                return false;
+            }
+
+            return String(item.walletNumber).toLowerCase()
+                === walletNumber.toLowerCase();
+
+        });
+
+
+    if (duplicate) {
+
+        alert("رقم المحفظة مستخدم بالفعل");
+
+        return;
+
+    }
+
+
+    await update(
+        ref(db, "wallets/" + id),
+        {
+
+            username: username,
+
+            userEmail: userEmail,
+
+            walletNumber: walletNumber,
+
+            walletEmail: walletEmail
+
+        }
+    );
+
+
+    alert("تم حفظ التعديل");
+
+}
+
+
+/* حذف */
+
+async function deleteUser(id) {
+
+    const confirmed =
+        confirm("هل تريد حذف هذا المستخدم؟");
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    await remove(
+        ref(db, "wallets/" + id)
+    );
+
+
+    alert("تم حذف المستخدم");
+
+}
+
+
+/* حماية النص */
+
+function escapeHTML(text) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent =
+        String(text ?? "");
+
+    return div.innerHTML;
+
+}
+
+
+/* حماية قيمة input */
+
+function escapeAttribute(text) {
+
+    return String(text ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+
+}
+
+</script>
+
+</body>
+</html>
+```
