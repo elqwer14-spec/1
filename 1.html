@@ -36,9 +36,7 @@
         }
 
 
-        /* =========================
-           المستخدم
-        ========================= */
+        /* المستخدم */
 
         .user-box {
             background: white;
@@ -99,9 +97,7 @@
         }
 
 
-        /* =========================
-           إضافة لينك
-        ========================= */
+        /* إضافة البيانات */
 
         .add-box {
             background: white;
@@ -141,9 +137,7 @@
         }
 
 
-        /* =========================
-           اللينكات
-        ========================= */
+        /* اللينكات */
 
         .links-box {
             background: white;
@@ -210,10 +204,24 @@
             margin-top: 3px;
         }
 
+        /* السعر */
 
-        /* =========================
-           الحالة
-        ========================= */
+        .price {
+            font-weight: bold;
+            font-size: 13px;
+            text-align: center;
+            color: #198754;
+        }
+
+        .order {
+            font-size: 11px;
+            color: #777;
+            text-align: center;
+            margin-top: 3px;
+        }
+
+
+        /* الحالة */
 
         .status {
             text-align: center;
@@ -238,9 +246,7 @@
         }
 
 
-        /* =========================
-           حذف
-        ========================= */
+        /* حذف */
 
         .delete-btn {
             background: #dc3545;
@@ -271,6 +277,10 @@
                 flex-direction: column;
             }
 
+            .form-row {
+                flex-direction: column;
+            }
+
             .link-item {
                 grid-template-columns:
                     35px
@@ -278,7 +288,8 @@
             }
 
             .status,
-            .delete-btn {
+            .delete-btn,
+            .price {
                 grid-column: 2;
             }
 
@@ -298,9 +309,7 @@
     <h1>إدارة اللينكات</h1>
 
 
-    <!-- =========================
-         المستخدم
-    ========================= -->
+    <!-- المستخدم -->
 
     <div class="user-box">
 
@@ -330,7 +339,6 @@
 
         </div>
 
-
         <div
             class="user-status"
             id="userStatus"
@@ -342,9 +350,7 @@
 
 
 
-    <!-- =========================
-         إضافة لينك
-    ========================= -->
+    <!-- إضافة لينك -->
 
     <div class="add-box">
 
@@ -362,6 +368,27 @@
                 type="url"
                 id="url"
                 placeholder="اللينك - اختياري"
+            >
+
+        </div>
+
+
+        <div class="form-row">
+
+            <input
+                type="number"
+                id="price"
+                placeholder="السعر - اختياري"
+                step="any"
+                min="0"
+            >
+
+            <input
+                type="number"
+                id="order"
+                placeholder="الترتيب - اختياري"
+                step="1"
+                min="1"
             >
 
         </div>
@@ -388,9 +415,7 @@
 
 
 
-    <!-- =========================
-         اللينكات
-    ========================= -->
+    <!-- اللينكات -->
 
     <div class="links-box">
 
@@ -409,10 +434,6 @@
 </div>
 
 
-
-<!-- =====================================================
-     Firebase
-===================================================== -->
 
 <script type="module">
 
@@ -439,9 +460,7 @@ from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 
 
-/* =====================================================
-   Firebase Config
-===================================================== */
+/* Firebase Config */
 
 const firebaseConfig = {
 
@@ -475,15 +494,12 @@ const firebaseConfig = {
 const app =
     initializeApp(firebaseConfig);
 
-
 const db =
     getDatabase(app);
 
 
 
-/* =====================================================
-   المتغيرات
-===================================================== */
+/* المتغيرات */
 
 let links = {};
 
@@ -493,22 +509,17 @@ let currentUser = "";
 
 
 
-/* =====================================================
-   مراجع Firebase
-===================================================== */
+/* مراجع Firebase */
 
 const linksRef =
     ref(db, "links");
-
 
 const usersRef =
     ref(db, "users");
 
 
 
-/* =====================================================
-   تحميل اللينكات تلقائياً
-===================================================== */
+/* تحميل اللينكات */
 
 onValue(
     linksRef,
@@ -524,9 +535,7 @@ onValue(
 
 
 
-/* =====================================================
-   تحميل المستخدمين تلقائياً
-===================================================== */
+/* تحميل المستخدمين */
 
 onValue(
     usersRef,
@@ -544,9 +553,7 @@ onValue(
 
 
 
-/* =====================================================
-   دخول المستخدم
-===================================================== */
+/* دخول المستخدم */
 
 document
 .getElementById("loginBtn")
@@ -559,15 +566,11 @@ document
 
 async function loginUser() {
 
-
     const input =
-        document
-        .getElementById("username");
-
+        document.getElementById("username");
 
     const username =
         input.value.trim();
-
 
     if (!username) {
 
@@ -576,25 +579,15 @@ async function loginUser() {
         );
 
         return;
-
     }
 
-
-    /*
-       نعمل مفتاح آمن لاسم المستخدم
-       حتى لا تحدث مشكلة في Firebase
-    */
 
     const userKey =
         makeUserKey(username);
 
+    currentUser =
+        userKey;
 
-    currentUser = userKey;
-
-
-    /*
-       نشوف هل المستخدم موجود
-    */
 
     const userRef =
         ref(
@@ -607,20 +600,13 @@ async function loginUser() {
         await get(userRef);
 
 
-    /*
-       مستخدم جديد
-    */
-
     if (!snapshot.exists()) {
 
         await set(
             userRef,
             {
-
                 username: username,
-
                 visited: {}
-
             }
         );
 
@@ -635,35 +621,24 @@ async function loginUser() {
 
 
 
-/* =====================================================
-   تحديث بيانات المستخدم
-===================================================== */
+/* تحديث بيانات المستخدم */
 
 function updateUserUI() {
 
-
     const input =
-        document
-        .getElementById("username");
-
+        document.getElementById("username");
 
     const loginBtn =
-        document
-        .getElementById("loginBtn");
-
+        document.getElementById("loginBtn");
 
     const logoutBtn =
-        document
-        .getElementById("logoutBtn");
-
+        document.getElementById("logoutBtn");
 
     const status =
-        document
-        .getElementById("userStatus");
+        document.getElementById("userStatus");
 
 
     if (!currentUser) {
-
 
         input.disabled = false;
 
@@ -673,13 +648,10 @@ function updateUserUI() {
         logoutBtn.style.display =
             "none";
 
-
         status.innerHTML =
             "لم يتم تسجيل أي مستخدم";
 
-
         return;
-
     }
 
 
@@ -690,13 +662,10 @@ function updateUserUI() {
     input.value =
         user?.username || "";
 
-
     input.disabled = true;
-
 
     loginBtn.style.display =
         "none";
-
 
     logoutBtn.style.display =
         "block";
@@ -736,9 +705,7 @@ function updateUserUI() {
 
 
 
-/* =====================================================
-   خروج المستخدم
-===================================================== */
+/* خروج */
 
 document
 .getElementById("logoutBtn")
@@ -764,9 +731,7 @@ function logoutUser() {
 
 
 
-/* =====================================================
-   إضافة لينك
-===================================================== */
+/* إضافة لينك */
 
 document
 .getElementById("addBtn")
@@ -778,7 +743,6 @@ document
 
 
 async function addLink() {
-
 
     const name =
         document
@@ -794,6 +758,20 @@ async function addLink() {
         .trim();
 
 
+    const price =
+        document
+        .getElementById("price")
+        .value
+        .trim();
+
+
+    const orderValue =
+        document
+        .getElementById("order")
+        .value
+        .trim();
+
+
     const notes =
         document
         .getElementById("notes")
@@ -801,11 +779,18 @@ async function addLink() {
         .trim();
 
 
+
     /*
-       كل الحقول اختيارية
+       لازم يدخل أي بيانات
     */
 
-    if (!name && !url && !notes) {
+    if (
+        !name &&
+        !url &&
+        !price &&
+        !orderValue &&
+        !notes
+    ) {
 
         alert(
             "اكتب أي بيانات تريد إضافتها"
@@ -814,6 +799,7 @@ async function addLink() {
         return;
 
     }
+
 
 
     /*
@@ -842,8 +828,30 @@ async function addLink() {
     }
 
 
+
     /*
-       إنشاء ID جديد
+       تحويل السعر والترتيب لأرقام
+    */
+
+    const priceNumber =
+        price
+        ?
+        Number(price)
+        :
+        null;
+
+
+    const orderNumber =
+        orderValue
+        ?
+        Number(orderValue)
+        :
+        null;
+
+
+
+    /*
+       إنشاء ID
     */
 
     const newLinkRef =
@@ -858,6 +866,10 @@ async function addLink() {
 
             url: url,
 
+            price: priceNumber,
+
+            order: orderNumber,
+
             notes: notes,
 
             createdAt:
@@ -865,6 +877,7 @@ async function addLink() {
 
         }
     );
+
 
 
     /*
@@ -875,11 +888,17 @@ async function addLink() {
     .getElementById("name")
     .value = "";
 
-
     document
     .getElementById("url")
     .value = "";
 
+    document
+    .getElementById("price")
+    .value = "";
+
+    document
+    .getElementById("order")
+    .value = "";
 
     document
     .getElementById("notes")
@@ -889,16 +908,12 @@ async function addLink() {
 
 
 
-/* =====================================================
-   عرض اللينكات
-===================================================== */
+/* عرض اللينكات */
 
 function displayLinks() {
 
-
     const container =
-        document
-        .getElementById(
+        document.getElementById(
             "linksContainer"
         );
 
@@ -906,8 +921,64 @@ function displayLinks() {
     container.innerHTML = "";
 
 
+    /*
+       تحويل Firebase إلى Array
+       ثم الترتيب من الأصغر للأكبر
+    */
+
     const linkEntries =
         Object.entries(links);
+
+
+    linkEntries.sort(
+        ([idA, itemA], [idB, itemB]) => {
+
+            /*
+               اللينك الذي ليس له ترتيب
+               يظهر في النهاية
+            */
+
+            const orderA =
+                itemA.order !== null &&
+                itemA.order !== undefined &&
+                itemA.order !== ""
+                ?
+                Number(itemA.order)
+                :
+                Infinity;
+
+
+            const orderB =
+                itemB.order !== null &&
+                itemB.order !== undefined &&
+                itemB.order !== ""
+                ?
+                Number(itemB.order)
+                :
+                Infinity;
+
+
+            if (orderA !== orderB) {
+
+                return orderA - orderB;
+
+            }
+
+
+            /*
+               لو نفس الترتيب
+               الأقدم يظهر أولاً
+            */
+
+            return (
+                Number(itemA.createdAt || 0)
+                -
+                Number(itemB.createdAt || 0)
+            );
+
+        }
+    );
+
 
 
     if (linkEntries.length === 0) {
@@ -923,11 +994,13 @@ function displayLinks() {
     }
 
 
+
     linkEntries.forEach(
         ([linkId, item], index) => {
 
 
             let statusHTML;
+
 
 
             /*
@@ -947,7 +1020,6 @@ function displayLinks() {
             }
 
             else {
-
 
                 const user =
                     users[currentUser];
@@ -995,6 +1067,7 @@ function displayLinks() {
 
             div.className =
                 "link-item";
+
 
 
             div.innerHTML = `
@@ -1072,6 +1145,49 @@ function displayLinks() {
 
 
 
+                <div>
+
+                    ${
+                        item.price !== null &&
+                        item.price !== undefined &&
+                        item.price !== ""
+
+                        ?
+
+                        `<div class="price">
+
+                            💰 ${escapeHTML(String(item.price))}
+
+                        </div>`
+
+                        :
+
+                        ""
+                    }
+
+
+                    ${
+                        item.order !== null &&
+                        item.order !== undefined &&
+                        item.order !== ""
+
+                        ?
+
+                        `<div class="order">
+
+                            ترتيب: ${escapeHTML(String(item.order))}
+
+                        </div>`
+
+                        :
+
+                        ""
+                    }
+
+                </div>
+
+
+
                 ${statusHTML}
 
 
@@ -1088,8 +1204,9 @@ function displayLinks() {
             `;
 
 
+
             /*
-               عند الضغط على اللينك
+               الضغط على اللينك
             */
 
             const linkElement =
@@ -1142,17 +1259,9 @@ function displayLinks() {
 
 
 
-/* =====================================================
-   تسجيل دخول المستخدم على اللينك
-===================================================== */
+/* تسجيل دخول المستخدم على اللينك */
 
 async function markVisited(linkId) {
-
-
-    /*
-       لو مفيش مستخدم
-       لا نسجل أي شيء
-    */
 
     if (!currentUser) {
 
@@ -1176,17 +1285,13 @@ async function markVisited(linkId) {
         true
     );
 
-
 }
 
 
 
-/* =====================================================
-   حذف لينك
-===================================================== */
+/* حذف لينك */
 
 async function deleteLink(linkId) {
-
 
     if (
         !confirm(
@@ -1199,10 +1304,6 @@ async function deleteLink(linkId) {
     }
 
 
-    /*
-       حذف اللينك من Firebase
-    */
-
     const linkRef =
         ref(
             db,
@@ -1213,9 +1314,9 @@ async function deleteLink(linkId) {
     await remove(linkRef);
 
 
+
     /*
-       حذف تسجيله من المستخدمين
-       حتى لا تبقى بيانات قديمة
+       حذف تسجيل اللينك من جميع المستخدمين
     */
 
     const updates = {};
@@ -1251,12 +1352,9 @@ async function deleteLink(linkId) {
 
 
 
-/* =====================================================
-   تحويل اسم المستخدم إلى Firebase Key آمن
-===================================================== */
+/* Firebase Key للمستخدم */
 
 function makeUserKey(username) {
-
 
     return username
 
@@ -1278,19 +1376,15 @@ function makeUserKey(username) {
 
 
 
-/* =====================================================
-   حماية HTML
-===================================================== */
+/* حماية HTML */
 
 function escapeHTML(text) {
 
     const div =
         document.createElement("div");
 
-
     div.textContent =
         text;
-
 
     return div.innerHTML;
 
