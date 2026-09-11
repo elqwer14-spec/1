@@ -1,0 +1,651 @@
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>بيانات المستخدمين</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .total-box {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 5px #ddd;
+        }
+
+        .user-card {
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 5px #ddd;
+            overflow: hidden;
+        }
+
+        .user-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .username {
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .count {
+            background: #0d6efd;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+        }
+
+        /* زر حذف المستخدم */
+
+        .delete-user-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .delete-user-btn:hover {
+            background: #bb2d3b;
+        }
+
+        .user-body {
+            padding: 12px 15px;
+        }
+
+        .link-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            margin-bottom: 6px;
+            background: #f8f9fa;
+            border: 1px solid #eee;
+            border-radius: 5px;
+        }
+
+        .link-number {
+            min-width: 25px;
+            font-weight: bold;
+        }
+
+        .link-item a {
+            color: #0d6efd;
+            text-decoration: none;
+            word-break: break-all;
+            font-size: 13px;
+        }
+
+        .link-item a:hover {
+            text-decoration: underline;
+        }
+
+        .no-links {
+            color: #777;
+            font-size: 13px;
+            padding: 5px 0;
+        }
+
+        .loading {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .empty {
+            text-align: center;
+            color: #777;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <h1>
+        بيانات المستخدمين
+    </h1>
+
+
+    <div
+        class="total-box"
+        id="totalUsers"
+    >
+        إجمالي المستخدمين: 0
+    </div>
+
+
+    <div
+        id="usersContainer"
+        class="loading"
+    >
+        جاري تحميل المستخدمين...
+    </div>
+
+
+</div>
+
+
+
+<script type="module">
+
+
+/* =====================================================
+   Firebase
+===================================================== */
+
+import {
+    initializeApp
+}
+from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+
+
+import {
+    getDatabase,
+    ref,
+    onValue,
+    remove
+}
+from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+
+
+/* =====================================================
+   Firebase Config
+===================================================== */
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyAB4wO937rCwc0OTWeJlGgoaxERWOdjaJM",
+
+    authDomain:
+        "my-new-a6e9f.firebaseapp.com",
+
+    databaseURL:
+        "https://my-new-a6e9f-default-rtdb.firebaseio.com",
+
+    projectId:
+        "my-new-a6e9f",
+
+    storageBucket:
+        "my-new-a6e9f.firebasestorage.app",
+
+    messagingSenderId:
+        "1034729064842",
+
+    appId:
+        "1:1034729064842:web:5b3d42fe7b5c0f3a3ae073"
+
+};
+
+
+
+/* تشغيل Firebase */
+
+const app =
+    initializeApp(firebaseConfig);
+
+const db =
+    getDatabase(app);
+
+
+
+/* =====================================================
+   البيانات
+===================================================== */
+
+let users = {};
+
+let links = {};
+
+
+
+/* =====================================================
+   تحميل المستخدمين
+===================================================== */
+
+onValue(
+    ref(db, "users"),
+    (snapshot) => {
+
+        users =
+            snapshot.val() || {};
+
+        displayUsers();
+
+    }
+);
+
+
+
+/* =====================================================
+   تحميل اللينكات
+===================================================== */
+
+onValue(
+    ref(db, "links"),
+    (snapshot) => {
+
+        links =
+            snapshot.val() || {};
+
+        displayUsers();
+
+    }
+);
+
+
+
+/* =====================================================
+   عرض المستخدمين
+===================================================== */
+
+function displayUsers() {
+
+
+    const container =
+        document.getElementById(
+            "usersContainer"
+        );
+
+
+    const totalUsers =
+        document.getElementById(
+            "totalUsers"
+        );
+
+
+    container.innerHTML = "";
+
+
+    const userEntries =
+        Object.entries(users);
+
+
+    totalUsers.innerHTML =
+
+        `إجمالي المستخدمين:
+        <b>${userEntries.length}</b>`;
+
+
+    if (userEntries.length === 0) {
+
+        container.innerHTML = `
+
+            <div class="empty">
+
+                لا يوجد مستخدمين حتى الآن
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+
+    /* =================================================
+       كل مستخدم
+    ================================================= */
+
+    userEntries.forEach(
+        ([userId, user]) => {
+
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "user-card";
+
+
+            const visited =
+                user.visited || {};
+
+
+            const visitedIds =
+                Object.keys(visited);
+
+
+            let linksHTML = "";
+
+
+            if (
+                visitedIds.length === 0
+            ) {
+
+                linksHTML = `
+
+                    <div class="no-links">
+
+                        ⚪ المستخدم لم يدخل
+                        على أي لينك حتى الآن
+
+                    </div>
+
+                `;
+
+            }
+
+            else {
+
+
+                visitedIds.forEach(
+                    (linkId, index) => {
+
+
+                        const link =
+                            links[linkId];
+
+
+                        if (!link) {
+                            return;
+                        }
+
+
+                        const title =
+                            link.name
+                            ||
+                            link.url
+                            ||
+                            "لينك بدون اسم";
+
+
+                        linksHTML += `
+
+                            <div
+                                class="link-item"
+                            >
+
+                                <div
+                                    class="link-number"
+                                >
+                                    ${index + 1}
+                                </div>
+
+
+                                <div>
+
+                                    <div>
+
+                                        ${escapeHTML(title)}
+
+                                    </div>
+
+
+                                    ${
+                                        link.url
+                                        ?
+
+                                        `<a
+                                            href="${escapeHTML(link.url)}"
+                                            target="_blank"
+                                        >
+                                            ${escapeHTML(link.url)}
+                                        </a>`
+
+                                        :
+
+                                        ""
+                                    }
+
+                                </div>
+
+                            </div>
+
+                        `;
+
+                    }
+                );
+
+            }
+
+
+
+            /* =================================================
+               بطاقة المستخدم
+            ================================================= */
+
+            card.innerHTML = `
+
+                <div class="user-header">
+
+                    <div class="username">
+
+                        👤
+                        ${escapeHTML(
+                            user.username
+                            ||
+                            userId
+                        )}
+
+                    </div>
+
+
+                    <div class="header-left">
+
+                        <div class="count">
+
+                            دخل على
+                            ${visitedIds.length}
+                            لينك
+
+                        </div>
+
+
+                        <button
+                            class="delete-user-btn"
+                            data-user-id="${userId}"
+                        >
+
+                            حذف المستخدم
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="user-body">
+
+                    <div class="link-title">
+
+                        اللينكات التي دخل عليها:
+
+                    </div>
+
+
+                    ${linksHTML}
+
+                </div>
+
+            `;
+
+
+            /* زر الحذف */
+
+            const deleteButton =
+                card.querySelector(
+                    "[data-user-id]"
+                );
+
+
+            deleteButton.addEventListener(
+                "click",
+                () => {
+
+                    deleteUser(userId);
+
+                }
+            );
+
+
+            container.appendChild(card);
+
+        }
+    );
+
+}
+
+
+
+/* =====================================================
+   حذف مستخدم
+===================================================== */
+
+async function deleteUser(userId) {
+
+
+    const user =
+        users[userId];
+
+
+    const username =
+        user?.username || userId;
+
+
+    const confirmed =
+        confirm(
+            `هل أنت متأكد من حذف المستخدم "${username}"؟\n\n` +
+            `سيتم حذف المستخدم وسجل اللينكات التي دخل عليها.`
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    try {
+
+
+        /*
+           حذف المستخدم بالكامل
+           من Firebase
+        */
+
+        await remove(
+            ref(
+                db,
+                "users/" + userId
+            )
+        );
+
+
+        alert(
+            "تم حذف المستخدم بنجاح"
+        );
+
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+
+        alert(
+            "حدث خطأ أثناء حذف المستخدم:\n"
+            + error.message
+        );
+
+    }
+
+}
+
+
+
+/* =====================================================
+   حماية HTML
+===================================================== */
+
+function escapeHTML(text) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent =
+        text;
+
+    return div.innerHTML;
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>
+```
