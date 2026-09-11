@@ -1,0 +1,527 @@
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>آخر لينك تمت إضافته</title>
+
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+
+    margin: 0;
+
+    padding: 15px;
+
+    font-family: Arial, sans-serif;
+
+    background: #f5f5f5;
+
+}
+
+
+.container {
+
+    max-width: 900px;
+
+    margin: auto;
+
+}
+
+
+h1 {
+
+    text-align: center;
+
+    font-size: 22px;
+
+    margin-bottom: 15px;
+
+}
+
+
+.last-box {
+
+    background: white;
+
+    padding: 15px;
+
+    border-radius: 8px;
+
+    box-shadow:
+        0 1px 5px rgba(0,0,0,.08);
+
+}
+
+
+.last-title {
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    margin-bottom: 12px;
+
+}
+
+
+.link-card {
+
+    border: 1px solid #ddd;
+
+    border-radius: 7px;
+
+    padding: 12px;
+
+    background: #fafafa;
+
+}
+
+
+.link-number {
+
+    display: inline-block;
+
+    background: #0d6efd;
+
+    color: white;
+
+    padding: 4px 9px;
+
+    border-radius: 5px;
+
+    font-size: 12px;
+
+    margin-bottom: 8px;
+
+}
+
+
+.link-name {
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    margin-bottom: 7px;
+
+}
+
+
+.link-url a {
+
+    color: #0d6efd;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    word-break: break-all;
+
+}
+
+
+.link-price {
+
+    color: #198754;
+
+    font-weight: bold;
+
+    margin-top: 8px;
+
+}
+
+
+.link-order {
+
+    color: #777;
+
+    font-size: 12px;
+
+    margin-top: 5px;
+
+}
+
+
+.link-notes {
+
+    color: #666;
+
+    font-size: 12px;
+
+    margin-top: 7px;
+
+}
+
+
+.time {
+
+    color: #999;
+
+    font-size: 11px;
+
+    margin-top: 10px;
+
+    border-top: 1px solid #eee;
+
+    padding-top: 8px;
+
+}
+
+
+.loading,
+.empty {
+
+    text-align: center;
+
+    padding: 25px;
+
+    color: #777;
+
+    font-size: 13px;
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+    <h1>آخر لينك تمت إضافته</h1>
+
+
+    <div class="last-box">
+
+        <div class="last-title">
+            آخر إضافة
+        </div>
+
+
+        <div id="lastLink">
+
+            <div class="loading">
+                جاري تحميل آخر لينك...
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script type="module">
+
+
+/* Firebase */
+
+import {
+
+    initializeApp
+
+} from
+"https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+
+
+import {
+
+    getDatabase,
+
+    ref,
+
+    onValue
+
+} from
+"https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyAB4wO937rCwc0OTWeJlGgoaxErWOdjaJM",
+
+    authDomain:
+        "my-new-a6e9f.firebaseapp.com",
+
+    databaseURL:
+        "https://my-new-a6e9f-default-rtdb.firebaseio.com",
+
+    projectId:
+        "my-new-a6e9f",
+
+    storageBucket:
+        "my-new-a6e9f.firebasestorage.app",
+
+    messagingSenderId:
+        "1034729064842",
+
+    appId:
+        "1:1034729064842:web:5b3d42fe7b5c0f3a3ae073"
+
+};
+
+
+const app =
+    initializeApp(firebaseConfig);
+
+
+const db =
+    getDatabase(app);
+
+
+const linksRef =
+    ref(db, "links");
+
+
+/*
+   مراقبة Firebase
+
+   كلما أضيف لينك جديد
+   الصفحة تتحدث تلقائياً
+*/
+
+onValue(linksRef, (snapshot) => {
+
+    const links =
+        snapshot.val() || {};
+
+    displayLastLink(links);
+
+});
+
+
+function displayLastLink(links) {
+
+    const container =
+        document.getElementById("lastLink");
+
+
+    container.innerHTML = "";
+
+
+    const entries =
+        Object.entries(links);
+
+
+    if (entries.length === 0) {
+
+        container.innerHTML = `
+
+            <div class="empty">
+
+                لا توجد لينكات حالياً
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    /*
+       البحث عن أحدث لينك
+       باستخدام createdAt
+    */
+
+    entries.sort((a, b) => {
+
+        return (
+            Number(b[1].createdAt || 0) -
+            Number(a[1].createdAt || 0)
+        );
+
+    });
+
+
+    const latest =
+        entries[0];
+
+
+    const linkId =
+        latest[0];
+
+
+    const item =
+        latest[1];
+
+
+    let html = `
+
+        <div class="link-card">
+
+            <div class="link-number">
+
+                آخر إضافة
+
+            </div>
+
+    `;
+
+
+    if (item.name) {
+
+        html += `
+
+            <div class="link-name">
+
+                ${escapeHTML(item.name)}
+
+            </div>
+
+        `;
+
+    }
+
+
+    if (item.url) {
+
+        html += `
+
+            <div class="link-url">
+
+                <a
+                    href="${escapeHTML(item.url)}"
+                    target="_blank"
+                    rel="noopener"
+                >
+
+                    ${escapeHTML(item.url)}
+
+                </a>
+
+            </div>
+
+        `;
+
+    }
+
+
+    if (
+        item.price !== null &&
+        item.price !== undefined &&
+        item.price !== ""
+    ) {
+
+        html += `
+
+            <div class="link-price">
+
+                السعر:
+                ${escapeHTML(item.price)}
+
+            </div>
+
+        `;
+
+    }
+
+
+    if (
+        item.order !== null &&
+        item.order !== undefined &&
+        item.order !== ""
+    ) {
+
+        html += `
+
+            <div class="link-order">
+
+                رقم الترتيب:
+                ${escapeHTML(item.order)}
+
+            </div>
+
+        `;
+
+    }
+
+
+    if (item.notes) {
+
+        html += `
+
+            <div class="link-notes">
+
+                ملاحظات:
+                ${escapeHTML(item.notes)}
+
+            </div>
+
+        `;
+
+    }
+
+
+    if (item.createdAt) {
+
+        const date =
+            new Date(item.createdAt);
+
+
+        html += `
+
+            <div class="time">
+
+                تمت الإضافة:
+                ${date.toLocaleString("ar-EG")}
+
+            </div>
+
+        `;
+
+    }
+
+
+    html += `
+
+        </div>
+
+    `;
+
+
+    container.innerHTML = html;
+
+}
+
+
+/* حماية النص */
+
+function escapeHTML(text) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent =
+        String(text ?? "");
+
+    return div.innerHTML;
+
+}
+
+</script>
+
+
+</body>
+
+</html>
+```
