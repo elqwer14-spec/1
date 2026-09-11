@@ -78,6 +78,40 @@
             font-size: 12px;
         }
 
+        /* زر إظهار اللينكات */
+
+        .toggle-links-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            width: 32px;
+            height: 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        .toggle-links-btn:hover {
+            background: #5c636a;
+        }
+
+        .toggle-links-btn.open {
+            background: #0d6efd;
+        }
+
+        .arrow {
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+
+        .toggle-links-btn.open .arrow {
+            transform: rotate(90deg);
+        }
+
         /* زر حذف المستخدم */
 
         .delete-user-btn {
@@ -94,8 +128,15 @@
             background: #bb2d3b;
         }
 
+        /* محتوى اللينكات */
+
         .user-body {
             padding: 12px 15px;
+            display: none;
+        }
+
+        .user-body.open {
+            display: block;
         }
 
         .link-title {
@@ -150,6 +191,44 @@
             background: white;
             padding: 20px;
             border-radius: 8px;
+        }
+
+        /* موبايل */
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 10px;
+            }
+
+            .user-header {
+                padding: 10px;
+            }
+
+            .username {
+                font-size: 14px;
+            }
+
+            .header-left {
+                gap: 5px;
+            }
+
+            .count {
+                padding: 4px 7px;
+                font-size: 10px;
+            }
+
+            .delete-user-btn {
+                padding: 5px 7px;
+                font-size: 10px;
+            }
+
+            .toggle-links-btn {
+                width: 28px;
+                height: 27px;
+                font-size: 14px;
+            }
+
         }
 
     </style>
@@ -247,6 +326,7 @@ const firebaseConfig = {
 const app =
     initializeApp(firebaseConfig);
 
+
 const db =
     getDatabase(app);
 
@@ -259,6 +339,16 @@ const db =
 let users = {};
 
 let links = {};
+
+
+/*
+   نحفظ المستخدمين الذين قاموا بفتح
+   اللينكات الخاصة بهم حالياً
+
+   حتى لا تختفي عند تحديث البيانات
+*/
+
+let openedUsers = {};
 
 
 
@@ -442,11 +532,13 @@ function displayUsers() {
 
                                     ${
                                         link.url
+
                                         ?
 
                                         `<a
                                             href="${escapeHTML(link.url)}"
                                             target="_blank"
+                                            rel="noopener"
                                         >
                                             ${escapeHTML(link.url)}
                                         </a>`
@@ -473,13 +565,16 @@ function displayUsers() {
                بطاقة المستخدم
             ================================================= */
 
+
             card.innerHTML = `
 
                 <div class="user-header">
 
+
                     <div class="username">
 
                         👤
+
                         ${escapeHTML(
                             user.username
                             ||
@@ -490,6 +585,23 @@ function displayUsers() {
 
 
                     <div class="header-left">
+
+
+                        <!-- سهم إظهار اللينكات -->
+
+                        <button
+                            class="toggle-links-btn
+                            ${openedUsers[userId] ? "open" : ""}"
+                            data-toggle-user="${userId}"
+                            title="إظهار اللينكات"
+                        >
+
+                            <span class="arrow">
+                                ▶
+                            </span>
+
+                        </button>
+
 
                         <div class="count">
 
@@ -509,12 +621,18 @@ function displayUsers() {
 
                         </button>
 
+
                     </div>
 
                 </div>
 
 
-                <div class="user-body">
+                <!-- اللينكات مخفية افتراضياً -->
+
+                <div
+                    class="user-body
+                    ${openedUsers[userId] ? "open" : ""}"
+                >
 
                     <div class="link-title">
 
@@ -530,7 +648,34 @@ function displayUsers() {
             `;
 
 
-            /* زر الحذف */
+
+            /* =================================================
+               زر إظهار وإخفاء اللينكات
+            ================================================= */
+
+            const toggleButton =
+                card.querySelector(
+                    "[data-toggle-user]"
+                );
+
+
+            toggleButton.addEventListener(
+                "click",
+                () => {
+
+                    toggleUserLinks(
+                        userId,
+                        card
+                    );
+
+                }
+            );
+
+
+
+            /* =================================================
+               زر الحذف
+            ================================================= */
 
             const deleteButton =
                 card.querySelector(
@@ -548,10 +693,61 @@ function displayUsers() {
             );
 
 
+
             container.appendChild(card);
 
         }
     );
+
+}
+
+
+
+/* =====================================================
+   فتح / إغلاق لينكات المستخدم
+===================================================== */
+
+function toggleUserLinks(
+    userId,
+    card
+) {
+
+
+    const body =
+        card.querySelector(
+            ".user-body"
+        );
+
+
+    const button =
+        card.querySelector(
+            ".toggle-links-btn"
+        );
+
+
+    const isOpen =
+        body.classList.contains("open");
+
+
+    if (isOpen) {
+
+        body.classList.remove("open");
+
+        button.classList.remove("open");
+
+        openedUsers[userId] = false;
+
+    }
+
+    else {
+
+        body.classList.add("open");
+
+        button.classList.add("open");
+
+        openedUsers[userId] = true;
+
+    }
 
 }
 
@@ -574,8 +770,13 @@ async function deleteUser(userId) {
 
     const confirmed =
         confirm(
-            `هل أنت متأكد من حذف المستخدم "${username}"؟\n\n` +
+
+            `هل أنت متأكد من حذف المستخدم "${username}"؟\n\n`
+
+            +
+
             `سيتم حذف المستخدم وسجل اللينكات التي دخل عليها.`
+
         );
 
 
@@ -589,17 +790,21 @@ async function deleteUser(userId) {
     try {
 
 
-        /*
-           حذف المستخدم بالكامل
-           من Firebase
-        */
-
         await remove(
+
             ref(
                 db,
                 "users/" + userId
             )
+
         );
+
+
+        /*
+           إزالة حالة فتح المستخدم
+        */
+
+        delete openedUsers[userId];
 
 
         alert(
@@ -611,12 +816,18 @@ async function deleteUser(userId) {
 
     catch (error) {
 
+
         console.error(error);
 
 
         alert(
+
             "حدث خطأ أثناء حذف المستخدم:\n"
-            + error.message
+
+            +
+
+            error.message
+
         );
 
     }
@@ -631,11 +842,14 @@ async function deleteUser(userId) {
 
 function escapeHTML(text) {
 
+
     const div =
         document.createElement("div");
 
+
     div.textContent =
         text;
+
 
     return div.innerHTML;
 
