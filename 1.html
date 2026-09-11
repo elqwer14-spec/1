@@ -1,17 +1,12 @@
 ```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>إدارة اللينكات</title>
 
 <style>
-
 * {
     box-sizing: border-box;
 }
@@ -57,7 +52,7 @@ h1 {
 input,
 textarea {
     width: 100%;
-    padding: 6px 8px;
+    padding: 7px 8px;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 12px;
@@ -86,7 +81,7 @@ textarea {
     font-size: 12px;
 }
 
-/* إضافة البيانات */
+/* إضافة */
 
 .add-box {
     background: white;
@@ -177,7 +172,7 @@ textarea {
 
 .link-item {
     display: grid;
-    grid-template-columns: 45px 1fr 120px 60px;
+    grid-template-columns: 45px 1fr 120px 75px;
     gap: 8px;
     align-items: center;
     padding: 9px;
@@ -229,6 +224,7 @@ textarea {
     font-size: 11px;
     padding: 5px 6px;
     border-radius: 12px;
+    margin-top: 4px;
 }
 
 .visited {
@@ -246,7 +242,28 @@ textarea {
     color: #664d03;
 }
 
+/* أزرار */
+
+.edit-btn {
+    display: block;
+    width: 100%;
+    border: 0;
+    background: #0d6efd;
+    color: white;
+    padding: 6px 8px;
+    border-radius: 5px;
+    font-size: 12px;
+    cursor: pointer;
+    margin-bottom: 5px;
+}
+
+.edit-btn:hover {
+    background: #0b5ed7;
+}
+
 .delete-btn {
+    display: block;
+    width: 100%;
     border: 0;
     background: #dc3545;
     color: white;
@@ -254,6 +271,60 @@ textarea {
     border-radius: 5px;
     font-size: 12px;
     cursor: pointer;
+}
+
+.delete-btn:hover {
+    background: #bb2d3b;
+}
+
+/* مربع التعديل */
+
+.edit-box {
+    grid-column: 1 / -1;
+    background: white;
+    border: 1px solid #0d6efd;
+    border-radius: 7px;
+    padding: 10px;
+    margin-top: 8px;
+}
+
+.edit-box-title {
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #0d6efd;
+}
+
+.edit-form-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+.edit-box textarea {
+    width: 100%;
+    margin-bottom: 7px;
+}
+
+.save-edit-btn {
+    border: 0;
+    background: #198754;
+    color: white;
+    padding: 7px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.cancel-edit-btn {
+    border: 0;
+    background: #6c757d;
+    color: white;
+    padding: 7px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    margin-right: 4px;
 }
 
 .empty,
@@ -280,13 +351,20 @@ textarea {
 
     .status,
     .delete-btn,
+    .edit-btn,
     .price {
         grid-column: 2;
     }
+
+    .edit-box {
+        grid-column: 1 / -1;
+    }
+
+    .edit-form-row {
+        flex-direction: column;
+    }
 }
-
 </style>
-
 </head>
 
 <body>
@@ -294,7 +372,6 @@ textarea {
 <div class="container">
 
     <h1>إدارة اللينكات</h1>
-
 
     <!-- المستخدم -->
 
@@ -337,7 +414,7 @@ textarea {
     </div>
 
 
-    <!-- إضافة بيانات -->
+    <!-- إضافة لينك -->
 
     <div class="add-box">
 
@@ -345,13 +422,9 @@ textarea {
             class="add-title"
             id="addTitle"
         >
-
             <span id="addArrow">▶</span>
-
             <span>إدخال بيانات</span>
-
         </div>
-
 
         <div
             class="add-content"
@@ -374,7 +447,6 @@ textarea {
 
             </div>
 
-
             <div class="form-row">
 
                 <input
@@ -391,15 +463,13 @@ textarea {
 
             </div>
 
-
             <textarea
                 id="notes"
                 placeholder="ملاحظات"
             ></textarea>
 
-
-            <br><br>
-
+            <br>
+            <br>
 
             <button
                 class="add-btn"
@@ -419,7 +489,6 @@ textarea {
 
         <h2>اللينكات</h2>
 
-
         <div class="search-box">
 
             <input
@@ -429,7 +498,6 @@ textarea {
             >
 
         </div>
-
 
         <div id="linksContainer">
             جاري تحميل اللينكات...
@@ -495,11 +563,12 @@ const db =
 /* البيانات */
 
 let links = {};
-
 let users = {};
-
 let currentUser = "";
+let editingLinkId = null;
 
+
+/* المراجع */
 
 const linksRef =
     ref(db, "links");
@@ -508,11 +577,7 @@ const usersRef =
     ref(db, "users");
 
 
-/*
-========================================
-فتح وإغلاق إضافة البيانات
-========================================
-*/
+/* فتح وغلق إضافة البيانات */
 
 const addTitle =
     document.getElementById("addTitle");
@@ -520,119 +585,102 @@ const addTitle =
 const addContent =
     document.getElementById("addContent");
 
+addTitle.addEventListener(
+    "click",
+    () => {
 
-addTitle.addEventListener("click", () => {
+        addContent.classList.toggle("open");
 
-    addContent.classList.toggle("open");
+        addTitle.classList.toggle("open");
 
-    addTitle.classList.toggle("open");
-
-});
-
-
-/*
-========================================
-تحميل اللينكات
-========================================
-*/
-
-onValue(linksRef, (snapshot) => {
-
-    links =
-        snapshot.val() || {};
-
-    displayLinks();
-
-});
+    }
+);
 
 
-/*
-========================================
-تحميل المستخدمين
-========================================
-*/
+/* تحميل اللينكات */
 
-onValue(usersRef, (snapshot) => {
+onValue(
+    linksRef,
+    snapshot => {
 
-    users =
-        snapshot.val() || {};
+        links =
+            snapshot.val() || {};
 
-    updateUserUI();
+        displayLinks();
 
-    displayLinks();
-
-});
+    }
+);
 
 
-/*
-========================================
-تسجيل الدخول
-========================================
-*/
+/* تحميل المستخدمين */
+
+onValue(
+    usersRef,
+    snapshot => {
+
+        users =
+            snapshot.val() || {};
+
+        updateUserUI();
+
+        displayLinks();
+
+    }
+);
+
+
+/* تسجيل الدخول */
 
 document
-.getElementById("loginBtn")
-.addEventListener("click", loginUser);
+    .getElementById("loginBtn")
+    .addEventListener(
+        "click",
+        loginUser
+    );
 
 
 async function loginUser() {
 
     const username =
         document
-        .getElementById("username")
-        .value
-        .trim();
-
+            .getElementById("username")
+            .value
+            .trim();
 
     if (!username) {
 
-        alert("اكتب اسم المستخدم أولاً");
+        alert(
+            "اكتب اسم المستخدم أولاً"
+        );
 
         return;
-
     }
-
 
     const userKey =
         makeUserKey(username);
-
 
     currentUser =
         userKey;
 
 
-    /*
-    ========================================
-    حفظ آخر مستخدم دخل
-    ========================================
-    */
+    /* حفظ آخر مستخدم */
 
     await set(
         ref(db, "lastUser"),
         {
-
-            username:
-                username,
-
-            loginTime:
-                Date.now()
-
+            username: username,
+            loginTime: Date.now()
         }
     );
 
 
-    /*
-    ========================================
-    المستخدم العادي
-    ========================================
-    */
+    /* إنشاء المستخدم */
 
     const userRef =
         ref(
             db,
             "users/" + userKey
         );
-
 
     const snapshot =
         await get(userRef);
@@ -643,13 +691,8 @@ async function loginUser() {
         await set(
             userRef,
             {
-
-                username:
-                    username,
-
-                visited:
-                    {}
-
+                username: username,
+                visited: {}
             }
         );
 
@@ -663,31 +706,34 @@ async function loginUser() {
 }
 
 
-/*
-========================================
-تحديث واجهة المستخدم
-========================================
-*/
+/* تحديث المستخدم */
 
 function updateUserUI() {
 
     const usernameInput =
-        document.getElementById("username");
+        document.getElementById(
+            "username"
+        );
 
     const loginBtn =
-        document.getElementById("loginBtn");
+        document.getElementById(
+            "loginBtn"
+        );
 
     const logoutBtn =
-        document.getElementById("logoutBtn");
+        document.getElementById(
+            "logoutBtn"
+        );
 
     const status =
-        document.getElementById("userStatus");
+        document.getElementById(
+            "userStatus"
+        );
 
 
     if (!currentUser) {
 
-        usernameInput.disabled =
-            false;
+        usernameInput.disabled = false;
 
         loginBtn.style.display =
             "block";
@@ -699,12 +745,10 @@ function updateUserUI() {
             "لم يتم تسجيل أي مستخدم";
 
         return;
-
     }
 
 
-    usernameInput.disabled =
-        true;
+    usernameInput.disabled = true;
 
     loginBtn.style.display =
         "none";
@@ -723,13 +767,11 @@ function updateUserUI() {
             "تم تسجيل الدخول";
 
         return;
-
     }
 
 
     const visited =
         user.visited || {};
-
 
     const count =
         Object.keys(visited).length;
@@ -738,29 +780,32 @@ function updateUserUI() {
     if (count === 0) {
 
         status.innerHTML =
-            `المستخدم <b>${escapeHTML(user.username)}</b> لم يدخل على أي لينك حتى الآن.`;
+            `المستخدم
+            <b>${escapeHTML(user.username)}</b>
+            لم يدخل على أي لينك حتى الآن.`;
 
-    }
-
-    else {
+    } else {
 
         status.innerHTML =
-            `المستخدم <b>${escapeHTML(user.username)}</b> دخل على <b>${count}</b> لينك.`;
+            `المستخدم
+            <b>${escapeHTML(user.username)}</b>
+            دخل على
+            <b>${count}</b>
+            لينك.`;
 
     }
 
 }
 
 
-/*
-========================================
-تسجيل الخروج
-========================================
-*/
+/* تسجيل الخروج */
 
 document
-.getElementById("logoutBtn")
-.addEventListener("click", logoutUser);
+    .getElementById("logoutBtn")
+    .addEventListener(
+        "click",
+        logoutUser
+    );
 
 
 function logoutUser() {
@@ -768,8 +813,10 @@ function logoutUser() {
     currentUser = "";
 
     document
-    .getElementById("username")
-    .value = "";
+        .getElementById("username")
+        .value = "";
+
+    editingLinkId = null;
 
     updateUserUI();
 
@@ -778,52 +825,47 @@ function logoutUser() {
 }
 
 
-/*
-========================================
-إضافة لينك
-========================================
-*/
+/* إضافة لينك */
 
 document
-.getElementById("addBtn")
-.addEventListener("click", addLink);
+    .getElementById("addBtn")
+    .addEventListener(
+        "click",
+        addLink
+    );
 
 
 async function addLink() {
 
     const name =
         document
-        .getElementById("name")
-        .value
-        .trim();
-
+            .getElementById("name")
+            .value
+            .trim();
 
     const url =
         document
-        .getElementById("url")
-        .value
-        .trim();
-
+            .getElementById("url")
+            .value
+            .trim();
 
     const price =
         document
-        .getElementById("price")
-        .value
-        .trim();
-
+            .getElementById("price")
+            .value
+            .trim();
 
     const order =
         document
-        .getElementById("order")
-        .value
-        .trim();
-
+            .getElementById("order")
+            .value
+            .trim();
 
     const notes =
         document
-        .getElementById("notes")
-        .value
-        .trim();
+            .getElementById("notes")
+            .value
+            .trim();
 
 
     if (
@@ -839,24 +881,20 @@ async function addLink() {
         );
 
         return;
-
     }
 
 
-    /*
-    ========================================
-    منع تكرار الرابط
-    ========================================
-    */
+    /* منع تكرار الرابط */
 
     if (url) {
 
         const exists =
-            Object.values(links)
-            .some(
-                item =>
-                    item.url === url
-            );
+            Object
+                .values(links)
+                .some(
+                    item =>
+                        item.url === url
+                );
 
 
         if (exists) {
@@ -866,7 +904,6 @@ async function addLink() {
             );
 
             return;
-
         }
 
     }
@@ -877,18 +914,11 @@ async function addLink() {
             ? Number(price)
             : null;
 
-
     const orderNumber =
         order
             ? Number(order)
             : null;
 
-
-    /*
-    ========================================
-    Batch
-    ========================================
-    */
 
     const batchId =
         "batch_" + Date.now();
@@ -901,84 +931,39 @@ async function addLink() {
     await set(
         newLinkRef,
         {
-
-            name:
-                name,
-
-            url:
-                url,
-
-            price:
-                priceNumber,
-
-            order:
-                orderNumber,
-
-            notes:
-                notes,
-
-            createdAt:
-                Date.now(),
-
-            batchId:
-                batchId
-
+            name: name,
+            url: url,
+            price: priceNumber,
+            order: orderNumber,
+            notes: notes,
+            createdAt: Date.now(),
+            batchId: batchId
         }
     );
 
 
-    /*
-    ========================================
-    تنظيف الفورم
-    ========================================
-    */
+    /* تنظيف الفورم */
 
-    document
-    .getElementById("name")
-    .value = "";
-
-
-    document
-    .getElementById("url")
-    .value = "";
-
-
-    document
-    .getElementById("price")
-    .value = "";
-
-
-    document
-    .getElementById("order")
-    .value = "";
-
-
-    document
-    .getElementById("notes")
-    .value = "";
+    document.getElementById("name").value = "";
+    document.getElementById("url").value = "";
+    document.getElementById("price").value = "";
+    document.getElementById("order").value = "";
+    document.getElementById("notes").value = "";
 
 }
 
 
-/*
-========================================
-البحث
-========================================
-*/
+/* البحث */
 
 document
-.getElementById("searchOrder")
-.addEventListener(
-    "input",
-    displayLinks
-);
+    .getElementById("searchOrder")
+    .addEventListener(
+        "input",
+        displayLinks
+    );
 
 
-/*
-========================================
-عرض اللينكات
-========================================
-*/
+/* عرض اللينكات */
 
 function displayLinks() {
 
@@ -986,7 +971,6 @@ function displayLinks() {
         document.getElementById(
             "linksContainer"
         );
-
 
     container.innerHTML = "";
 
@@ -997,10 +981,12 @@ function displayLinks() {
 
     const searchValue =
         document
-        .getElementById("searchOrder")
-        .value
-        .trim();
+            .getElementById("searchOrder")
+            .value
+            .trim();
 
+
+    /* البحث */
 
     if (searchValue) {
 
@@ -1018,320 +1004,609 @@ function displayLinks() {
     }
 
 
-    /*
-    ========================================
-    ترتيب اللينكات
-    ========================================
-    */
+    /* الترتيب */
 
-    entries.sort((a, b) => {
+    entries.sort(
+        (a, b) => {
 
-        const itemA =
-            a[1];
-
-        const itemB =
-            b[1];
+            const itemA = a[1];
+            const itemB = b[1];
 
 
-        const orderA =
-            itemA.order === null ||
-            itemA.order === undefined ||
-            itemA.order === ""
-                ? Infinity
-                : Number(itemA.order);
+            const orderA =
+                itemA.order === null ||
+                itemA.order === undefined ||
+                itemA.order === ""
+                    ? Infinity
+                    : Number(itemA.order);
 
 
-        const orderB =
-            itemB.order === null ||
-            itemB.order === undefined ||
-            itemB.order === ""
-                ? Infinity
-                : Number(itemB.order);
+            const orderB =
+                itemB.order === null ||
+                itemB.order === undefined ||
+                itemB.order === ""
+                    ? Infinity
+                    : Number(itemB.order);
 
 
-        if (
-            orderA !== orderB
-        ) {
+            if (orderA !== orderB) {
 
-            return orderA - orderB;
+                return orderA - orderB;
+
+            }
+
+
+            return (
+                Number(itemA.createdAt || 0) -
+                Number(itemB.createdAt || 0)
+            );
 
         }
+    );
 
 
-        return (
-            Number(
-                itemA.createdAt || 0
-            ) -
-            Number(
-                itemB.createdAt || 0
-            )
-        );
-
-    });
-
+    /* لا يوجد بيانات */
 
     if (entries.length === 0) {
 
         container.innerHTML =
             searchValue
 
-            ? `
-                <div class="empty">
+                ? `<div class="empty">
                     لا يوجد لينك ترتيبه
                     ${escapeHTML(searchValue)}
-                </div>
-              `
+                   </div>`
 
-            : `
-                <div class="empty">
+                : `<div class="empty">
                     لا توجد لينكات حالياً
-                </div>
-              `;
+                   </div>`;
 
         return;
-
     }
 
+
+    /* إنشاء الكروت */
 
     entries.forEach(
         ([linkId, item], index) => {
 
-        const div =
-            document.createElement("div");
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+            div.className =
+                "link-item";
 
 
-        div.className =
-            "link-item";
+            const user =
+                currentUser
+                    ? users[currentUser]
+                    : null;
 
 
-        const user =
-            currentUser
-                ? users[currentUser]
-                : null;
+            const visited =
+                user &&
+                user.visited &&
+                user.visited[linkId];
 
 
-        const visited =
-            user &&
-            user.visited &&
-            user.visited[linkId];
+            let statusHTML;
 
 
-        let statusHTML;
+            if (!currentUser) {
+
+                statusHTML =
+                    `<div class="status no-user">
+                        👤 بدون تسجيل دخول
+                     </div>`;
+
+            } else if (visited) {
+
+                statusHTML =
+                    `<div class="status visited">
+                        🟢 تم الدخول
+                     </div>`;
+
+            } else {
+
+                statusHTML =
+                    `<div class="status not-visited">
+                        ⚪ لم يتم الدخول
+                     </div>`;
+
+            }
 
 
-        if (!currentUser) {
+            let infoHTML = "";
 
-            statusHTML =
-                `
-                <div class="status no-user">
-                    👤 بدون تسجيل دخول
+
+            /* الاسم */
+
+            if (item.name) {
+
+                infoHTML +=
+                    `<div class="link-name">
+                        ${escapeHTML(item.name)}
+                     </div>`;
+
+            }
+
+
+            /* الرابط */
+
+            if (item.url) {
+
+                infoHTML +=
+                    `<div class="link-info">
+
+                        <a
+                            href="${escapeHTML(item.url)}"
+                            target="_blank"
+                            rel="noopener"
+                            data-link-id="${linkId}"
+                        >
+                            ${escapeHTML(item.url)}
+                        </a>
+
+                     </div>`;
+
+            }
+
+
+            /* الملاحظات */
+
+            if (item.notes) {
+
+                infoHTML +=
+                    `<div class="link-notes">
+                        ${escapeHTML(item.notes)}
+                     </div>`;
+
+            }
+
+
+            /* الكارت */
+
+            div.innerHTML = `
+
+                <div class="number">
+                    ${index + 1}
                 </div>
-                `;
 
-        }
 
-        else if (visited) {
-
-            statusHTML =
-                `
-                <div class="status visited">
-                    🟢 تم الدخول
+                <div>
+                    ${infoHTML}
                 </div>
-                `;
 
-        }
 
-        else {
+                <div>
 
-            statusHTML =
-                `
-                <div class="status not-visited">
-                    ⚪ لم يتم الدخول
+                    ${
+                        item.price !== null &&
+                        item.price !== undefined
+                            ? `<div class="price">
+                                ${escapeHTML(item.price)}
+                               </div>`
+                            : ""
+                    }
+
+
+                    ${
+                        item.order !== null &&
+                        item.order !== undefined
+                            ? `<div class="order">
+                                ترتيب:
+                                ${escapeHTML(item.order)}
+                               </div>`
+                            : ""
+                    }
+
+
+                    ${statusHTML}
+
                 </div>
-                `;
-
-        }
 
 
-        let infoHTML =
-            "";
+                <div>
 
-
-        if (item.name) {
-
-            infoHTML +=
-                `
-                <div class="link-name">
-                    ${escapeHTML(item.name)}
-                </div>
-                `;
-
-        }
-
-
-        if (item.url) {
-
-            infoHTML +=
-                `
-                <div class="link-info">
-
-                    <a
-                        href="${escapeHTML(item.url)}"
-                        target="_blank"
-                        rel="noopener"
-                        data-link-id="${linkId}"
+                    <button
+                        class="edit-btn"
+                        data-edit-id="${linkId}"
                     >
-                        ${escapeHTML(item.url)}
-                    </a>
+                        تعديل
+                    </button>
+
+
+                    <button
+                        class="delete-btn"
+                        data-delete-id="${linkId}"
+                    >
+                        حذف
+                    </button>
 
                 </div>
-                `;
+
+            `;
+
+
+            container.appendChild(div);
+
+
+            /* لو الكارت ده هو اللي بيتعدل */
+
+            if (editingLinkId === linkId) {
+
+                showEditForm(
+                    div,
+                    linkId,
+                    item
+                );
+
+            }
 
         }
+    );
 
 
-        if (item.notes) {
-
-            infoHTML +=
-                `
-                <div class="link-notes">
-                    ${escapeHTML(item.notes)}
-                </div>
-                `;
-
-        }
-
-
-        div.innerHTML = `
-
-            <div class="number">
-                ${index + 1}
-            </div>
-
-
-            <div>
-                ${infoHTML}
-            </div>
-
-
-            <div>
-
-                ${
-                    item.price !== null &&
-                    item.price !== undefined
-
-                    ? `
-                        <div class="price">
-                            ${escapeHTML(item.price)}
-                        </div>
-                      `
-
-                    : ""
-                }
-
-
-                ${
-                    item.order !== null &&
-                    item.order !== undefined
-
-                    ? `
-                        <div class="order">
-                            ترتيب:
-                            ${escapeHTML(item.order)}
-                        </div>
-                      `
-
-                    : ""
-                }
-
-
-                ${statusHTML}
-
-            </div>
-
-
-            <div>
-
-                <button
-                    class="delete-btn"
-                    data-delete-id="${linkId}"
-                >
-                    حذف
-                </button>
-
-            </div>
-
-        `;
-
-
-        container.appendChild(div);
-
-    });
-
-
-    /*
-    ========================================
-    تسجيل زيارة المستخدم
-    ========================================
-    */
+    /* فتح الرابط */
 
     container
-    .querySelectorAll(
-        "a[data-link-id]"
-    )
-    .forEach(link => {
+        .querySelectorAll(
+            "a[data-link-id]"
+        )
+        .forEach(
+            link => {
 
-        link.addEventListener(
-            "click",
-            () => {
+                link.addEventListener(
+                    "click",
+                    () => {
 
-                markVisited(
-                    link.dataset.linkId
+                        markVisited(
+                            link.dataset.linkId
+                        );
+
+                    }
                 );
 
             }
         );
 
-    });
 
-
-    /*
-    ========================================
-    حذف
-    ========================================
-    */
+    /* زر التعديل */
 
     container
-    .querySelectorAll(
-        "[data-delete-id]"
-    )
-    .forEach(button => {
+        .querySelectorAll(
+            "[data-edit-id]"
+        )
+        .forEach(
+            button => {
 
-        button.addEventListener(
-            "click",
-            () => {
+                button.addEventListener(
+                    "click",
+                    () => {
 
-                deleteLink(
-                    button.dataset.deleteId
+                        const id =
+                            button.dataset.editId;
+
+
+                        if (
+                            editingLinkId === id
+                        ) {
+
+                            editingLinkId =
+                                null;
+
+                        } else {
+
+                            editingLinkId =
+                                id;
+
+                        }
+
+
+                        displayLinks();
+
+                    }
                 );
 
             }
         );
 
-    });
+
+    /* زر الحذف */
+
+    container
+        .querySelectorAll(
+            "[data-delete-id]"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        deleteLink(
+                            button.dataset.deleteId
+                        );
+
+                    }
+                );
+
+            }
+        );
 
 }
 
 
-/*
-========================================
-تسجيل زيارة
-========================================
-*/
+/* إظهار مربع التعديل */
+
+function showEditForm(
+    div,
+    linkId,
+    item
+) {
+
+    const editBox =
+        document.createElement(
+            "div"
+        );
+
+    editBox.className =
+        "edit-box";
+
+
+    editBox.innerHTML = `
+
+        <div class="edit-box-title">
+            تعديل بيانات اللينك
+        </div>
+
+
+        <div class="edit-form-row">
+
+            <input
+                type="text"
+                id="edit-name-${linkId}"
+                value="${escapeAttribute(item.name || "")}"
+                placeholder="الاسم"
+            >
+
+            <input
+                type="url"
+                id="edit-url-${linkId}"
+                value="${escapeAttribute(item.url || "")}"
+                placeholder="الرابط"
+            >
+
+        </div>
+
+
+        <div class="edit-form-row">
+
+            <input
+                type="number"
+                id="edit-price-${linkId}"
+                value="${
+                    item.price !== null &&
+                    item.price !== undefined
+                        ? escapeAttribute(item.price)
+                        : ""
+                }"
+                placeholder="السعر"
+            >
+
+            <input
+                type="number"
+                id="edit-order-${linkId}"
+                value="${
+                    item.order !== null &&
+                    item.order !== undefined
+                        ? escapeAttribute(item.order)
+                        : ""
+                }"
+                placeholder="رقم الترتيب"
+            >
+
+        </div>
+
+
+        <textarea
+            id="edit-notes-${linkId}"
+            placeholder="ملاحظات"
+        >${escapeHTML(item.notes || "")}</textarea>
+
+
+        <button
+            class="save-edit-btn"
+            data-save-edit="${linkId}"
+        >
+            حفظ التعديل
+        </button>
+
+
+        <button
+            class="cancel-edit-btn"
+            data-cancel-edit="${linkId}"
+        >
+            إلغاء
+        </button>
+
+    `;
+
+
+    div.appendChild(editBox);
+
+
+    /* حفظ */
+
+    editBox
+        .querySelector(
+            "[data-save-edit]"
+        )
+        .addEventListener(
+            "click",
+            () => {
+
+                saveEdit(linkId);
+
+            }
+        );
+
+
+    /* إلغاء */
+
+    editBox
+        .querySelector(
+            "[data-cancel-edit]"
+        )
+        .addEventListener(
+            "click",
+            () => {
+
+                editingLinkId = null;
+
+                displayLinks();
+
+            }
+        );
+
+}
+
+
+/* حفظ التعديل */
+
+async function saveEdit(linkId) {
+
+    const name =
+        document
+            .getElementById(
+                "edit-name-" + linkId
+            )
+            .value
+            .trim();
+
+
+    const url =
+        document
+            .getElementById(
+                "edit-url-" + linkId
+            )
+            .value
+            .trim();
+
+
+    const price =
+        document
+            .getElementById(
+                "edit-price-" + linkId
+            )
+            .value
+            .trim();
+
+
+    const order =
+        document
+            .getElementById(
+                "edit-order-" + linkId
+            )
+            .value
+            .trim();
+
+
+    const notes =
+        document
+            .getElementById(
+                "edit-notes-" + linkId
+            )
+            .value
+            .trim();
+
+
+    /* منع تكرار الرابط */
+
+    if (url) {
+
+        const exists =
+            Object
+                .entries(links)
+                .some(
+                    ([id, item]) => {
+
+                        return (
+                            id !== linkId &&
+                            item.url === url
+                        );
+
+                    }
+                );
+
+
+        if (exists) {
+
+            alert(
+                "هذا اللينك موجود بالفعل"
+            );
+
+            return;
+
+        }
+
+    }
+
+
+    const priceValue =
+        price !== ""
+            ? Number(price)
+            : null;
+
+
+    const orderValue =
+        order !== ""
+            ? Number(order)
+            : null;
+
+
+    /* حفظ في Firebase */
+
+    await update(
+        ref(
+            db,
+            "links/" + linkId
+        ),
+        {
+
+            name: name,
+
+            url: url,
+
+            price: priceValue,
+
+            order: orderValue,
+
+            notes: notes
+
+        }
+    );
+
+
+    /* إغلاق التعديل */
+
+    editingLinkId = null;
+
+    displayLinks();
+
+}
+
+
+/* تسجيل زيارة */
 
 async function markVisited(linkId) {
 
-    if (!currentUser) return;
+    if (!currentUser) {
+        return;
+    }
 
 
     const visitedRef =
@@ -1352,11 +1627,7 @@ async function markVisited(linkId) {
 }
 
 
-/*
-========================================
-حذف لينك
-========================================
-*/
+/* حذف */
 
 async function deleteLink(linkId) {
 
@@ -1366,7 +1637,9 @@ async function deleteLink(linkId) {
         );
 
 
-    if (!confirmed) return;
+    if (!confirmed) {
+        return;
+    }
 
 
     await remove(
@@ -1380,17 +1653,20 @@ async function deleteLink(linkId) {
     const updates = {};
 
 
-    Object.keys(users)
-    .forEach(userId => {
+    Object
+        .keys(users)
+        .forEach(
+            userId => {
 
-        updates[
-            "users/" +
-            userId +
-            "/visited/" +
-            linkId
-        ] = null;
+                updates[
+                    "users/" +
+                    userId +
+                    "/visited/" +
+                    linkId
+                ] = null;
 
-    });
+            }
+        );
 
 
     if (
@@ -1404,14 +1680,17 @@ async function deleteLink(linkId) {
 
     }
 
+
+    if (editingLinkId === linkId) {
+
+        editingLinkId = null;
+
+    }
+
 }
 
 
-/*
-========================================
-تحويل اسم المستخدم لمفتاح Firebase
-========================================
-*/
+/* User Key */
 
 function makeUserKey(username) {
 
@@ -1430,23 +1709,44 @@ function makeUserKey(username) {
 }
 
 
-/*
-========================================
-حماية النص
-========================================
-*/
+/* حماية HTML */
 
 function escapeHTML(text) {
 
     const div =
-        document.createElement("div");
-
+        document.createElement(
+            "div"
+        );
 
     div.textContent =
         String(text ?? "");
 
-
     return div.innerHTML;
+
+}
+
+
+/* حماية Attribute */
+
+function escapeAttribute(text) {
+
+    return String(text ?? "")
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        );
 
 }
 
