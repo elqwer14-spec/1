@@ -36,33 +36,35 @@
         }
 
 
-        /* المستخدم */
+        /* =========================
+           المستخدم
+        ========================= */
 
         .user-box {
             background: white;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            box-shadow: 0 1px 5px #ddd;
+            padding: 8px 10px;
+            border-radius: 7px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 4px #ddd;
         }
 
         .user-box h2 {
-            font-size: 17px;
-            margin: 0 0 8px;
+            font-size: 13px;
+            margin: 0 0 7px;
         }
 
         .user-row {
             display: flex;
-            gap: 7px;
+            gap: 5px;
         }
 
         input,
         textarea {
             width: 100%;
-            padding: 7px 9px;
+            padding: 6px 8px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            font-size: 13px;
+            font-size: 12px;
         }
 
         .user-row input {
@@ -73,57 +75,103 @@
             background: #0d6efd;
             color: white;
             border: none;
-            padding: 7px 15px;
+            padding: 6px 11px;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 12px;
         }
 
         .logout-btn {
             background: #6c757d;
             color: white;
             border: none;
-            padding: 7px 15px;
+            padding: 6px 11px;
             border-radius: 5px;
             cursor: pointer;
             display: none;
+            font-size: 12px;
         }
 
         .user-status {
-            margin-top: 8px;
-            padding: 8px;
+            margin-top: 6px;
+            padding: 6px;
             background: #f1f3f5;
             border-radius: 5px;
-            font-size: 13px;
+            font-size: 11px;
         }
 
 
-        /* إضافة البيانات */
+        /* =========================
+           إدخال البيانات
+        ========================= */
 
         .add-box {
             background: white;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            box-shadow: 0 1px 5px #ddd;
+            padding: 9px 10px;
+            border-radius: 7px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 4px #ddd;
         }
 
-        .add-box h2 {
-            font-size: 17px;
-            margin: 0 0 10px;
+
+        /* عنوان إدخال البيانات */
+
+        .add-title {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+
+            cursor: pointer;
+
+            font-size: 13px;
+            font-weight: bold;
+
+            user-select: none;
         }
+
+
+        /* السهم */
+
+        #addArrow {
+            font-size: 10px;
+
+            transition:
+                transform 0.2s ease;
+        }
+
+
+        /* عند فتح القسم */
+
+        .add-title.open #addArrow {
+            transform: rotate(90deg);
+        }
+
+
+        /* محتوى الإدخال */
+
+        .add-content {
+            display: none;
+
+            margin-top: 10px;
+        }
+
+        .add-content.open {
+            display: block;
+        }
+
 
         .form-row {
             display: flex;
-            gap: 7px;
-            margin-bottom: 7px;
+            gap: 6px;
+            margin-bottom: 6px;
         }
 
         .form-row input {
             flex: 1;
         }
 
-        textarea {
-            min-height: 50px;
+        .add-content textarea {
+            min-height: 45px;
             resize: vertical;
         }
 
@@ -131,13 +179,16 @@
             background: #198754;
             color: white;
             border: none;
-            padding: 7px 14px;
+            padding: 6px 12px;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 12px;
         }
 
 
-        /* اللينكات */
+        /* =========================
+           اللينكات
+        ========================= */
 
         .links-box {
             background: white;
@@ -152,7 +203,9 @@
         }
 
 
-        /* البحث */
+        /* =========================
+           البحث
+        ========================= */
 
         .search-box {
             margin-bottom: 12px;
@@ -160,10 +213,15 @@
 
         .search-box input {
             width: 100%;
+
             padding: 9px 10px;
+
             border: 1px solid #ccc;
+
             border-radius: 6px;
+
             font-size: 13px;
+
             outline: none;
         }
 
@@ -171,6 +229,10 @@
             border-color: #0d6efd;
         }
 
+
+        /* =========================
+           اللينك
+        ========================= */
 
         .link-item {
             display: grid;
@@ -198,20 +260,27 @@
 
         .number {
             text-align: center;
+
             font-weight: bold;
+
             font-size: 15px;
         }
 
         .link-name {
             font-weight: bold;
+
             font-size: 14px;
+
             margin-bottom: 3px;
         }
 
         .link-info a {
             color: #0d6efd;
+
             text-decoration: none;
+
             font-size: 13px;
+
             word-break: break-all;
         }
 
@@ -221,77 +290,111 @@
 
         .link-notes {
             color: #777;
+
             font-size: 11px;
+
             margin-top: 3px;
         }
 
 
-        /* السعر */
+        /* =========================
+           السعر
+        ========================= */
 
         .price {
             font-weight: bold;
+
             font-size: 13px;
+
             text-align: center;
+
             color: #198754;
         }
 
         .order {
             font-size: 11px;
+
             color: #777;
+
             text-align: center;
+
             margin-top: 3px;
         }
 
 
-        /* الحالة */
+        /* =========================
+           الحالة
+        ========================= */
 
         .status {
             text-align: center;
+
             font-size: 11px;
+
             padding: 5px 6px;
+
             border-radius: 12px;
         }
 
         .visited {
             background: #d1e7dd;
+
             color: #0f5132;
         }
 
         .not-visited {
             background: #eee;
+
             color: #666;
         }
 
         .no-user {
             background: #fff3cd;
+
             color: #664d03;
         }
 
 
-        /* حذف */
+        /* =========================
+           حذف
+        ========================= */
 
         .delete-btn {
             background: #dc3545;
+
             color: white;
+
             border: none;
+
             padding: 6px 8px;
+
             border-radius: 5px;
+
             cursor: pointer;
+
             font-size: 12px;
         }
 
         .empty {
             text-align: center;
+
             color: #777;
+
             padding: 15px;
         }
 
         .loading {
             text-align: center;
+
             padding: 15px;
+
             color: #777;
         }
 
+
+        /* =========================
+           الموبايل
+        ========================= */
 
         @media (max-width: 600px) {
 
@@ -331,11 +434,15 @@
     <h1>إدارة اللينكات</h1>
 
 
-    <!-- المستخدم -->
+    <!-- =========================
+         المستخدم
+    ========================= -->
 
     <div class="user-box">
 
-        <h2>المستخدم الحالي</h2>
+        <h2>
+            المستخدم الحالي
+        </h2>
 
         <div class="user-row">
 
@@ -372,76 +479,111 @@
 
 
 
-    <!-- إضافة لينك -->
+    <!-- =========================
+         إدخال البيانات
+    ========================= -->
 
     <div class="add-box">
 
-        <h2>إضافة بيانات</h2>
 
-        <div class="form-row">
+        <!-- العنوان والسهم -->
 
-            <input
-                type="text"
-                id="name"
-                placeholder="اسم اللينك - اختياري"
-            >
-
-            <input
-                type="url"
-                id="url"
-                placeholder="اللينك - اختياري"
-            >
-
-        </div>
-
-
-        <div class="form-row">
-
-            <input
-                type="number"
-                id="price"
-                placeholder="السعر - اختياري"
-                step="any"
-                min="0"
-            >
-
-            <input
-                type="number"
-                id="order"
-                placeholder="الترتيب - اختياري"
-                step="1"
-                min="1"
-            >
-
-        </div>
-
-
-        <div class="form-row">
-
-            <textarea
-                id="notes"
-                placeholder="ملاحظات - اختياري"
-            ></textarea>
-
-        </div>
-
-
-        <button
-            class="add-btn"
-            id="addBtn"
+        <div
+            class="add-title"
+            id="addTitle"
         >
-            + إضافة
-        </button>
+
+            <span id="addArrow">
+                ▶
+            </span>
+
+            <span>
+                إدخال بيانات
+            </span>
+
+        </div>
+
+
+
+        <!-- محتوى الإدخال -->
+
+        <div
+            class="add-content"
+            id="addContent"
+        >
+
+
+            <div class="form-row">
+
+                <input
+                    type="text"
+                    id="name"
+                    placeholder="اسم اللينك - اختياري"
+                >
+
+                <input
+                    type="url"
+                    id="url"
+                    placeholder="اللينك - اختياري"
+                >
+
+            </div>
+
+
+            <div class="form-row">
+
+                <input
+                    type="number"
+                    id="price"
+                    placeholder="السعر - اختياري"
+                    step="any"
+                    min="0"
+                >
+
+                <input
+                    type="number"
+                    id="order"
+                    placeholder="الترتيب - اختياري"
+                    step="1"
+                    min="1"
+                >
+
+            </div>
+
+
+            <div class="form-row">
+
+                <textarea
+                    id="notes"
+                    placeholder="ملاحظات - اختياري"
+                ></textarea>
+
+            </div>
+
+
+            <button
+                class="add-btn"
+                id="addBtn"
+            >
+                + إضافة
+            </button>
+
+
+        </div>
 
     </div>
 
 
 
-    <!-- اللينكات -->
+    <!-- =========================
+         اللينكات
+    ========================= -->
 
     <div class="links-box">
 
-        <h2>اللينكات</h2>
+        <h2>
+            اللينكات
+        </h2>
 
 
         <!-- البحث برقم الترتيب -->
@@ -475,7 +617,9 @@
 <script type="module">
 
 
-/* Firebase */
+/* =========================
+   Firebase
+========================= */
 
 import {
     initializeApp
@@ -497,7 +641,9 @@ from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 
 
-/* Firebase Config */
+/* =========================
+   Firebase Config
+========================= */
 
 const firebaseConfig = {
 
@@ -536,7 +682,9 @@ const db =
 
 
 
-/* المتغيرات */
+/* =========================
+   المتغيرات
+========================= */
 
 let links = {};
 
@@ -546,7 +694,9 @@ let currentUser = "";
 
 
 
-/* مراجع Firebase */
+/* =========================
+   مراجع Firebase
+========================= */
 
 const linksRef =
     ref(db, "links");
@@ -556,7 +706,33 @@ const usersRef =
 
 
 
-/* تحميل اللينكات */
+/* =========================
+   فتح وإغلاق إدخال البيانات
+========================= */
+
+const addTitle =
+    document.getElementById("addTitle");
+
+const addContent =
+    document.getElementById("addContent");
+
+
+addTitle.addEventListener(
+    "click",
+    () => {
+
+        addContent.classList.toggle("open");
+
+        addTitle.classList.toggle("open");
+
+    }
+);
+
+
+
+/* =========================
+   تحميل اللينكات
+========================= */
 
 onValue(
     linksRef,
@@ -572,7 +748,9 @@ onValue(
 
 
 
-/* تحميل المستخدمين */
+/* =========================
+   تحميل المستخدمين
+========================= */
 
 onValue(
     usersRef,
@@ -590,7 +768,9 @@ onValue(
 
 
 
-/* دخول المستخدم */
+/* =========================
+   دخول المستخدم
+========================= */
 
 document
 .getElementById("loginBtn")
@@ -608,6 +788,7 @@ async function loginUser() {
 
     const username =
         input.value.trim();
+
 
     if (!username) {
 
@@ -658,7 +839,9 @@ async function loginUser() {
 
 
 
-/* تحديث بيانات المستخدم */
+/* =========================
+   تحديث بيانات المستخدم
+========================= */
 
 function updateUserUI() {
 
@@ -742,7 +925,9 @@ function updateUserUI() {
 
 
 
-/* خروج */
+/* =========================
+   خروج
+========================= */
 
 document
 .getElementById("logoutBtn")
@@ -768,7 +953,9 @@ function logoutUser() {
 
 
 
-/* إضافة لينك */
+/* =========================
+   إضافة لينك
+========================= */
 
 document
 .getElementById("addBtn")
@@ -817,9 +1004,7 @@ async function addLink() {
 
 
 
-    /*
-       لازم يدخل أي بيانات
-    */
+    /* لازم يدخل أي بيانات */
 
     if (
         !name &&
@@ -839,9 +1024,7 @@ async function addLink() {
 
 
 
-    /*
-       منع تكرار نفس اللينك
-    */
+    /* منع تكرار نفس اللينك */
 
     if (url) {
 
@@ -866,9 +1049,7 @@ async function addLink() {
 
 
 
-    /*
-       تحويل السعر والترتيب لأرقام
-    */
+    /* تحويل السعر والترتيب لأرقام */
 
     const priceNumber =
         price
@@ -887,9 +1068,7 @@ async function addLink() {
 
 
 
-    /*
-       إنشاء ID
-    */
+    /* إنشاء ID */
 
     const newLinkRef =
         push(linksRef);
@@ -917,9 +1096,7 @@ async function addLink() {
 
 
 
-    /*
-       تنظيف الحقول
-    */
+    /* تنظيف الحقول */
 
     document
     .getElementById("name")
@@ -945,7 +1122,9 @@ async function addLink() {
 
 
 
-/* البحث برقم الترتيب */
+/* =========================
+   البحث برقم الترتيب
+========================= */
 
 document
 .getElementById("searchOrder")
@@ -956,7 +1135,9 @@ document
 
 
 
-/* عرض اللينكات */
+/* =========================
+   عرض اللينكات
+========================= */
 
 function displayLinks() {
 
@@ -969,18 +1150,12 @@ function displayLinks() {
     container.innerHTML = "";
 
 
-    /*
-       تحويل Firebase إلى Array
-    */
-
     let linkEntries =
         Object.entries(links);
 
 
 
-    /*
-       قيمة البحث
-    */
+    /* قيمة البحث */
 
     const searchValue =
         document
@@ -990,9 +1165,7 @@ function displayLinks() {
 
 
 
-    /*
-       فلترة حسب رقم الترتيب
-    */
+    /* فلترة حسب رقم الترتيب */
 
     if (searchValue) {
 
@@ -1013,17 +1186,10 @@ function displayLinks() {
 
 
 
-    /*
-       الترتيب من الأصغر للأكبر
-    */
+    /* الترتيب من الأصغر للأكبر */
 
     linkEntries.sort(
         ([idA, itemA], [idB, itemB]) => {
-
-            /*
-               اللينك الذي ليس له ترتيب
-               يظهر في النهاية
-            */
 
             const orderA =
                 itemA.order !== null &&
@@ -1052,11 +1218,6 @@ function displayLinks() {
             }
 
 
-            /*
-               لو نفس الترتيب
-               الأقدم يظهر أولاً
-            */
-
             return (
                 Number(itemA.createdAt || 0)
                 -
@@ -1068,9 +1229,7 @@ function displayLinks() {
 
 
 
-    /*
-       لا توجد نتائج
-    */
+    /* لا توجد نتائج */
 
     if (linkEntries.length === 0) {
 
@@ -1096,9 +1255,7 @@ function displayLinks() {
 
 
 
-    /*
-       عرض اللينكات
-    */
+    /* عرض اللينكات */
 
     linkEntries.forEach(
         ([linkId, item], index) => {
@@ -1108,9 +1265,7 @@ function displayLinks() {
 
 
 
-            /*
-               بدون مستخدم
-            */
+            /* بدون مستخدم */
 
             if (!currentUser) {
 
@@ -1310,9 +1465,7 @@ function displayLinks() {
 
 
 
-            /*
-               الضغط على اللينك
-            */
+            /* الضغط على اللينك */
 
             const linkElement =
                 div.querySelector(
@@ -1335,9 +1488,7 @@ function displayLinks() {
 
 
 
-            /*
-               زر الحذف
-            */
+            /* زر الحذف */
 
             const deleteButton =
                 div.querySelector(
@@ -1364,7 +1515,9 @@ function displayLinks() {
 
 
 
-/* تسجيل دخول المستخدم على اللينك */
+/* =========================
+   تسجيل دخول المستخدم على اللينك
+========================= */
 
 async function markVisited(linkId) {
 
@@ -1394,7 +1547,9 @@ async function markVisited(linkId) {
 
 
 
-/* حذف لينك */
+/* =========================
+   حذف لينك
+========================= */
 
 async function deleteLink(linkId) {
 
@@ -1420,9 +1575,7 @@ async function deleteLink(linkId) {
 
 
 
-    /*
-       حذف تسجيل اللينك من جميع المستخدمين
-    */
+    /* حذف تسجيل اللينك من جميع المستخدمين */
 
     const updates = {};
 
@@ -1457,7 +1610,9 @@ async function deleteLink(linkId) {
 
 
 
-/* Firebase Key للمستخدم */
+/* =========================
+   Firebase Key للمستخدم
+========================= */
 
 function makeUserKey(username) {
 
@@ -1481,7 +1636,9 @@ function makeUserKey(username) {
 
 
 
-/* حماية HTML */
+/* =========================
+   حماية HTML
+========================= */
 
 function escapeHTML(text) {
 
