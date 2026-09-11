@@ -1,455 +1,301 @@
 ```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>إدارة اللينكات</title>
-
-
-    <style>
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            padding: 15px;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: auto;
-        }
-
-        h1 {
-            text-align: center;
-            font-size: 24px;
-        }
-
-
-        /* =========================
-           المستخدم
-        ========================= */
-
-        .user-box {
-            background: white;
-            padding: 8px 10px;
-            border-radius: 7px;
-            margin-bottom: 10px;
-            box-shadow: 0 1px 4px #ddd;
-        }
-
-        .user-box h2 {
-            font-size: 13px;
-            margin: 0 0 7px;
-        }
-
-        .user-row {
-            display: flex;
-            gap: 5px;
-        }
-
-        input,
-        textarea {
-            width: 100%;
-            padding: 6px 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 12px;
-        }
-
-        .user-row input {
-            flex: 1;
-        }
-
-        .user-btn {
-            background: #0d6efd;
-            color: white;
-            border: none;
-            padding: 6px 11px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-
-        .logout-btn {
-            background: #6c757d;
-            color: white;
-            border: none;
-            padding: 6px 11px;
-            border-radius: 5px;
-            cursor: pointer;
-            display: none;
-            font-size: 12px;
-        }
-
-        .user-status {
-            margin-top: 6px;
-            padding: 6px;
-            background: #f1f3f5;
-            border-radius: 5px;
-            font-size: 11px;
-        }
-
-
-        /* =========================
-           إدخال البيانات
-        ========================= */
-
-        .add-box {
-            background: white;
-            padding: 9px 10px;
-            border-radius: 7px;
-            margin-bottom: 12px;
-            box-shadow: 0 1px 4px #ddd;
-        }
-
-
-        /* عنوان إدخال البيانات */
-
-        .add-title {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-
-            cursor: pointer;
-
-            font-size: 13px;
-            font-weight: bold;
-
-            user-select: none;
-        }
-
-
-        /* السهم */
-
-        #addArrow {
-            font-size: 10px;
-
-            transition:
-                transform 0.2s ease;
-        }
-
-
-        /* عند فتح القسم */
-
-        .add-title.open #addArrow {
-            transform: rotate(90deg);
-        }
-
-
-        /* محتوى الإدخال */
-
-        .add-content {
-            display: none;
-
-            margin-top: 10px;
-        }
-
-        .add-content.open {
-            display: block;
-        }
-
-
-        .form-row {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 6px;
-        }
-
-        .form-row input {
-            flex: 1;
-        }
-
-        .add-content textarea {
-            min-height: 45px;
-            resize: vertical;
-        }
-
-        .add-btn {
-            background: #198754;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-
-
-        /* =========================
-           اللينكات
-        ========================= */
-
-        .links-box {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 1px 5px #ddd;
-        }
-
-        .links-box h2 {
-            font-size: 18px;
-            margin-top: 0;
-        }
-
-
-        /* =========================
-           البحث
-        ========================= */
-
-        .search-box {
-            margin-bottom: 12px;
-        }
-
-        .search-box input {
-            width: 100%;
-
-            padding: 9px 10px;
-
-            border: 1px solid #ccc;
-
-            border-radius: 6px;
-
-            font-size: 13px;
-
-            outline: none;
-        }
-
-        .search-box input:focus {
-            border-color: #0d6efd;
-        }
-
-
-        /* =========================
-           اللينك
-        ========================= */
-
-        .link-item {
-            display: grid;
-
-            grid-template-columns:
-                45px
-                1fr
-                120px
-                60px;
-
-            gap: 8px;
-
-            align-items: center;
-
-            padding: 9px;
-
-            margin-bottom: 7px;
-
-            border: 1px solid #ddd;
-
-            border-radius: 6px;
-
-            background: #fafafa;
-        }
-
-        .number {
-            text-align: center;
-
-            font-weight: bold;
-
-            font-size: 15px;
-        }
-
-        .link-name {
-            font-weight: bold;
-
-            font-size: 14px;
-
-            margin-bottom: 3px;
-        }
-
-        .link-info a {
-            color: #0d6efd;
-
-            text-decoration: none;
-
-            font-size: 13px;
-
-            word-break: break-all;
-        }
-
-        .link-info a:hover {
-            text-decoration: underline;
-        }
-
-        .link-notes {
-            color: #777;
-
-            font-size: 11px;
-
-            margin-top: 3px;
-        }
-
-
-        /* =========================
-           السعر
-        ========================= */
-
-        .price {
-            font-weight: bold;
-
-            font-size: 13px;
-
-            text-align: center;
-
-            color: #198754;
-        }
-
-        .order {
-            font-size: 11px;
-
-            color: #777;
-
-            text-align: center;
-
-            margin-top: 3px;
-        }
-
-
-        /* =========================
-           الحالة
-        ========================= */
-
-        .status {
-            text-align: center;
-
-            font-size: 11px;
-
-            padding: 5px 6px;
-
-            border-radius: 12px;
-        }
-
-        .visited {
-            background: #d1e7dd;
-
-            color: #0f5132;
-        }
-
-        .not-visited {
-            background: #eee;
-
-            color: #666;
-        }
-
-        .no-user {
-            background: #fff3cd;
-
-            color: #664d03;
-        }
-
-
-        /* =========================
-           حذف
-        ========================= */
-
-        .delete-btn {
-            background: #dc3545;
-
-            color: white;
-
-            border: none;
-
-            padding: 6px 8px;
-
-            border-radius: 5px;
-
-            cursor: pointer;
-
-            font-size: 12px;
-        }
-
-        .empty {
-            text-align: center;
-
-            color: #777;
-
-            padding: 15px;
-        }
-
-        .loading {
-            text-align: center;
-
-            padding: 15px;
-
-            color: #777;
-        }
-
-
-        /* =========================
-           الموبايل
-        ========================= */
-
-        @media (max-width: 600px) {
-
-            .user-row {
-                flex-direction: column;
-            }
-
-            .form-row {
-                flex-direction: column;
-            }
-
-            .link-item {
-                grid-template-columns:
-                    35px
-                    1fr;
-            }
-
-            .status,
-            .delete-btn,
-            .price {
-                grid-column: 2;
-            }
-
-        }
-
-    </style>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إدارة اللينكات</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+    padding: 15px;
+}
+
+.container {
+    max-width: 900px;
+    margin: auto;
+}
+
+h1 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+/* المستخدم */
+.user-box {
+    background: white;
+    padding: 8px 10px;
+    border-radius: 7px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+}
+
+.user-box h2 {
+    font-size: 13px;
+    margin: 0 0 7px;
+}
+
+.user-row {
+    display: flex;
+    gap: 5px;
+}
+
+input,
+textarea {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 12px;
+    font-family: Arial;
+}
+
+.user-btn {
+    border: 0;
+    background: #0d6efd;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.logout-btn {
+    background: #6c757d;
+}
+
+.user-status {
+    margin-top: 7px;
+    padding: 6px 8px;
+    background: #f1f1f1;
+    border-radius: 5px;
+    font-size: 12px;
+}
+
+/* إضافة البيانات */
+.add-box {
+    background: white;
+    padding: 9px 10px;
+    border-radius: 7px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+}
+
+.add-title {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    user-select: none;
+}
+
+#addArrow {
+    font-size: 10px;
+    transition: transform .2s;
+}
+
+.add-title.open #addArrow {
+    transform: rotate(90deg);
+}
+
+.add-content {
+    display: none;
+    margin-top: 10px;
+}
+
+.add-content.open {
+    display: block;
+}
+
+.form-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+textarea {
+    min-height: 45px;
+    resize: vertical;
+}
+
+.add-btn {
+    width: 100%;
+    border: 0;
+    background: #198754;
+    color: white;
+    padding: 8px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+/* اللينكات */
+.links-box {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+}
+
+.links-box h2 {
+    font-size: 18px;
+    margin-top: 0;
+}
+
+.search-box {
+    margin-bottom: 12px;
+}
+
+.search-box input {
+    padding: 9px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: #0d6efd;
+}
+
+.link-item {
+    display: grid;
+    grid-template-columns: 45px 1fr 120px 60px;
+    gap: 8px;
+    align-items: center;
+    padding: 9px;
+    margin-bottom: 7px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #fafafa;
+}
+
+.number {
+    text-align: center;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.link-name {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.link-info a {
+    color: #0d6efd;
+    text-decoration: none;
+    font-size: 13px;
+    word-break: break-all;
+}
+
+.link-notes {
+    color: #777;
+    font-size: 11px;
+    margin-top: 3px;
+}
+
+.price {
+    color: #198754;
+    font-weight: bold;
+    text-align: center;
+    font-size: 13px;
+}
+
+.order {
+    color: #777;
+    text-align: center;
+    font-size: 11px;
+}
+
+.status {
+    text-align: center;
+    font-size: 11px;
+    padding: 5px 6px;
+    border-radius: 12px;
+}
+
+.visited {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.not-visited {
+    background: #eee;
+    color: #666;
+}
+
+.no-user {
+    background: #fff3cd;
+    color: #664d03;
+}
+
+.delete-btn {
+    border: 0;
+    background: #dc3545;
+    color: white;
+    padding: 6px 8px;
+    border-radius: 5px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.empty,
+.loading {
+    text-align: center;
+    color: #777;
+    padding: 20px;
+    font-size: 13px;
+}
+
+@media (max-width: 600px) {
+
+    .user-row {
+        flex-direction: column;
+    }
+
+    .form-row {
+        flex-direction: column;
+    }
+
+    .link-item {
+        grid-template-columns: 35px 1fr;
+    }
+
+    .status,
+    .delete-btn,
+    .price {
+        grid-column: 2;
+    }
+}
+</style>
 </head>
-
 
 <body>
 
-
 <div class="container">
-
 
     <h1>إدارة اللينكات</h1>
 
-
-    <!-- =========================
-         المستخدم
-    ========================= -->
-
+    <!-- المستخدم -->
     <div class="user-box">
 
-        <h2>
-            المستخدم الحالي
-        </h2>
+        <h2>المستخدم الحالي</h2>
 
         <div class="user-row">
 
             <input
                 type="text"
                 id="username"
-                placeholder="اكتب اسم المستخدم"
+                placeholder="اسم المستخدم"
             >
 
             <button
@@ -460,8 +306,9 @@
             </button>
 
             <button
-                class="logout-btn"
+                class="user-btn logout-btn"
                 id="logoutBtn"
+                style="display:none;"
             >
                 خروج
             </button>
@@ -478,115 +325,77 @@
     </div>
 
 
-
-    <!-- =========================
-         إدخال البيانات
-    ========================= -->
-
+    <!-- إضافة بيانات -->
     <div class="add-box">
-
-
-        <!-- العنوان والسهم -->
 
         <div
             class="add-title"
             id="addTitle"
         >
-
-            <span id="addArrow">
-                ▶
-            </span>
-
-            <span>
-                إدخال بيانات
-            </span>
-
+            <span id="addArrow">▶</span>
+            <span>إدخال بيانات</span>
         </div>
-
-
-
-        <!-- محتوى الإدخال -->
 
         <div
             class="add-content"
             id="addContent"
         >
 
-
             <div class="form-row">
 
                 <input
                     type="text"
                     id="name"
-                    placeholder="اسم اللينك - اختياري"
+                    placeholder="الاسم"
                 >
 
                 <input
                     type="url"
                     id="url"
-                    placeholder="اللينك - اختياري"
+                    placeholder="الرابط"
                 >
 
             </div>
-
 
             <div class="form-row">
 
                 <input
                     type="number"
                     id="price"
-                    placeholder="السعر - اختياري"
-                    step="any"
-                    min="0"
+                    placeholder="السعر"
                 >
 
                 <input
                     type="number"
                     id="order"
-                    placeholder="الترتيب - اختياري"
-                    step="1"
-                    min="1"
+                    placeholder="رقم الترتيب"
                 >
 
             </div>
 
+            <textarea
+                id="notes"
+                placeholder="ملاحظات"
+            ></textarea>
 
-            <div class="form-row">
-
-                <textarea
-                    id="notes"
-                    placeholder="ملاحظات - اختياري"
-                ></textarea>
-
-            </div>
-
+            <br><br>
 
             <button
                 class="add-btn"
                 id="addBtn"
             >
-                + إضافة
+                إضافة اللينك
             </button>
-
 
         </div>
 
     </div>
 
 
-
-    <!-- =========================
-         اللينكات
-    ========================= -->
-
+    <!-- اللينكات -->
     <div class="links-box">
 
-        <h2>
-            اللينكات
-        </h2>
-
-
-        <!-- البحث برقم الترتيب -->
+        <h2>اللينكات</h2>
 
         <div class="search-box">
 
@@ -594,38 +403,24 @@
                 type="number"
                 id="searchOrder"
                 placeholder="🔎 ابحث برقم الترتيب..."
-                min="1"
             >
 
         </div>
 
-
-        <div
-            id="linksContainer"
-            class="loading"
-        >
+        <div id="linksContainer">
             جاري تحميل اللينكات...
         </div>
 
     </div>
 
-
 </div>
-
 
 
 <script type="module">
 
-
-/* =========================
-   Firebase
-========================= */
-
 import {
     initializeApp
-}
-from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 
 import {
     getDatabase,
@@ -636,19 +431,14 @@ import {
     onValue,
     update,
     remove
-}
-from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 
-
-/* =========================
-   Firebase Config
-========================= */
+/* Firebase */
 
 const firebaseConfig = {
 
-    apiKey:
-        "AIzaSyAB4wO937rCwc0OTWeJlGgoaxErWOdjaJM",
+    apiKey: "AIzaSyAB4wO937rCwc0OTWeJlGgoaxErWOdjaJM",
 
     authDomain:
         "my-new-a6e9f.firebaseapp.com",
@@ -667,48 +457,25 @@ const firebaseConfig = {
 
     appId:
         "1:1034729064842:web:5b3d42fe7b5c0f3a3ae073"
-
 };
 
 
+const app = initializeApp(firebaseConfig);
 
-/* تشغيل Firebase */
-
-const app =
-    initializeApp(firebaseConfig);
-
-const db =
-    getDatabase(app);
+const db = getDatabase(app);
 
 
-
-/* =========================
-   المتغيرات
-========================= */
+/* البيانات */
 
 let links = {};
-
 let users = {};
-
 let currentUser = "";
 
+const linksRef = ref(db, "links");
+const usersRef = ref(db, "users");
 
 
-/* =========================
-   مراجع Firebase
-========================= */
-
-const linksRef =
-    ref(db, "links");
-
-const usersRef =
-    ref(db, "users");
-
-
-
-/* =========================
-   فتح وإغلاق إدخال البيانات
-========================= */
+/* فتح وإغلاق إضافة البيانات */
 
 const addTitle =
     document.getElementById("addTitle");
@@ -716,103 +483,72 @@ const addTitle =
 const addContent =
     document.getElementById("addContent");
 
+addTitle.addEventListener("click", () => {
 
-addTitle.addEventListener(
-    "click",
-    () => {
+    addContent.classList.toggle("open");
 
-        addContent.classList.toggle("open");
+    addTitle.classList.toggle("open");
 
-        addTitle.classList.toggle("open");
-
-    }
-);
+});
 
 
+/* تحميل اللينكات */
 
-/* =========================
-   تحميل اللينكات
-========================= */
+onValue(linksRef, (snapshot) => {
 
-onValue(
-    linksRef,
-    (snapshot) => {
+    links = snapshot.val() || {};
 
-        links =
-            snapshot.val() || {};
+    displayLinks();
 
-        displayLinks();
-
-    }
-);
+});
 
 
+/* تحميل المستخدمين */
 
-/* =========================
-   تحميل المستخدمين
-========================= */
+onValue(usersRef, (snapshot) => {
 
-onValue(
-    usersRef,
-    (snapshot) => {
+    users = snapshot.val() || {};
 
-        users =
-            snapshot.val() || {};
+    updateUserUI();
 
-        updateUserUI();
+    displayLinks();
 
-        displayLinks();
-
-    }
-);
+});
 
 
-
-/* =========================
-   دخول المستخدم
-========================= */
+/* تسجيل الدخول */
 
 document
 .getElementById("loginBtn")
-.addEventListener(
-    "click",
-    loginUser
-);
-
+.addEventListener("click", loginUser);
 
 
 async function loginUser() {
 
-    const input =
-        document.getElementById("username");
-
     const username =
-        input.value.trim();
+        document
+        .getElementById("username")
+        .value
+        .trim();
 
 
     if (!username) {
 
-        alert(
-            "اكتب اسم المستخدم أولاً"
-        );
+        alert("اكتب اسم المستخدم أولاً");
 
         return;
+
     }
 
 
     const userKey =
         makeUserKey(username);
 
-    currentUser =
-        userKey;
+    currentUser = userKey;
 
 
     const userRef =
-        ref(
-            db,
-            "users/" + userKey
-        );
-
+        ref(db, "users/" + userKey);
 
     const snapshot =
         await get(userRef);
@@ -820,13 +556,13 @@ async function loginUser() {
 
     if (!snapshot.exists()) {
 
-        await set(
-            userRef,
-            {
-                username: username,
-                visited: {}
-            }
-        );
+        await set(userRef, {
+
+            username: username,
+
+            visited: {}
+
+        });
 
     }
 
@@ -838,14 +574,11 @@ async function loginUser() {
 }
 
 
-
-/* =========================
-   تحديث بيانات المستخدم
-========================= */
+/* تحديث واجهة المستخدم */
 
 function updateUserUI() {
 
-    const input =
+    const usernameInput =
         document.getElementById("username");
 
     const loginBtn =
@@ -860,90 +593,75 @@ function updateUserUI() {
 
     if (!currentUser) {
 
-        input.disabled = false;
+        usernameInput.disabled = false;
 
-        loginBtn.style.display =
-            "block";
+        loginBtn.style.display = "block";
 
-        logoutBtn.style.display =
-            "none";
+        logoutBtn.style.display = "none";
 
         status.innerHTML =
             "لم يتم تسجيل أي مستخدم";
 
         return;
+
     }
+
+
+    usernameInput.disabled = true;
+
+    loginBtn.style.display = "none";
+
+    logoutBtn.style.display = "block";
 
 
     const user =
         users[currentUser];
 
 
-    input.value =
-        user?.username || "";
-
-    input.disabled = true;
-
-    loginBtn.style.display =
-        "none";
-
-    logoutBtn.style.display =
-        "block";
-
-
-    const visited =
-        user?.visited
-        ?
-        Object.keys(user.visited)
-        :
-        [];
-
-
-    if (visited.length === 0) {
+    if (!user) {
 
         status.innerHTML =
+            "تم تسجيل الدخول";
 
-            `المستخدم
-            <b>${escapeHTML(user.username)}</b>
-            لم يدخل على أي لينك حتى الآن.`;
+        return;
 
     }
 
-    else {
+
+    const visited =
+        user.visited || {};
+
+    const count =
+        Object.keys(visited).length;
+
+
+    if (count === 0) {
 
         status.innerHTML =
+            `المستخدم <b>${escapeHTML(user.username)}</b> لم يدخل على أي لينك حتى الآن.`;
 
-            `المستخدم
-            <b>${escapeHTML(user.username)}</b>
-            دخل على
-            <b>${visited.length}</b>
-            لينك.`;
+    } else {
+
+        status.innerHTML =
+            `المستخدم <b>${escapeHTML(user.username)}</b> دخل على <b>${count}</b> لينك.`;
 
     }
 
 }
 
 
-
-/* =========================
-   خروج
-========================= */
+/* تسجيل الخروج */
 
 document
 .getElementById("logoutBtn")
-.addEventListener(
-    "click",
-    logoutUser
-);
+.addEventListener("click", logoutUser);
 
 
 function logoutUser() {
 
     currentUser = "";
 
-    document
-    .getElementById("username")
-    .value = "";
+    document.getElementById("username").value = "";
 
     updateUserUI();
 
@@ -952,18 +670,11 @@ function logoutUser() {
 }
 
 
-
-/* =========================
-   إضافة لينك
-========================= */
+/* إضافة لينك */
 
 document
 .getElementById("addBtn")
-.addEventListener(
-    "click",
-    addLink
-);
-
+.addEventListener("click", addLink);
 
 
 async function addLink() {
@@ -989,7 +700,7 @@ async function addLink() {
         .trim();
 
 
-    const orderValue =
+    const order =
         document
         .getElementById("order")
         .value
@@ -1003,43 +714,27 @@ async function addLink() {
         .trim();
 
 
+    if (!name && !url && !price && !order && !notes) {
 
-    /* لازم يدخل أي بيانات */
-
-    if (
-        !name &&
-        !url &&
-        !price &&
-        !orderValue &&
-        !notes
-    ) {
-
-        alert(
-            "اكتب أي بيانات تريد إضافتها"
-        );
+        alert("اكتب أي بيانات تريد إضافتها");
 
         return;
 
     }
 
 
-
-    /* منع تكرار نفس اللينك */
+    /* منع تكرار الرابط */
 
     if (url) {
 
-        const duplicate =
+        const exists =
             Object.values(links)
-            .some(
-                item => item.url === url
-            );
+            .some(item => item.url === url);
 
 
-        if (duplicate) {
+        if (exists) {
 
-            alert(
-                "هذا اللينك موجود بالفعل"
-            );
+            alert("هذا اللينك موجود بالفعل");
 
             return;
 
@@ -1048,114 +743,81 @@ async function addLink() {
     }
 
 
-
-    /* تحويل السعر والترتيب لأرقام */
-
     const priceNumber =
-        price
-        ?
-        Number(price)
-        :
-        null;
+        price ? Number(price) : null;
 
 
     const orderNumber =
-        orderValue
-        ?
-        Number(orderValue)
-        :
-        null;
+        order ? Number(order) : null;
 
 
+    /*
+       كل عملية إضافة تعتبر Batch جديد
+    */
 
-    /* إنشاء ID */
+    const batchId =
+        "batch_" + Date.now();
+
 
     const newLinkRef =
         push(linksRef);
 
 
-    await set(
-        newLinkRef,
-        {
+    await set(newLinkRef, {
 
-            name: name,
+        name: name,
 
-            url: url,
+        url: url,
 
-            price: priceNumber,
+        price: priceNumber,
 
-            order: orderNumber,
+        order: orderNumber,
 
-            notes: notes,
+        notes: notes,
 
-            createdAt:
-                Date.now()
+        createdAt: Date.now(),
 
-        }
-    );
+        batchId: batchId
+
+    });
 
 
+    /* تنظيف الفورم */
 
-    /* تنظيف الحقول */
+    document.getElementById("name").value = "";
 
-    document
-    .getElementById("name")
-    .value = "";
+    document.getElementById("url").value = "";
 
-    document
-    .getElementById("url")
-    .value = "";
+    document.getElementById("price").value = "";
 
-    document
-    .getElementById("price")
-    .value = "";
+    document.getElementById("order").value = "";
 
-    document
-    .getElementById("order")
-    .value = "";
-
-    document
-    .getElementById("notes")
-    .value = "";
+    document.getElementById("notes").value = "";
 
 }
 
 
-
-/* =========================
-   البحث برقم الترتيب
-========================= */
+/* البحث */
 
 document
 .getElementById("searchOrder")
-.addEventListener(
-    "input",
-    displayLinks
-);
+.addEventListener("input", displayLinks);
 
 
-
-/* =========================
-   عرض اللينكات
-========================= */
+/* عرض اللينكات */
 
 function displayLinks() {
 
     const container =
-        document.getElementById(
-            "linksContainer"
-        );
+        document.getElementById("linksContainer");
 
 
     container.innerHTML = "";
 
 
-    let linkEntries =
+    let entries =
         Object.entries(links);
 
-
-
-    /* قيمة البحث */
 
     const searchValue =
         document
@@ -1164,440 +826,304 @@ function displayLinks() {
         .trim();
 
 
-
-    /* فلترة حسب رقم الترتيب */
-
     if (searchValue) {
 
-        linkEntries =
-            linkEntries.filter(
-                ([linkId, item]) => {
+        entries =
+            entries.filter(([id, item]) => {
 
-                    return (
-                        String(item.order)
-                        ===
-                        searchValue
-                    );
+                return String(item.order) === searchValue;
 
-                }
-            );
+            });
 
     }
 
 
+    /* ترتيب اللينكات */
 
-    /* الترتيب من الأصغر للأكبر */
+    entries.sort((a, b) => {
 
-    linkEntries.sort(
-        ([idA, itemA], [idB, itemB]) => {
+        const itemA = a[1];
+        const itemB = b[1];
 
-            const orderA =
-                itemA.order !== null &&
-                itemA.order !== undefined &&
-                itemA.order !== ""
-                ?
-                Number(itemA.order)
-                :
-                Infinity;
-
-
-            const orderB =
-                itemB.order !== null &&
-                itemB.order !== undefined &&
-                itemB.order !== ""
-                ?
-                Number(itemB.order)
-                :
-                Infinity;
+        const orderA =
+            itemA.order === null ||
+            itemA.order === undefined ||
+            itemA.order === ""
+                ? Infinity
+                : Number(itemA.order);
 
 
-            if (orderA !== orderB) {
+        const orderB =
+            itemB.order === null ||
+            itemB.order === undefined ||
+            itemB.order === ""
+                ? Infinity
+                : Number(itemB.order);
 
-                return orderA - orderB;
 
-            }
+        if (orderA !== orderB) {
 
-
-            return (
-                Number(itemA.createdAt || 0)
-                -
-                Number(itemB.createdAt || 0)
-            );
+            return orderA - orderB;
 
         }
-    );
 
 
+        return (
+            Number(itemA.createdAt || 0) -
+            Number(itemB.createdAt || 0)
+        );
 
-    /* لا توجد نتائج */
-
-    if (linkEntries.length === 0) {
-
-        const searchText =
-            searchValue
-            ?
-            `لا يوجد لينك ترتيبه ${escapeHTML(searchValue)}`
-            :
-            "لا توجد لينكات حالياً";
+    });
 
 
-        container.innerHTML =
+    if (entries.length === 0) {
 
-            `<div class="empty">
+        container.innerHTML = searchValue
 
-                ${searchText}
+            ? `<div class="empty">
+                لا يوجد لينك ترتيبه ${escapeHTML(searchValue)}
+              </div>`
 
-            </div>`;
+            : `<div class="empty">
+                لا توجد لينكات حالياً
+              </div>`;
 
         return;
 
     }
 
 
+    entries.forEach(([linkId, item], index) => {
 
-    /* عرض اللينكات */
+        const div =
+            document.createElement("div");
 
-    linkEntries.forEach(
-        ([linkId, item], index) => {
-
-
-            let statusHTML;
+        div.className = "link-item";
 
 
-
-            /* بدون مستخدم */
-
-            if (!currentUser) {
-
-                statusHTML =
-
-                    `<div class="status no-user">
-
-                        👤 بدون تسجيل دخول
-
-                    </div>`;
-
-            }
-
-            else {
-
-                const user =
-                    users[currentUser];
+        const user =
+            currentUser
+                ? users[currentUser]
+                : null;
 
 
-                const visited =
-                    user
-                    &&
-                    user.visited
-                    &&
-                    user.visited[linkId];
+        const visited =
+            user &&
+            user.visited &&
+            user.visited[linkId];
 
 
-                if (visited) {
+        let statusHTML;
 
-                    statusHTML =
 
-                        `<div class="status visited">
+        if (!currentUser) {
 
-                            🟢 تم الدخول
+            statusHTML =
+                `<div class="status no-user">
+                    👤 بدون تسجيل دخول
+                 </div>`;
 
-                        </div>`;
+        }
 
+        else if (visited) {
+
+            statusHTML =
+                `<div class="status visited">
+                    🟢 تم الدخول
+                 </div>`;
+
+        }
+
+        else {
+
+            statusHTML =
+                `<div class="status not-visited">
+                    ⚪ لم يتم الدخول
+                 </div>`;
+
+        }
+
+
+        let infoHTML = "";
+
+
+        if (item.name) {
+
+            infoHTML +=
+                `<div class="link-name">
+                    ${escapeHTML(item.name)}
+                 </div>`;
+
+        }
+
+
+        if (item.url) {
+
+            infoHTML +=
+                `<div class="link-info">
+                    <a href="${escapeHTML(item.url)}"
+                       target="_blank"
+                       rel="noopener"
+                       data-link-id="${linkId}">
+                       ${escapeHTML(item.url)}
+                    </a>
+                 </div>`;
+
+        }
+
+
+        if (item.notes) {
+
+            infoHTML +=
+                `<div class="link-notes">
+                    ${escapeHTML(item.notes)}
+                 </div>`;
+
+        }
+
+
+        div.innerHTML = `
+
+            <div class="number">
+                ${index + 1}
+            </div>
+
+            <div>
+                ${infoHTML}
+            </div>
+
+            <div>
+
+                ${
+                    item.price !== null &&
+                    item.price !== undefined
+                        ? `<div class="price">
+                            ${escapeHTML(item.price)}
+                           </div>`
+                        : ""
                 }
 
-                else {
-
-                    statusHTML =
-
-                        `<div class="status not-visited">
-
-                            ⚪ لم يتم الدخول
-
-                        </div>`;
-
+                ${
+                    item.order !== null &&
+                    item.order !== undefined
+                        ? `<div class="order">
+                            ترتيب: ${escapeHTML(item.order)}
+                           </div>`
+                        : ""
                 }
-
-            }
-
-
-
-            const div =
-                document.createElement("div");
-
-
-            div.className =
-                "link-item";
-
-
-
-            div.innerHTML = `
-
-
-                <div class="number">
-
-                    ${index + 1}
-
-                </div>
-
-
-
-                <div class="link-info">
-
-
-                    ${
-                        item.name
-
-                        ?
-
-                        `<div class="link-name">
-
-                            ${escapeHTML(item.name)}
-
-                        </div>`
-
-                        :
-
-                        ""
-                    }
-
-
-
-                    ${
-                        item.url
-
-                        ?
-
-                        `<a
-                            href="${escapeHTML(item.url)}"
-                            target="_blank"
-                            data-link-id="${linkId}"
-                        >
-
-                            ${escapeHTML(item.url)}
-
-                        </a>`
-
-                        :
-
-                        ""
-                    }
-
-
-
-                    ${
-                        item.notes
-
-                        ?
-
-                        `<div class="link-notes">
-
-                            ${escapeHTML(item.notes)}
-
-                        </div>`
-
-                        :
-
-                        ""
-                    }
-
-
-                </div>
-
-
-
-                <div>
-
-                    ${
-                        item.price !== null &&
-                        item.price !== undefined &&
-                        item.price !== ""
-
-                        ?
-
-                        `<div class="price">
-
-                            💰 ${escapeHTML(String(item.price))}
-
-                        </div>`
-
-                        :
-
-                        ""
-                    }
-
-
-                    ${
-                        item.order !== null &&
-                        item.order !== undefined &&
-                        item.order !== ""
-
-                        ?
-
-                        `<div class="order">
-
-                            ترتيب: ${escapeHTML(String(item.order))}
-
-                        </div>`
-
-                        :
-
-                        ""
-                    }
-
-                </div>
-
-
 
                 ${statusHTML}
 
+            </div>
 
+            <div>
 
                 <button
                     class="delete-btn"
                     data-delete-id="${linkId}"
                 >
-
                     حذف
-
                 </button>
 
-            `;
+            </div>
+        `;
 
 
+        container.appendChild(div);
 
-            /* الضغط على اللينك */
-
-            const linkElement =
-                div.querySelector(
-                    "[data-link-id]"
-                );
+    });
 
 
-            if (linkElement) {
+    /* تسجيل دخول المستخدم عند الضغط على الرابط */
 
-                linkElement.addEventListener(
-                    "click",
-                    () => {
+    container
+    .querySelectorAll("a[data-link-id]")
+    .forEach(link => {
 
-                        markVisited(linkId);
+        link.addEventListener("click", () => {
 
-                    }
-                );
-
-            }
-
-
-
-            /* زر الحذف */
-
-            const deleteButton =
-                div.querySelector(
-                    "[data-delete-id]"
-                );
-
-
-            deleteButton.addEventListener(
-                "click",
-                () => {
-
-                    deleteLink(linkId);
-
-                }
+            markVisited(
+                link.dataset.linkId
             );
 
+        });
 
-            container.appendChild(div);
+    });
 
-        }
-    );
+
+    /* حذف */
+
+    container
+    .querySelectorAll("[data-delete-id]")
+    .forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            deleteLink(
+                button.dataset.deleteId
+            );
+
+        });
+
+    });
 
 }
 
 
-
-/* =========================
-   تسجيل دخول المستخدم على اللينك
-========================= */
+/* تسجيل زيارة */
 
 async function markVisited(linkId) {
 
-    if (!currentUser) {
-
-        return;
-
-    }
+    if (!currentUser) return;
 
 
     const visitedRef =
         ref(
             db,
-            "users/"
-            + currentUser
-            + "/visited/"
-            + linkId
+            "users/" +
+            currentUser +
+            "/visited/" +
+            linkId
         );
 
 
-    await set(
-        visitedRef,
-        true
-    );
+    await set(visitedRef, true);
 
 }
 
 
-
-/* =========================
-   حذف لينك
-========================= */
+/* حذف لينك */
 
 async function deleteLink(linkId) {
 
-    if (
-        !confirm(
-            "هل تريد حذف هذا اللينك؟"
-        )
-    ) {
-
-        return;
-
-    }
+    const confirmed =
+        confirm("هل تريد حذف هذا اللينك؟");
 
 
-    const linkRef =
-        ref(
-            db,
-            "links/" + linkId
-        );
+    if (!confirmed) return;
 
 
-    await remove(linkRef);
+    await remove(
+        ref(db, "links/" + linkId)
+    );
 
-
-
-    /* حذف تسجيل اللينك من جميع المستخدمين */
 
     const updates = {};
 
 
-    Object.keys(users)
-    .forEach(
-        username => {
+    Object.keys(users).forEach(userId => {
 
-            updates[
-                "users/"
-                + username
-                + "/visited/"
-                + linkId
-            ] = null;
+        updates[
+            "users/" +
+            userId +
+            "/visited/" +
+            linkId
+        ] = null;
 
-        }
-    );
+    });
 
 
-    if (
-        Object.keys(updates).length
-    ) {
+    if (Object.keys(updates).length) {
 
         await update(
             ref(db),
@@ -1609,36 +1135,20 @@ async function deleteLink(linkId) {
 }
 
 
-
-/* =========================
-   Firebase Key للمستخدم
-========================= */
+/* تحويل اسم المستخدم لمفتاح Firebase */
 
 function makeUserKey(username) {
 
     return username
-
         .trim()
-
         .toLowerCase()
-
-        .replace(
-            /[.#$[\]/]/g,
-            "_"
-        )
-
-        .replace(
-            /\s+/g,
-            "_"
-        );
+        .replace(/[.#$[\]/]/g, "_")
+        .replace(/\s+/g, "_");
 
 }
 
 
-
-/* =========================
-   حماية HTML
-========================= */
+/* حماية النص */
 
 function escapeHTML(text) {
 
@@ -1646,17 +1156,14 @@ function escapeHTML(text) {
         document.createElement("div");
 
     div.textContent =
-        text;
+        String(text ?? "");
 
     return div.innerHTML;
 
 }
 
-
 </script>
 
-
 </body>
-
 </html>
 ```
