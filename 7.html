@@ -9,7 +9,7 @@
 <meta name="viewport"
       content="width=device-width, initial-scale=1.0">
 
-<title>آخر مستخدم</title>
+<title>آخر ظهور المستخدمين</title>
 
 <style>
 
@@ -25,61 +25,172 @@ body {
 }
 
 .container {
-    max-width: 500px;
-    margin: 50px auto;
+    max-width: 750px;
+    margin: 30px auto;
 }
 
 .box {
     background: white;
-    padding: 25px;
+    padding: 20px;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0,0,0,.1);
-    text-align: center;
 }
 
 h1 {
     margin-top: 0;
-    font-size: 24px;
+    text-align: center;
+    font-size: 23px;
 }
 
-.user {
-    margin-top: 20px;
-    padding: 20px;
+
+/* فلتر التاريخ */
+
+.filter-box {
     background: #f8f9fa;
+    padding: 12px;
     border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.filter-title {
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+.date-row {
+    display: flex;
+    gap: 7px;
+}
+
+.date-row input {
+    flex: 1;
+    padding: 9px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.clear-btn {
+    border: 0;
+    background: #6c757d;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+
+/* عدد المستخدمين */
+
+.count {
+    background: #e7f1ff;
+    color: #084298;
+    padding: 9px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    text-align: center;
+}
+
+
+/* المستخدم */
+
+.user {
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 8px;
+
+    display: grid;
+    grid-template-columns: 45px 1fr;
+    gap: 10px;
+    align-items: center;
+}
+
+.number {
+    width: 35px;
+    height: 35px;
+
+    background: #0d6efd;
+    color: white;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-weight: bold;
 }
 
 .username {
-    font-size: 22px;
+    font-size: 16px;
     font-weight: bold;
     color: #0d6efd;
 }
 
 .time {
-    margin-top: 10px;
+    margin-top: 5px;
     color: #777;
-    font-size: 14px;
+    font-size: 12px;
+}
+
+.time-date {
+    color: #555;
+    font-weight: bold;
 }
 
 .no-user {
     color: #777;
-    padding: 20px;
+    padding: 30px;
+    text-align: center;
 }
 
 .refresh-btn {
-    margin-top: 20px;
+    width: 100%;
+    margin-top: 15px;
+
     border: 0;
     background: #198754;
     color: white;
-    padding: 10px 20px;
+
+    padding: 10px;
+
     border-radius: 6px;
     cursor: pointer;
+
     font-size: 14px;
+}
+
+.refresh-btn:hover {
+    background: #157347;
+}
+
+
+/* موبايل */
+
+@media (max-width: 600px) {
+
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        margin: 10px auto;
+    }
+
+    .date-row {
+        flex-direction: column;
+    }
+
 }
 
 </style>
 
 </head>
+
 
 <body>
 
@@ -87,11 +198,58 @@ h1 {
 
     <div class="box">
 
-        <h1>👤 آخر مستخدم سجل دخول</h1>
+        <h1>
+            👤 آخر ظهور المستخدمين
+        </h1>
+
+
+        <!-- اختيار التاريخ -->
+
+        <div class="filter-box">
+
+            <div class="filter-title">
+                تحديد التاريخ
+            </div>
+
+            <div class="date-row">
+
+                <input
+                    type="date"
+                    id="dateFilter"
+                >
+
+                <button
+                    class="clear-btn"
+                    id="clearDate"
+                >
+                    الكل
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- عدد المستخدمين -->
+
+        <div
+            class="count"
+            id="userCount"
+        >
+            جاري تحميل المستخدمين...
+        </div>
+
+
+        <!-- المستخدمين -->
 
         <div id="userContainer">
-            جاري تحميل المستخدم...
+
+            جاري تحميل المستخدمين...
+
         </div>
+
+
+        <!-- تحديث -->
 
         <button
             class="refresh-btn"
@@ -111,6 +269,7 @@ import {
     initializeApp
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 
+
 import {
     getDatabase,
     ref,
@@ -118,11 +277,14 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 
-/* Firebase */
+/* =========================
+   Firebase
+========================= */
 
 const firebaseConfig = {
 
-    apiKey: "AIzaSyAB4wO937rCwc0OTWeJlGgoaxErWOdjaJM",
+    apiKey:
+        "AIzaSyAB4wO937rCwc0OTWeJlGgoaxErWOdjaJM",
 
     authDomain:
         "my-new-a6e9f.firebaseapp.com",
@@ -141,31 +303,186 @@ const firebaseConfig = {
 
     appId:
         "1:1034729064842:web:5b3d42fe7b5c0f3a3ae073"
+
 };
 
 
 const app =
     initializeApp(firebaseConfig);
 
+
 const db =
     getDatabase(app);
 
 
-/* مسار آخر مستخدم */
+/* =========================
+   المتغيرات
+========================= */
 
-const lastUserRef =
-    ref(db, "lastUser");
+let loginHistory = {};
 
 
-/* قراءة آخر مستخدم */
+/* =========================
+   تحميل سجل الدخول
+========================= */
 
-onValue(lastUserRef, (snapshot) => {
+const loginHistoryRef =
+    ref(db, "loginHistory");
+
+
+onValue(
+    loginHistoryRef,
+    snapshot => {
+
+        loginHistory =
+            snapshot.val() || {};
+
+        displayUsers();
+
+    },
+    error => {
+
+        console.error(
+            "Firebase Error:",
+            error
+        );
+
+        document.getElementById(
+            "userContainer"
+        ).innerHTML = `
+            <div class="no-user">
+                حدث خطأ أثناء تحميل المستخدمين
+            </div>
+        `;
+
+    }
+);
+
+
+/* =========================
+   اختيار التاريخ
+========================= */
+
+document
+    .getElementById("dateFilter")
+    .addEventListener(
+        "change",
+        displayUsers
+    );
+
+
+/* =========================
+   زر الكل
+========================= */
+
+document
+    .getElementById("clearDate")
+    .addEventListener(
+        "click",
+        () => {
+
+            document
+                .getElementById("dateFilter")
+                .value = "";
+
+            displayUsers();
+
+        }
+    );
+
+
+/* =========================
+   تحويل التاريخ إلى YYYY-MM-DD
+========================= */
+
+function getLocalDate(timestamp) {
+
+    const date =
+        new Date(
+            Number(timestamp)
+        );
+
+    const year =
+        date.getFullYear();
+
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(2, "0");
+
+    const day =
+        String(
+            date.getDate()
+        ).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+
+}
+
+
+/* =========================
+   عرض المستخدمين
+========================= */
+
+function displayUsers() {
 
     const container =
-        document.getElementById("userContainer");
+        document.getElementById(
+            "userContainer"
+        );
 
 
-    if (!snapshot.exists()) {
+    const countElement =
+        document.getElementById(
+            "userCount"
+        );
+
+
+    container.innerHTML = "";
+
+
+    const selectedDate =
+        document
+            .getElementById("dateFilter")
+            .value;
+
+
+    /*
+       تحويل Firebase إلى Array
+    */
+
+    let records =
+        Object.values(
+            loginHistory
+        );
+
+
+    /*
+       إزالة البيانات غير الصحيحة
+    */
+
+    records =
+        records.filter(
+            record => {
+
+                return (
+                    record &&
+                    record.username &&
+                    record.loginTime
+                );
+
+            }
+        );
+
+
+    /*
+       لو مفيش تسجيلات
+    */
+
+    if (records.length === 0) {
+
+        countElement.innerHTML =
+            "عدد المستخدمين: <b>0</b>";
 
         container.innerHTML = `
             <div class="no-user">
@@ -174,70 +491,354 @@ onValue(lastUserRef, (snapshot) => {
         `;
 
         return;
-    }
-
-
-    const user =
-        snapshot.val();
-
-
-    const username =
-        user.username || "غير معروف";
-
-
-    const loginTime =
-        user.loginTime || null;
-
-
-    let timeHTML = "";
-
-
-    if (loginTime) {
-
-        const date =
-            new Date(loginTime);
-
-
-        timeHTML = `
-            <div class="time">
-                آخر تسجيل دخول:
-                ${date.toLocaleString("ar-EG")}
-            </div>
-        `;
 
     }
 
 
-    container.innerHTML = `
+    /*
+       ترتيب كل تسجيلات الدخول
+       من الأحدث إلى الأقدم
+    */
 
-        <div class="user">
+    records.sort(
+        (a, b) => {
 
-            <div>
-                المستخدم الحالي
-            </div>
+            return (
+                Number(b.loginTime) -
+                Number(a.loginTime)
+            );
 
-            <div class="username">
-                ${escapeHTML(username)}
-            </div>
-
-            ${timeHTML}
-
-        </div>
-
-    `;
-
-});
+        }
+    );
 
 
-/* حماية النص */
+    /*
+       ==================================
+       لو تم اختيار تاريخ
+       ==================================
+    */
+
+    if (selectedDate) {
+
+        /*
+           نأخذ فقط تسجيلات الدخول
+           الخاصة بهذا اليوم
+        */
+
+        records =
+            records.filter(
+                record => {
+
+                    return (
+                        getLocalDate(
+                            record.loginTime
+                        ) === selectedDate
+                    );
+
+                }
+            );
+
+
+        /*
+           الآن نأخذ آخر تسجيل
+           لكل مستخدم في هذا اليوم
+        */
+
+        const usersByDate = {};
+
+
+        records.forEach(
+            record => {
+
+                const userKey =
+                    record.userKey ||
+                    makeUserKey(
+                        record.username
+                    );
+
+
+                /*
+                   لأن records مرتبة
+                   من الأحدث للأقدم
+
+                   أول تسجيل للمستخدم
+                   = آخر تسجيل له في اليوم
+                */
+
+                if (
+                    !usersByDate[userKey]
+                ) {
+
+                    usersByDate[userKey] =
+                        record;
+
+                }
+
+            }
+        );
+
+
+        let users =
+            Object.values(
+                usersByDate
+            );
+
+
+        /*
+           ترتيب الأحدث أولاً
+        */
+
+        users.sort(
+            (a, b) => {
+
+                return (
+                    Number(b.loginTime) -
+                    Number(a.loginTime)
+                );
+
+            }
+        );
+
+
+        countElement.innerHTML =
+            `عدد المستخدمين في هذا اليوم:
+             <b>${users.length}</b>`;
+
+
+        if (users.length === 0) {
+
+            container.innerHTML = `
+                <div class="no-user">
+                    لا يوجد مستخدمون سجلوا الدخول في هذا التاريخ
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        renderUsers(users);
+
+        return;
+
+    }
+
+
+    /*
+       ==================================
+       بدون اختيار تاريخ
+       ==================================
+    */
+
+    /*
+       نأخذ آخر تسجيل دخول
+       لكل مستخدم على الإطلاق
+    */
+
+    const latestUsers = {};
+
+
+    records.forEach(
+        record => {
+
+            const userKey =
+                record.userKey ||
+                makeUserKey(
+                    record.username
+                );
+
+
+            /*
+               بما أن البيانات مرتبة
+               من الأحدث للأقدم
+
+               أول تسجيل للمستخدم
+               هو آخر ظهور له
+            */
+
+            if (
+                !latestUsers[userKey]
+            ) {
+
+                latestUsers[userKey] =
+                    record;
+
+            }
+
+        }
+    );
+
+
+    let users =
+        Object.values(
+            latestUsers
+        );
+
+
+    /*
+       ترتيب المستخدمين
+       من آخر واحد سجل دخول
+       إلى الأقدم
+    */
+
+    users.sort(
+        (a, b) => {
+
+            return (
+                Number(b.loginTime) -
+                Number(a.loginTime)
+            );
+
+        }
+    );
+
+
+    countElement.innerHTML =
+        `عدد المستخدمين:
+         <b>${users.length}</b>`;
+
+
+    renderUsers(users);
+
+}
+
+
+/* =========================
+   إنشاء المستخدمين في الصفحة
+========================= */
+
+function renderUsers(users) {
+
+    const container =
+        document.getElementById(
+            "userContainer"
+        );
+
+
+    container.innerHTML = "";
+
+
+    users.forEach(
+        (user, index) => {
+
+            const date =
+                new Date(
+                    Number(
+                        user.loginTime
+                    )
+                );
+
+
+            const onlyDate =
+                date.toLocaleDateString(
+                    "ar-EG"
+                );
+
+
+            const onlyTime =
+                date.toLocaleTimeString(
+                    "ar-EG"
+                );
+
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+
+            div.className =
+                "user";
+
+
+            div.innerHTML = `
+
+                <div class="number">
+                    ${index + 1}
+                </div>
+
+
+                <div>
+
+                    <div class="username">
+                        ${escapeHTML(
+                            user.username
+                        )}
+                    </div>
+
+
+                    <div class="time">
+
+                        آخر تسجيل دخول:
+
+                        <span class="time-date">
+                            ${escapeHTML(
+                                onlyDate
+                            )}
+                        </span>
+
+                        -
+
+                        ${escapeHTML(
+                            onlyTime
+                        )}
+
+                    </div>
+
+                </div>
+
+            `;
+
+
+            container.appendChild(
+                div
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================
+   إنشاء User Key
+========================= */
+
+function makeUserKey(username) {
+
+    return username
+        .trim()
+        .toLowerCase()
+        .replace(
+            /[.#$[\]/]/g,
+            "_"
+        )
+        .replace(
+            /\s+/g,
+            "_"
+        );
+
+}
+
+
+/* =========================
+   حماية HTML
+========================= */
 
 function escapeHTML(text) {
 
     const div =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     div.textContent =
-        String(text ?? "");
+        String(
+            text ?? ""
+        );
+
 
     return div.innerHTML;
 
