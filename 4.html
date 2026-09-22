@@ -9,64 +9,37 @@
     border: 1px solid #dbeafe;
     border-radius: 14px;
     box-shadow: 0 3px 12px rgba(0, 80, 160, 0.08);
-
-    /* لو الشاشة صغيرة يسمح بالتمرير الأفقي */
     overflow-x: auto;
     scrollbar-width: thin;
 }
 
-/* شكل كل رابط */
 .page-links a {
     flex: 0 0 auto;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
     padding: 10px 15px;
     min-height: 42px;
-
     background: #ffffff;
     color: #1769d1;
-
     border: 1px solid #cfe2ff;
     border-radius: 10px;
-
     text-decoration: none;
     font-family: Arial, sans-serif;
     font-size: 14px;
     font-weight: 600;
-
     white-space: nowrap;
-
-    transition:
-        background 0.2s ease,
-        color 0.2s ease,
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
 }
 
-/* عند مرور الماوس */
 .page-links a:hover {
     background: #eaf3ff;
     color: #075bb5;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.12);
 }
 
-/* الصفحة الحالية */
-.page-links a.active {
-    background: #1677e8;
-    color: #ffffff;
-    border-color: #1677e8;
-    box-shadow: 0 4px 10px rgba(22, 119, 232, 0.25);
-}
-
-/* الموبايل */
 @media (max-width: 700px) {
     .page-links {
         gap: 6px;
         padding: 8px;
-        border-radius: 12px;
     }
 
     .page-links a {
@@ -75,7 +48,6 @@
     }
 }
 </style>
-
 
 <nav class="page-links">
 
@@ -108,6 +80,7 @@
     </a>
 
 </nav>
+
 
 <html lang="ar" dir="rtl">
 
@@ -146,7 +119,9 @@ h1 {
     margin-bottom: 15px;
 }
 
-/* صندوق الإدخال */
+/* =========================
+   صندوق الإضافة
+========================= */
 
 .form-box {
     background: white;
@@ -168,16 +143,19 @@ h1 {
     margin-bottom: 7px;
 }
 
-input {
+input,
+select {
     width: 100%;
     padding: 9px 10px;
     border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 13px;
     font-family: Arial;
+    background: white;
 }
 
-input:focus {
+input:focus,
+select:focus {
     outline: none;
     border-color: #0d6efd;
 }
@@ -197,7 +175,9 @@ input:focus {
     opacity: .9;
 }
 
-/* صندوق البيانات */
+/* =========================
+   المستخدمين
+========================= */
 
 .users-box {
     background: white;
@@ -211,8 +191,6 @@ input:focus {
     font-weight: bold;
     margin-bottom: 12px;
 }
-
-/* المستخدم */
 
 .user-card {
     border: 1px solid #ddd;
@@ -251,7 +229,14 @@ input:focus {
     color: #0d6efd;
 }
 
-/* الأزرار */
+.balance-value {
+    color: #198754;
+    font-size: 15px;
+}
+
+/* =========================
+   الأزرار
+========================= */
 
 .actions {
     display: flex;
@@ -261,6 +246,7 @@ input:focus {
 
 .edit-btn,
 .delete-btn,
+.transfer-btn,
 .save-btn,
 .cancel-btn {
     border: 0;
@@ -279,6 +265,10 @@ input:focus {
     background: #dc3545;
 }
 
+.transfer-btn {
+    background: #fd7e14;
+}
+
 .save-btn {
     background: #198754;
 }
@@ -287,7 +277,17 @@ input:focus {
     background: #6c757d;
 }
 
-/* وضع التعديل */
+.edit-btn:hover,
+.delete-btn:hover,
+.transfer-btn:hover,
+.save-btn:hover,
+.cancel-btn:hover {
+    opacity: .9;
+}
+
+/* =========================
+   التعديل
+========================= */
 
 .edit-form {
     display: grid;
@@ -305,6 +305,66 @@ input:focus {
     gap: 6px;
 }
 
+/* =========================
+   التحويل
+========================= */
+
+.transfer-box {
+    margin-top: 10px;
+    background: white;
+    border: 1px solid #ffd8a8;
+    border-radius: 7px;
+    padding: 10px;
+}
+
+.transfer-title {
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #d66a00;
+}
+
+.transfer-row {
+    display: flex;
+    gap: 7px;
+    margin-bottom: 7px;
+}
+
+.transfer-info {
+    font-size: 11px;
+    color: #777;
+    margin-bottom: 7px;
+}
+
+.transfer-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.confirm-transfer-btn {
+    flex: 1;
+    border: 0;
+    background: #fd7e14;
+    color: white;
+    padding: 8px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.cancel-transfer-btn {
+    flex: 1;
+    border: 0;
+    background: #6c757d;
+    color: white;
+    padding: 8px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* =========================
+   عام
+========================= */
+
 .empty {
     text-align: center;
     color: #777;
@@ -317,6 +377,10 @@ input:focus {
     color: #777;
     padding: 20px;
 }
+
+/* =========================
+   موبايل
+========================= */
 
 @media (max-width: 600px) {
 
@@ -341,10 +405,18 @@ input:focus {
     }
 
     .edit-btn,
-    .delete-btn {
+    .delete-btn,
+    .transfer-btn {
         width: 100%;
     }
 
+    .transfer-row {
+        flex-direction: column;
+    }
+
+    .transfer-actions {
+        flex-direction: column;
+    }
 }
 
 </style>
@@ -354,13 +426,14 @@ input:focus {
 
 <body>
 
-
 <div class="container">
 
     <h1>المحفظة</h1>
 
 
-    <!-- إضافة مستخدم -->
+    <!-- =========================
+         إضافة مستخدم
+    ========================== -->
 
     <div class="form-box">
 
@@ -403,6 +476,19 @@ input:focus {
         </div>
 
 
+        <div class="form-row">
+
+            <input
+                type="number"
+                id="balance"
+                placeholder="الرصيد"
+                step="0.01"
+                min="0"
+            >
+
+        </div>
+
+
         <button
             class="add-btn"
             id="addBtn"
@@ -413,7 +499,9 @@ input:focus {
     </div>
 
 
-    <!-- المستخدمين -->
+    <!-- =========================
+         المستخدمين
+    ========================== -->
 
     <div class="users-box">
 
@@ -438,7 +526,9 @@ input:focus {
 <script type="module">
 
 
-/* Firebase */
+/* =========================
+   Firebase
+========================= */
 
 import {
     initializeApp
@@ -456,7 +546,9 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 
-/* إعداد Firebase */
+/* =========================
+   Firebase Config
+========================= */
 
 const firebaseConfig = {
 
@@ -492,7 +584,7 @@ const db =
     getDatabase(app);
 
 
-/* مكان بيانات المحفظة */
+/* مكان البيانات */
 
 const walletsRef =
     ref(db, "wallets");
@@ -501,7 +593,9 @@ const walletsRef =
 let wallets = {};
 
 
-/* تحميل البيانات تلقائياً */
+/* =========================
+   تحميل البيانات
+========================= */
 
 onValue(walletsRef, (snapshot) => {
 
@@ -513,12 +607,18 @@ onValue(walletsRef, (snapshot) => {
 });
 
 
-/* إضافة مستخدم */
+/* =========================
+   زر الإضافة
+========================= */
 
 document
-.getElementById("addBtn")
-.addEventListener("click", addUser);
+    .getElementById("addBtn")
+    .addEventListener("click", addUser);
 
+
+/* =========================
+   إضافة مستخدم
+========================= */
 
 async function addUser() {
 
@@ -550,16 +650,28 @@ async function addUser() {
         .trim();
 
 
-    /* التأكد من البيانات */
+    const balanceValue =
+        document
+        .getElementById("balance")
+        .value
+        .trim();
+
+
+    const balance =
+        Number(balanceValue);
+
 
     if (
         !username ||
         !userEmail ||
         !walletNumber ||
-        !walletEmail
+        !walletEmail ||
+        balanceValue === "" ||
+        isNaN(balance) ||
+        balance < 0
     ) {
 
-        alert("اكتب جميع البيانات أولاً");
+        alert("اكتب جميع البيانات بشكل صحيح");
 
         return;
 
@@ -585,7 +697,7 @@ async function addUser() {
     }
 
 
-    /* إنشاء مستخدم جديد */
+    /* إنشاء مستخدم */
 
     const newUserRef =
         push(walletsRef);
@@ -600,6 +712,8 @@ async function addUser() {
         walletNumber: walletNumber,
 
         walletEmail: walletEmail,
+
+        balance: balance,
 
         createdAt: Date.now()
 
@@ -616,10 +730,14 @@ async function addUser() {
 
     document.getElementById("walletEmail").value = "";
 
+    document.getElementById("balance").value = "";
+
 }
 
 
-/* عرض المستخدمين */
+/* =========================
+   عرض المستخدمين
+========================= */
 
 function displayUsers() {
 
@@ -639,9 +757,7 @@ function displayUsers() {
         container.innerHTML = `
 
             <div class="empty">
-
                 لا توجد بيانات مستخدمين حالياً
-
             </div>
 
         `;
@@ -732,6 +848,19 @@ function displayUsers() {
 
                 </div>
 
+
+                <div class="info">
+
+                    <div class="info-label">
+                        الرصيد
+                    </div>
+
+                    <div class="info-value balance-value">
+                        ${formatBalance(user.balance)}
+                    </div>
+
+                </div>
+
             </div>
 
 
@@ -742,6 +871,14 @@ function displayUsers() {
                     data-edit="${id}"
                 >
                     تعديل
+                </button>
+
+
+                <button
+                    class="transfer-btn"
+                    data-transfer="${id}"
+                >
+                    تحويل رصيد
                 </button>
 
 
@@ -762,7 +899,7 @@ function displayUsers() {
     });
 
 
-    /* زر التعديل */
+    /* أزرار التعديل */
 
     container
     .querySelectorAll("[data-edit]")
@@ -779,7 +916,24 @@ function displayUsers() {
     });
 
 
-    /* زر الحذف */
+    /* أزرار التحويل */
+
+    container
+    .querySelectorAll("[data-transfer]")
+    .forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            showTransferForm(
+                button.dataset.transfer
+            );
+
+        });
+
+    });
+
+
+    /* أزرار الحذف */
 
     container
     .querySelectorAll("[data-delete]")
@@ -798,7 +952,378 @@ function displayUsers() {
 }
 
 
-/* تعديل المستخدم */
+/* =========================
+   نموذج تحويل الرصيد
+========================= */
+
+function showTransferForm(fromId) {
+
+    const card =
+        document.querySelector(
+            `.user-card[data-id="${fromId}"]`
+        );
+
+
+    if (!card) return;
+
+
+    const fromUser =
+        wallets[fromId];
+
+
+    if (!fromUser) return;
+
+
+    /* لو نموذج التحويل موجود بالفعل */
+
+    if (
+        card.querySelector(".transfer-box")
+    ) {
+
+        return;
+
+    }
+
+
+    const transferBox =
+        document.createElement("div");
+
+
+    transferBox.className =
+        "transfer-box";
+
+
+    transferBox.innerHTML = `
+
+        <div class="transfer-title">
+            تحويل رصيد من:
+            ${escapeHTML(fromUser.username)}
+        </div>
+
+
+        <div class="transfer-info">
+            الرصيد الحالي:
+            <strong>
+                ${formatBalance(fromUser.balance)}
+            </strong>
+        </div>
+
+
+        <div class="transfer-row">
+
+            <select id="transferTo_${fromId}">
+
+                <option value="">
+                    اختر الحساب المستلم
+                </option>
+
+            </select>
+
+
+            <input
+                type="number"
+                id="transferAmount_${fromId}"
+                placeholder="مبلغ التحويل"
+                min="0.01"
+                step="0.01"
+            >
+
+        </div>
+
+
+        <div class="transfer-actions">
+
+            <button
+                class="confirm-transfer-btn"
+                id="confirmTransfer_${fromId}"
+            >
+                تأكيد التحويل
+            </button>
+
+
+            <button
+                class="cancel-transfer-btn"
+                id="cancelTransfer_${fromId}"
+            >
+                إلغاء
+            </button>
+
+        </div>
+
+    `;
+
+
+    card.appendChild(transferBox);
+
+
+    /* إضافة الحسابات الأخرى */
+
+    const select =
+        document.getElementById(
+            `transferTo_${fromId}`
+        );
+
+
+    Object.entries(wallets).forEach(
+        ([id, user]) => {
+
+            if (id === fromId) {
+                return;
+            }
+
+
+            const option =
+                document.createElement("option");
+
+
+            option.value = id;
+
+
+            option.textContent =
+                `${user.username} - ${user.walletNumber} - الرصيد: ${formatBalance(user.balance)}`;
+
+
+            select.appendChild(option);
+
+        }
+    );
+
+
+    /* تأكيد التحويل */
+
+    document
+        .getElementById(`confirmTransfer_${fromId}`)
+        .addEventListener("click", () => {
+
+            transferBalance(fromId);
+
+        });
+
+
+    /* إلغاء */
+
+    document
+        .getElementById(`cancelTransfer_${fromId}`)
+        .addEventListener("click", () => {
+
+            transferBox.remove();
+
+        });
+
+}
+
+
+/* =========================
+   تنفيذ تحويل الرصيد
+========================= */
+
+async function transferBalance(fromId) {
+
+    const toId =
+        document
+        .getElementById(`transferTo_${fromId}`)
+        .value;
+
+
+    const amountValue =
+        document
+        .getElementById(`transferAmount_${fromId}`)
+        .value
+        .trim();
+
+
+    const amount =
+        Number(amountValue);
+
+
+    /* التحقق */
+
+    if (!toId) {
+
+        alert("اختر الحساب المستلم");
+
+        return;
+
+    }
+
+
+    if (
+        amountValue === "" ||
+        isNaN(amount) ||
+        amount <= 0
+    ) {
+
+        alert("اكتب مبلغ تحويل صحيح");
+
+        return;
+
+    }
+
+
+    if (fromId === toId) {
+
+        alert("لا يمكن التحويل لنفس الحساب");
+
+        return;
+
+    }
+
+
+    const fromUser =
+        wallets[fromId];
+
+
+    const toUser =
+        wallets[toId];
+
+
+    if (!fromUser || !toUser) {
+
+        alert("الحساب غير موجود");
+
+        return;
+
+    }
+
+
+    const fromBalance =
+        Number(fromUser.balance || 0);
+
+
+    const toBalance =
+        Number(toUser.balance || 0);
+
+
+    /* التأكد من الرصيد */
+
+    if (amount > fromBalance) {
+
+        alert(
+            "الرصيد غير كافي. الرصيد الحالي: "
+            + formatBalance(fromBalance)
+        );
+
+        return;
+
+    }
+
+
+    const newFromBalance =
+        fromBalance - amount;
+
+
+    const newToBalance =
+        toBalance + amount;
+
+
+    /* تأكيد العملية */
+
+    const confirmed =
+        confirm(
+            "هل تريد تحويل " +
+            formatBalance(amount) +
+            " من " +
+            fromUser.username +
+            " إلى " +
+            toUser.username +
+            "؟"
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    try {
+
+        /*
+         * تحديث الحسابين معاً
+         */
+
+        const updates = {};
+
+
+        updates[
+            "wallets/" +
+            fromId +
+            "/balance"
+        ] = Number(newFromBalance.toFixed(2));
+
+
+        updates[
+            "wallets/" +
+            toId +
+            "/balance"
+        ] = Number(newToBalance.toFixed(2));
+
+
+        /*
+         * تسجيل العملية
+         */
+
+        const transferRef =
+            push(
+                ref(db, "transfers")
+            );
+
+
+        updates[
+            "transfers/" +
+            transferRef.key
+        ] = {
+
+            fromId: fromId,
+
+            fromUsername:
+                fromUser.username,
+
+            fromWallet:
+                fromUser.walletNumber,
+
+            toId: toId,
+
+            toUsername:
+                toUser.username,
+
+            toWallet:
+                toUser.walletNumber,
+
+            amount: amount,
+
+            createdAt: Date.now()
+
+        };
+
+
+        await update(
+            ref(db),
+            updates
+        );
+
+
+        alert(
+            "تم تحويل الرصيد بنجاح"
+        );
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "حدث خطأ أثناء تحويل الرصيد"
+        );
+
+    }
+
+}
+
+
+/* =========================
+   تعديل المستخدم
+========================= */
 
 function editUser(id) {
 
@@ -851,6 +1376,16 @@ function editUser(id) {
             >
 
 
+            <input
+                type="number"
+                id="editBalance_${id}"
+                value="${Number(user.balance || 0)}"
+                placeholder="الرصيد"
+                step="0.01"
+                min="0"
+            >
+
+
             <div class="edit-actions">
 
                 <button
@@ -875,31 +1410,29 @@ function editUser(id) {
     `;
 
 
-    /* حفظ */
+    document
+        .getElementById(`save_${id}`)
+        .addEventListener("click", () => {
+
+            saveEdit(id);
+
+        });
+
 
     document
-    .getElementById(`save_${id}`)
-    .addEventListener("click", () => {
+        .getElementById(`cancel_${id}`)
+        .addEventListener("click", () => {
 
-        saveEdit(id);
+            displayUsers();
 
-    });
-
-
-    /* إلغاء */
-
-    document
-    .getElementById(`cancel_${id}`)
-    .addEventListener("click", () => {
-
-        displayUsers();
-
-    });
+        });
 
 }
 
 
-/* حفظ التعديل */
+/* =========================
+   حفظ التعديل
+========================= */
 
 async function saveEdit(id) {
 
@@ -931,39 +1464,61 @@ async function saveEdit(id) {
         .trim();
 
 
+    const balanceValue =
+        document
+        .getElementById(`editBalance_${id}`)
+        .value
+        .trim();
+
+
+    const balance =
+        Number(balanceValue);
+
+
     if (
         !username ||
         !userEmail ||
         !walletNumber ||
-        !walletEmail
+        !walletEmail ||
+        balanceValue === "" ||
+        isNaN(balance) ||
+        balance < 0
     ) {
 
-        alert("اكتب جميع البيانات");
+        alert(
+            "اكتب جميع البيانات بشكل صحيح"
+        );
 
         return;
 
     }
 
 
-    /* التأكد أن رقم المحفظة ليس مستخدماً لمستخدم آخر */
+    /* منع تكرار رقم المحفظة */
 
     const duplicate =
         Object.entries(wallets)
         .some(([otherId, item]) => {
 
             if (otherId === id) {
+
                 return false;
+
             }
 
-            return String(item.walletNumber).toLowerCase()
-                === walletNumber.toLowerCase();
+            return String(
+                item.walletNumber
+            ).toLowerCase()
+            === walletNumber.toLowerCase();
 
         });
 
 
     if (duplicate) {
 
-        alert("رقم المحفظة مستخدم بالفعل");
+        alert(
+            "رقم المحفظة مستخدم بالفعل"
+        );
 
         return;
 
@@ -980,27 +1535,37 @@ async function saveEdit(id) {
 
             walletNumber: walletNumber,
 
-            walletEmail: walletEmail
+            walletEmail: walletEmail,
+
+            balance: balance
 
         }
     );
 
 
-    alert("تم حفظ التعديل");
+    alert(
+        "تم حفظ التعديل"
+    );
 
 }
 
 
-/* حذف */
+/* =========================
+   حذف المستخدم
+========================= */
 
 async function deleteUser(id) {
 
     const confirmed =
-        confirm("هل تريد حذف هذا المستخدم؟");
+        confirm(
+            "هل تريد حذف هذا المستخدم؟"
+        );
 
 
     if (!confirmed) {
+
         return;
+
     }
 
 
@@ -1009,27 +1574,50 @@ async function deleteUser(id) {
     );
 
 
-    alert("تم حذف المستخدم");
+    alert(
+        "تم حذف المستخدم"
+    );
 
 }
 
 
-/* حماية النص */
+/* =========================
+   تنسيق الرصيد
+========================= */
+
+function formatBalance(value) {
+
+    const number =
+        Number(value || 0);
+
+
+    return number.toFixed(2);
+
+}
+
+
+/* =========================
+   حماية النص
+========================= */
 
 function escapeHTML(text) {
 
     const div =
         document.createElement("div");
 
+
     div.textContent =
         String(text ?? "");
+
 
     return div.innerHTML;
 
 }
 
 
-/* حماية قيمة input */
+/* =========================
+   حماية input
+========================= */
 
 function escapeAttribute(text) {
 
@@ -1045,4 +1633,3 @@ function escapeAttribute(text) {
 
 </body>
 </html>
-```
