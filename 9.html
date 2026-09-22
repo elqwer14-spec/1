@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>بيانات المستخدمين</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .total-box {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 5px #ddd;
+            font-size: 17px;
+        }
+
+        .user-card {
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px #ddd;
+            overflow: hidden;
+        }
+
+        .user-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            gap: 10px;
+        }
+
+        .username {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .edit-btn {
+            background: #0d6efd;
+            color: white;
+            border: none;
+            padding: 9px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .edit-btn:hover {
+            background: #0b5ed7;
+        }
+
+        .user-body {
+            padding: 15px;
+        }
+
+        .data-row {
+            margin-bottom: 12px;
+        }
+
+        .data-label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .data-value {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 6px;
+            min-height: 40px;
+            word-break: break-all;
+        }
+
+        .edit-form {
+            display: none;
+            padding: 15px;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+        }
+
+        .edit-form.open {
+            display: block;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+        }
+
+        textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .save-btn {
+            background: #198754;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .save-btn:hover {
+            background: #157347;
+        }
+
+        .cancel-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .cancel-btn:hover {
+            background: #5c636a;
+        }
+
+        .loading,
+        .empty {
+            text-align: center;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        .balance {
+            font-weight: bold;
+            color: #198754;
+        }
+
+        .reff-link {
+            color: #0d6efd;
+            text-decoration: none;
+        }
+
+        .reff-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 10px;
+            }
+
+            .user-header {
+                padding: 12px;
+            }
+
+            .username {
+                font-size: 15px;
+            }
+
+            .edit-btn {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <h1>بيانات المستخدمين</h1>
+
+    <div class="total-box" id="totalUsers">
+        إجمالي المستخدمين: 0
+    </div>
+
+    <div id="usersContainer" class="loading">
+        جاري تحميل المستخدمين...
+    </div>
+
+</div>
+
+
+<script type="module">
+
+    /* =====================================================
+       Firebase
+    ===================================================== */
+
+    import {
+        initializeApp
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+
+
+    import {
+        getDatabase,
+        ref,
+        onValue,
+        update
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+
+    /* =====================================================
+       Firebase Config
+    ===================================================== */
+
+    const firebaseConfig = {
+
+        apiKey:
+            "AIzaSyAB4wO937rCwc0OTWeJlGgoaxErWOdjaJM",
+
+        authDomain:
+            "my-new-a6e9f.firebaseapp.com",
+
+        databaseURL:
+            "https://my-new-a6e9f-default-rtdb.firebaseio.com",
+
+        projectId:
+            "my-new-a6e9f",
+
+        storageBucket:
+            "my-new-a6e9f.firebasestorage.app",
+
+        messagingSenderId:
+            "1034729064842",
+
+        appId:
+            "1:1034729064842:web:5b3d42fe7b5c0f3a3ae073"
+
+    };
+
+
+    /* تشغيل Firebase */
+
+    const app =
+        initializeApp(firebaseConfig);
+
+    const db =
+        getDatabase(app);
+
+
+    /* =====================================================
+       المستخدمين
+    ===================================================== */
+
+    let users = {};
+
+
+    /* =====================================================
+       تحميل المستخدمين
+    ===================================================== */
+
+    onValue(
+        ref(db, "users"),
+        (snapshot) => {
+
+            users =
+                snapshot.val() || {};
+
+            displayUsers();
+
+        }
+    );
+
+
+    /* =====================================================
+       عرض المستخدمين
+    ===================================================== */
+
+    function displayUsers() {
+
+        const container =
+            document.getElementById("usersContainer");
+
+        const totalUsers =
+            document.getElementById("totalUsers");
+
+
+        container.innerHTML = "";
+
+
+        const userEntries =
+            Object.entries(users);
+
+
+        totalUsers.innerHTML =
+            `إجمالي المستخدمين: <b>${userEntries.length}</b>`;
+
+
+        if (userEntries.length === 0) {
+
+            container.innerHTML = `
+                <div class="empty">
+                    لا يوجد مستخدمين حتى الآن
+                </div>
+            `;
+
+            return;
+        }
+
+
+        /* =================================================
+           كل مستخدم
+        ================================================= */
+
+        userEntries.forEach(
+            ([userId, user]) => {
+
+                const card =
+                    document.createElement("div");
+
+                card.className =
+                    "user-card";
+
+
+                const username =
+                    user.username || userId;
+
+
+                const reff =
+                    user.reff || "";
+
+
+                const notes =
+                    user.notes || "";
+
+
+                const balance =
+                    user.balance || 0;
+
+
+                /* =================================================
+                   بطاقة المستخدم
+                ================================================= */
+
+                card.innerHTML = `
+
+                    <div class="user-header">
+
+                        <div class="username">
+                            👤 ${escapeHTML(username)}
+                        </div>
+
+                        <button
+                            class="edit-btn"
+                            data-edit="${userId}"
+                        >
+                            ✏️ تعديل البيانات
+                        </button>
+
+                    </div>
+
+
+                    <div class="user-body">
+
+                        <!-- Reff -->
+
+                        <div class="data-row">
+
+                            <span class="data-label">
+                                🔗 Reff
+                            </span>
+
+                            <div class="data-value">
+
+                                ${
+                                    reff
+                                    ?
+                                    `<a
+                                        class="reff-link"
+                                        href="${escapeHTML(reff)}"
+                                        target="_blank"
+                                        rel="noopener"
+                                    >
+                                        ${escapeHTML(reff)}
+                                    </a>`
+                                    :
+                                    "لا يوجد"
+                                }
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- الملاحظات -->
+
+                        <div class="data-row">
+
+                            <span class="data-label">
+                                📝 ملاحظات
+                            </span>
+
+                            <div class="data-value">
+                                ${escapeHTML(notes) || "لا توجد ملاحظات"}
+                            </div>
+
+                        </div>
+
+
+                        <!-- الرصيد -->
+
+                        <div class="data-row">
+
+                            <span class="data-label">
+                                💰 الرصيد
+                            </span>
+
+                            <div class="data-value balance">
+                                ${escapeHTML(String(balance))}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- نموذج التعديل -->
+
+                    <div
+                        class="edit-form"
+                        id="edit-${userId}"
+                    >
+
+                        <div class="form-group">
+
+                            <label class="form-label">
+                                🔗 Reff
+                            </label>
+
+                            <input
+                                type="url"
+                                id="reff-${userId}"
+                                value="${escapeAttribute(reff)}"
+                                placeholder="ضع لينك الـ Reff هنا"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label class="form-label">
+                                📝 ملاحظات
+                            </label>
+
+                            <textarea
+                                id="notes-${userId}"
+                                placeholder="اكتب الملاحظات هنا..."
+                            >${escapeHTML(notes)}</textarea>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label class="form-label">
+                                💰 الرصيد
+                            </label>
+
+                            <input
+                                type="number"
+                                id="balance-${userId}"
+                                value="${escapeAttribute(String(balance))}"
+                                placeholder="الرصيد"
+                                step="0.01"
+                            >
+
+                        </div>
+
+
+                        <div class="buttons">
+
+                            <button
+                                class="save-btn"
+                                data-save="${userId}"
+                            >
+                                💾 حفظ
+                            </button>
+
+                            <button
+                                class="cancel-btn"
+                                data-cancel="${userId}"
+                            >
+                                إلغاء
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+
+                /* =================================================
+                   زر التعديل
+                ================================================= */
+
+                const editButton =
+                    card.querySelector(
+                        `[data-edit="${userId}"]`
+                    );
+
+
+                editButton.addEventListener(
+                    "click",
+                    () => {
+
+                        const form =
+                            document.getElementById(
+                                `edit-${userId}`
+                            );
+
+                        form.classList.toggle("open");
+
+                    }
+                );
+
+
+                /* =================================================
+                   زر الحفظ
+                ================================================= */
+
+                const saveButton =
+                    card.querySelector(
+                        `[data-save="${userId}"]`
+                    );
+
+
+                saveButton.addEventListener(
+                    "click",
+                    () => {
+
+                        saveUserData(userId);
+
+                    }
+                );
+
+
+                /* =================================================
+                   زر إلغاء
+                ================================================= */
+
+                const cancelButton =
+                    card.querySelector(
+                        `[data-cancel="${userId}"]`
+                    );
+
+
+                cancelButton.addEventListener(
+                    "click",
+                    () => {
+
+                        const form =
+                            document.getElementById(
+                                `edit-${userId}`
+                            );
+
+                        form.classList.remove("open");
+
+                    }
+                );
+
+
+                container.appendChild(card);
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       حفظ بيانات المستخدم
+    ===================================================== */
+
+    async function saveUserData(userId) {
+
+        const reff =
+            document.getElementById(
+                `reff-${userId}`
+            ).value.trim();
+
+
+        const notes =
+            document.getElementById(
+                `notes-${userId}`
+            ).value.trim();
+
+
+        const balanceValue =
+            document.getElementById(
+                `balance-${userId}`
+            ).value;
+
+
+        const balance =
+            Number(balanceValue);
+
+
+        /* التأكد من الرصيد */
+
+        if (
+            balanceValue !== "" &&
+            !Number.isFinite(balance)
+        ) {
+
+            alert("من فضلك أدخل رصيد صحيح");
+
+            return;
+        }
+
+
+        try {
+
+            await update(
+                ref(
+                    db,
+                    "users/" + userId
+                ),
+                {
+
+                    reff: reff,
+
+                    notes: notes,
+
+                    balance:
+                        balanceValue === ""
+                        ? 0
+                        : balance
+
+                }
+            );
+
+
+            alert(
+                "تم حفظ بيانات المستخدم بنجاح ✅"
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+            alert(
+                "حدث خطأ أثناء حفظ البيانات:\n"
+                +
+                error.message
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       حماية HTML
+    ===================================================== */
+
+    function escapeHTML(text) {
+
+        const div =
+            document.createElement("div");
+
+        div.textContent =
+            text;
+
+        return div.innerHTML;
+
+    }
+
+
+    /* =====================================================
+       حماية Attribute
+    ===================================================== */
+
+    function escapeAttribute(text) {
+
+        return String(text)
+            .replace(/&/g, "&amp;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+
+    }
+
+</script>
+
+</body>
+
+</html>
