@@ -8,7 +8,6 @@
     <title>العملاء</title>
 
     <style>
-
         * {
             box-sizing: border-box;
         }
@@ -247,13 +246,101 @@
         }
 
         .status-user {
-            padding: 8px 10px;
+            padding: 10px;
             border-bottom: 1px solid #eee;
             font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .status-user:last-child {
             border-bottom: none;
+        }
+
+        .status-user-info {
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .status-user-name {
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        .status-user-link {
+            color: #2878c8;
+            text-decoration: none;
+            font-size: 12px;
+            word-break: break-all;
+            display: block;
+        }
+
+        .status-user-link:hover {
+            text-decoration: underline;
+        }
+
+        .status-user-notes {
+            margin-top: 5px;
+            font-size: 12px;
+            color: #495057;
+            background: #f1f8f5;
+            padding: 5px 8px;
+            border-radius: 4px;
+            border-right: 3px solid #198754;
+            white-space: pre-wrap;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .btn-quick-done {
+            background: #198754;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .btn-quick-done:hover {
+            background: #146c43;
+        }
+
+        .btn-quick-reject {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .btn-quick-reject:hover {
+            background: #b22a37;
+        }
+
+        .btn-quick-notes {
+            background: #0dcaf0;
+            color: #212529;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .btn-quick-notes:hover {
+            background: #31d2f2;
         }
 
         .no-status-users {
@@ -334,6 +421,10 @@
             color: #555;
             margin-top: 7px;
             white-space: pre-wrap;
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 5px;
+            border-right: 3px solid #2878c8;
         }
 
         /* ================= STATUS ================= */
@@ -468,7 +559,6 @@
                 margin-top: 12px;
             }
         }
-
     </style>
 
 </head>
@@ -478,1715 +568,404 @@
     <!-- ================= NAV ================= -->
 
     <div class="top-nav">
-
-        <a href="https://elqwer14-spec.github.io/1/1.html">
-            1. Data_Entry_links_Users
-        </a>
-
-        <a href="https://elqwer14-spec.github.io/1/2.html">
-            2. Data_Users
-        </a>
-
-        <a href="https://elqwer14-spec.github.io/1/3.html">
-            3. Last_add
-        </a>
-
-        <a href="https://elqwer14-spec.github.io/1/4.html">
-            4. Wallet
-        </a>
-
-        <a href="https://elqwer14-spec.github.io/1/5.html">
-            5. Clients
-        </a>
-
-        <a href="https://elqwer14-spec.github.io/1/6.html">
-            6. not_done_for_User
-        </a>
-
-        <a href="https://elqwer14-spec.github.io/1/7.html">
-            7. last_login
-        </a>
-
-        <a href="https://elqwer14-spec.github.io/1/8.html">
-            8. Search
-        </a>
-
+        <a href="https://elqwer14-spec.github.io/1/1.html">1. Data_Entry_links_Users</a>
+        <a href="https://elqwer14-spec.github.io/1/2.html">2. Data_Users</a>
+        <a href="https://elqwer14-spec.github.io/1/3.html">3. Last_add</a>
+        <a href="https://elqwer14-spec.github.io/1/4.html">4. Wallet</a>
+        <a href="https://elqwer14-spec.github.io/1/5.html">5. Clients</a>
+        <a href="https://elqwer14-spec.github.io/1/6.html">6. not_done_for_User</a>
+        <a href="https://elqwer14-spec.github.io/1/7.html">7. last_login</a>
+        <a href="https://elqwer14-spec.github.io/1/8.html">8. Search</a>
     </div>
-
 
     <div class="container">
 
         <!-- ================= ADD CLIENT ================= -->
 
         <div class="form-box">
-
-            <div class="form-title">
-                إضافة عميل
-            </div>
-
+            <div class="form-title">إضافة عميل</div>
 
             <div class="form-group">
-
-                <label>
-                    اسم العميل
-                </label>
-
-                <input
-                    type="text"
-                    id="clientName"
-                    placeholder="اكتب اسم العميل"
-                    autocomplete="off">
-
-                <div
-                    id="nameCheck"
-                    class="check-result">
-                </div>
-
+                <label>اسم العميل</label>
+                <input type="text" id="clientName" placeholder="اكتب اسم العميل" autocomplete="off" oninput="checkNameAvailability()">
+                <div id="nameCheck" class="check-result"></div>
             </div>
 
-
             <div class="form-group">
-
-                <label>
-                    لينك العميل
-                </label>
-
-                <input
-                    type="text"
-                    id="clientLink"
-                    placeholder="https://example.com"
-                    autocomplete="off">
-
-                <div
-                    id="linkCheck"
-                    class="check-result">
-                </div>
-
+                <label>لينك العميل</label>
+                <input type="text" id="clientLink" placeholder="https://example.com" autocomplete="off" oninput="checkLinkAvailability()">
+                <div id="linkCheck" class="check-result"></div>
             </div>
 
-
             <div class="form-group">
-
-                <label>
-                    الحالة
-                </label>
-
+                <label>الحالة</label>
                 <select id="clientStatus">
-
-                    <option value="waiting">
-                        ⏳ على الانتظار
-                    </option>
-
-                    <option value="done">
-                        ✅ done
-                    </option>
-
-                    <option value="reject">
-                        ❌ recject
-                    </option>
-
+                    <option value="waiting">⏳ على الانتظار</option>
+                    <option value="done">✅ done</option>
+                    <option value="reject">❌ recject</option>
                 </select>
-
             </div>
-
 
             <div class="form-group">
-
-                <label>
-                    ملاحظات
-                </label>
-
-                <textarea
-                    id="clientNotes"
-                    placeholder="اكتب ملاحظات..."></textarea>
-
+                <label>ملاحظات</label>
+                <textarea id="clientNotes" placeholder="اكتب ملاحظات..."></textarea>
             </div>
 
-
-            <button
-                class="add-btn"
-                id="addBtn"
-                onclick="addClient()">
-
-                إضافة العميل
-
-            </button>
-
+            <button class="add-btn" id="addBtn" onclick="addClient()">إضافة العميل</button>
         </div>
-
 
         <!-- ================= STATUS SUMMARY ================= -->
 
         <div class="status-summary">
+            <div class="status-summary-title">حالات العملاء</div>
 
-            <div class="status-summary-title">
-                حالات العملاء
+            <div class="status-box" id="waitingBox">
+                <div class="status-header waiting-header" onclick="toggleStatus('waitingBox')">
+                    <div class="status-header-left">
+                        <span class="status-arrow">▶</span>
+                        <span>⏳ على الانتظار</span>
+                    </div>
+                    <span class="status-count" id="waitingCount">0</span>
+                </div>
+                <div class="status-list" id="waitingList"></div>
             </div>
 
-
-            <div
-                class="status-box"
-                id="waitingBox">
-
-                <div
-                    class="status-header waiting-header"
-                    onclick="toggleStatus('waitingBox')">
-
+            <div class="status-box" id="doneBox">
+                <div class="status-header done-header" onclick="toggleStatus('doneBox')">
                     <div class="status-header-left">
-
-                        <span class="status-arrow">
-                            ▶
-                        </span>
-
-                        <span>
-                            ⏳ على الانتظار
-                        </span>
-
+                        <span class="status-arrow">▶</span>
+                        <span>✅ done</span>
                     </div>
-
-                    <span
-                        class="status-count"
-                        id="waitingCount">
-                        0
-                    </span>
-
+                    <span class="status-count" id="doneCount">0</span>
                 </div>
-
-
-                <div
-                    class="status-list"
-                    id="waitingList">
-                </div>
-
+                <div class="status-list" id="doneList"></div>
             </div>
 
-
-            <div
-                class="status-box"
-                id="doneBox">
-
-                <div
-                    class="status-header done-header"
-                    onclick="toggleStatus('doneBox')">
-
+            <div class="status-box" id="rejectBox">
+                <div class="status-header reject-header" onclick="toggleStatus('rejectBox')">
                     <div class="status-header-left">
-
-                        <span class="status-arrow">
-                            ▶
-                        </span>
-
-                        <span>
-                            ✅ done
-                        </span>
-
+                        <span class="status-arrow">▶</span>
+                        <span>❌ recject</span>
                     </div>
-
-                    <span
-                        class="status-count"
-                        id="doneCount">
-                        0
-                    </span>
-
+                    <span class="status-count" id="rejectCount">0</span>
                 </div>
-
-
-                <div
-                    class="status-list"
-                    id="doneList">
-                </div>
-
-            </div>
-
-
-            <div
-                class="status-box"
-                id="rejectBox">
-
-                <div
-                    class="status-header reject-header"
-                    onclick="toggleStatus('rejectBox')">
-
-                    <div class="status-header-left">
-
-                        <span class="status-arrow">
-                            ▶
-                        </span>
-
-                        <span>
-                            ❌ recject
-                        </span>
-
-                    </div>
-
-                    <span
-                        class="status-count"
-                        id="rejectCount">
-                        0
-                    </span>
-
-                </div>
-
-
-                <div
-                    class="status-list"
-                    id="rejectList">
-                </div>
-
+                <div class="status-list" id="rejectList"></div>
             </div>
 
         </div>
-
 
         <!-- ================= CLIENTS ================= -->
 
         <div class="clients-box">
-
-            <div class="clients-title">
-                قائمة العملاء
-            </div>
-
+            <div class="clients-title">قائمة العملاء</div>
 
             <div class="client-search">
-
-                <input
-                    type="text"
-                    id="clientSearch"
-                    placeholder="🔎 ابحث عن عميل..."
-                    autocomplete="off">
-
+                <input type="text" id="clientSearch" placeholder="🔎 ابحث عن عميل..." autocomplete="off" oninput="displayClients()">
             </div>
-
 
             <div id="clientsContainer">
-
-                <div class="loading">
-                    جاري تحميل العملاء...
-                </div>
-
+                <div class="loading">جاري تحميل العملاء...</div>
             </div>
-
         </div>
 
     </div>
 
-
     <!-- ================= FIREBASE ================= -->
 
     <script type="module">
-
-        import {
-            initializeApp
-        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-
-
-        import {
-            getDatabase,
-            ref,
-            push,
-            set,
-            get,
-            onValue,
-            update,
-            remove
-        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, push, set, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         /* ================= FIREBASE CONFIG ================= */
 
         const firebaseConfig = {
-
             apiKey: "AIzaSyAB4wO937Rwc0OTWeJlGgoaxERWOdjaJM",
-
             authDomain: "my-new-a6e9f.firebaseapp.com",
-
-            databaseURL:
-                "https://my-new-a6e9f-default-rtdb.firebaseio.com",
-
+            databaseURL: "https://my-new-a6e9f-default-rtdb.firebaseio.com",
             projectId: "my-new-a6e9f",
-
-            storageBucket:
-                "my-new-a6e9f.firebasestorage.app",
-
-            messagingSenderId:
-                "1034729064842",
-
-            appId:
-                "1:1034729064842:web:5b3d42fe7b5c0f3a3ae073"
-
+            storageBucket: "my-new-a6e9f.firebasestorage.app",
+            messagingSenderId: "1034729064842",
+            appId: "1:1034729064842:web:5b3d42fe7b5c0f3a3ae073"
         };
 
-
-        const app =
-            initializeApp(firebaseConfig);
-
-        const db =
-            getDatabase(app);
-
-        const clientsRef =
-            ref(db, "clients");
-
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const clientsRef = ref(db, "clients");
 
         let clients = {};
 
-
         /* ================= LOAD CLIENTS ================= */
 
-        onValue(
-            clientsRef,
-            (snapshot) => {
-
-                clients =
-                    snapshot.val() || {};
-
-                displayStatusSummary();
-
-                displayClients();
-
-                checkNameAvailability();
-
-                checkLinkAvailability();
-
-            }
-        );
-
+        onValue(clientsRef, (snapshot) => {
+            clients = snapshot.val() || {};
+            displayStatusSummary();
+            displayClients();
+            checkNameAvailability();
+            checkLinkAvailability();
+        });
 
         /* ================= NORMALIZE ================= */
 
         function normalize(value) {
-
-            return String(value || "")
-                .trim()
-                .toLowerCase();
-
+            return String(value || "").trim().toLowerCase();
         }
-
-
-        /* ================= CHECK NAME ================= */
-
-        window.checkNameAvailability =
-            async function () {
-
-                const input =
-                    document.getElementById(
-                        "clientName"
-                    );
-
-                const result =
-                    document.getElementById(
-                        "nameCheck"
-                    );
-
-                const addBtn =
-                    document.getElementById(
-                        "addBtn"
-                    );
-
-
-                const name =
-                    input.value.trim();
-
-
-                if (!name) {
-
-                    result.style.display =
-                        "none";
-
-                    result.textContent = "";
-
-                    checkAddButton();
-
-                    return;
-
-                }
-
-
-                result.className =
-                    "check-result check-searching";
-
-                result.style.display =
-                    "block";
-
-                result.textContent =
-                    "🔎 جاري البحث...";
-
-
-                const nameNormalized =
-                    normalize(name);
-
-
-                let found = null;
-
-
-                Object.entries(clients)
-                    .forEach(
-                        ([id, client]) => {
-
-                            const oldName =
-                                normalize(
-                                    client.name
-                                );
-
-
-                            if (
-                                oldName ===
-                                nameNormalized
-                            ) {
-
-                                found = client;
-
-                            }
-
-                        }
-                    );
-
-
-                if (found) {
-
-                    const status =
-                        found.status ||
-                        "waiting";
-
-
-                    let statusText =
-                        "على الانتظار";
-
-
-                    if (
-                        status === "done"
-                    ) {
-
-                        statusText =
-                            "done";
-
-                    }
-
-                    else if (
-                        status === "reject" ||
-                        status === "recject"
-                    ) {
-
-                        statusText =
-                            "recject";
-
-                    }
-
-
-                    result.className =
-                        "check-result check-exists";
-
-                    result.style.display =
-                        "block";
-
-                    result.textContent =
-                        `❌ العميل موجود بالفعل — الحالة: ${statusText}`;
-
-                }
-
-                else {
-
-                    result.className =
-                        "check-result check-available";
-
-                    result.style.display =
-                        "block";
-
-                    result.textContent =
-                        "🟢 اسم العميل متاح ويمكن إضافته";
-
-                }
-
-
-                checkAddButton();
-
-            };
-
-
-        /* ================= CHECK LINK ================= */
-
-        window.checkLinkAvailability =
-            async function () {
-
-                const input =
-                    document.getElementById(
-                        "clientLink"
-                    );
-
-                const result =
-                    document.getElementById(
-                        "linkCheck"
-                    );
-
-
-                const link =
-                    input.value.trim();
-
-
-                if (!link) {
-
-                    result.style.display =
-                        "none";
-
-                    result.textContent = "";
-
-                    checkAddButton();
-
-                    return;
-
-                }
-
-
-                const linkNormalized =
-                    normalize(link);
-
-
-                let found = false;
-
-
-                Object.values(clients)
-                    .forEach(client => {
-
-                        const oldLink =
-                            normalize(
-                                client.link
-                            );
-
-
-                        if (
-                            oldLink ===
-                            linkNormalized
-                        ) {
-
-                            found = true;
-
-                        }
-
-                    });
-
-
-                if (found) {
-
-                    result.className =
-                        "check-result check-exists";
-
-                    result.style.display =
-                        "block";
-
-                    result.textContent =
-                        "❌ هذا اللينك موجود بالفعل";
-
-                }
-
-                else {
-
-                    result.className =
-                        "check-result check-available";
-
-                    result.style.display =
-                        "block";
-
-                    result.textContent =
-                        "🟢 اللينك متاح";
-
-                }
-
-
-                checkAddButton();
-
-            };
-
-
-        /* ================= CHECK ADD BUTTON ================= */
-
-        function checkAddButton() {
-
-            const name =
-                document.getElementById(
-                    "clientName"
-                ).value.trim();
-
-
-            const link =
-                document.getElementById(
-                    "clientLink"
-                ).value.trim();
-
-
-            const addBtn =
-                document.getElementById(
-                    "addBtn"
-                );
-
-
-            if (!name || !link) {
-
-                addBtn.disabled = false;
-
-                return;
-
-            }
-
-
-            const nameExists =
-                Object.values(clients)
-                    .some(client =>
-                        normalize(client.name) ===
-                        normalize(name)
-                    );
-
-
-            const linkExists =
-                Object.values(clients)
-                    .some(client =>
-                        normalize(client.link) ===
-                        normalize(link)
-                    );
-
-
-            if (
-                nameExists ||
-                linkExists
-            ) {
-
-                addBtn.disabled = true;
-
-            }
-
-            else {
-
-                addBtn.disabled = false;
-
-            }
-
-        }
-
-
-        /* ================= INPUT EVENTS ================= */
-
-        document
-            .getElementById("clientName")
-            .addEventListener(
-                "input",
-                checkNameAvailability
-            );
-
-
-        document
-            .getElementById("clientLink")
-            .addEventListener(
-                "input",
-                checkLinkAvailability
-            );
-
-
-        /* ================= STATUS SUMMARY ================= */
-
-        window.displayStatusSummary =
-            function () {
-
-                const waiting = [];
-                const done = [];
-                const reject = [];
-
-
-                Object.values(clients)
-                    .forEach(client => {
-
-                        const status =
-                            client.status ||
-                            "waiting";
-
-
-                        if (
-                            status === "waiting"
-                        ) {
-
-                            waiting.push(client);
-
-                        }
-
-                        else if (
-                            status === "done"
-                        ) {
-
-                            done.push(client);
-
-                        }
-
-                        else if (
-                            status === "reject" ||
-                            status === "recject"
-                        ) {
-
-                            reject.push(client);
-
-                        }
-
-                    });
-
-
-                document.getElementById(
-                    "waitingCount"
-                ).textContent =
-                    waiting.length;
-
-
-                document.getElementById(
-                    "doneCount"
-                ).textContent =
-                    done.length;
-
-
-                document.getElementById(
-                    "rejectCount"
-                ).textContent =
-                    reject.length;
-
-
-                createStatusList(
-                    "waitingList",
-                    waiting,
-                    "لا يوجد عملاء على الانتظار"
-                );
-
-
-                createStatusList(
-                    "doneList",
-                    done,
-                    "لا يوجد عملاء done"
-                );
-
-
-                createStatusList(
-                    "rejectList",
-                    reject,
-                    "لا يوجد عملاء مرفوضين"
-                );
-
-            };
-
-
-        /* ================= CREATE STATUS LIST ================= */
-
-        function createStatusList(
-            elementId,
-            users,
-            emptyText
-        ) {
-
-            const element =
-                document.getElementById(
-                    elementId
-                );
-
-
-            element.innerHTML = "";
-
-
-            if (users.length === 0) {
-
-                element.innerHTML = `
-                    <div class="no-status-users">
-                        ${emptyText}
-                    </div>
-                `;
-
-                return;
-
-            }
-
-
-            users.forEach(client => {
-
-                const div =
-                    document.createElement(
-                        "div"
-                    );
-
-
-                div.className =
-                    "status-user";
-
-
-                div.textContent =
-                    client.name ||
-                    "بدون اسم";
-
-
-                element.appendChild(div);
-
-            });
-
-        }
-
 
         /* ================= TOGGLE STATUS ================= */
 
-        window.toggleStatus =
-            function (id) {
-
-                const box =
-                    document.getElementById(id);
-
-
-                if (!box) return;
-
-
+        window.toggleStatus = function (boxId) {
+            const box = document.getElementById(boxId);
+            if (box) {
                 box.classList.toggle("open");
+            }
+        };
 
+        /* ================= DISPLAY STATUS SUMMARY ================= */
+
+        function displayStatusSummary() {
+            const lists = {
+                waiting: document.getElementById("waitingList"),
+                done: document.getElementById("doneList"),
+                reject: document.getElementById("rejectList")
             };
 
-
-        /* ================= ADD CLIENT ================= */
-
-        window.addClient =
-            async function () {
-
-                const name =
-                    document
-                        .getElementById(
-                            "clientName"
-                        )
-                        .value
-                        .trim();
-
-
-                const link =
-                    document
-                        .getElementById(
-                            "clientLink"
-                        )
-                        .value
-                        .trim();
-
-
-                const status =
-                    document
-                        .getElementById(
-                            "clientStatus"
-                        )
-                        .value;
-
-
-                const notes =
-                    document
-                        .getElementById(
-                            "clientNotes"
-                        )
-                        .value
-                        .trim();
-
-
-                if (!name) {
-
-                    alert(
-                        "اكتب اسم العميل"
-                    );
-
-                    return;
-
-                }
-
-
-                if (!link) {
-
-                    alert(
-                        "اكتب لينك العميل"
-                    );
-
-                    return;
-
-                }
-
-
-                /* ================= FINAL CHECK ================= */
-
-                const snapshot =
-                    await get(clientsRef);
-
-
-                const currentClients =
-                    snapshot.val() || {};
-
-
-                const nameExists =
-                    Object.values(
-                        currentClients
-                    ).some(client =>
-                        normalize(client.name) ===
-                        normalize(name)
-                    );
-
-
-                const linkExists =
-                    Object.values(
-                        currentClients
-                    ).some(client =>
-                        normalize(client.link) ===
-                        normalize(link)
-                    );
-
-
-                if (nameExists) {
-
-                    alert(
-                        "❌ هذا العميل موجود بالفعل"
-                    );
-
-                    return;
-
-                }
-
-
-                if (linkExists) {
-
-                    alert(
-                        "❌ هذا اللينك موجود بالفعل"
-                    );
-
-                    return;
-
-                }
-
-
-                try {
-
-                    const newClientRef =
-                        push(clientsRef);
-
-
-                    await set(
-                        newClientRef,
-                        {
-
-                            name: name,
-
-                            link: link,
-
-                            status:
-                                status ||
-                                "waiting",
-
-                            notes: notes,
-
-                            createdAt:
-                                Date.now()
-
-                        }
-                    );
-
-
-                    /* تنظيف الفورم */
-
-                    document
-                        .getElementById(
-                            "clientName"
-                        )
-                        .value = "";
-
-
-                    document
-                        .getElementById(
-                            "clientLink"
-                        )
-                        .value = "";
-
-
-                    document
-                        .getElementById(
-                            "clientStatus"
-                        )
-                        .value =
-                            "waiting";
-
-
-                    document
-                        .getElementById(
-                            "clientNotes"
-                        )
-                        .value = "";
-
-
-                    document
-                        .getElementById(
-                            "nameCheck"
-                        )
-                        .style.display =
-                            "none";
-
-
-                    document
-                        .getElementById(
-                            "linkCheck"
-                        )
-                        .style.display =
-                            "none";
-
-
-                }
-
-                catch (error) {
-
-                    console.error(error);
-
-                    alert(
-                        "حدث خطأ أثناء إضافة العميل"
-                    );
-
-                }
-
+            const counts = {
+                waiting: document.getElementById("waitingCount"),
+                done: document.getElementById("doneCount"),
+                reject: document.getElementById("rejectCount")
             };
 
+            const statusGroups = {
+                waiting: [],
+                done: [],
+                reject: []
+            };
+
+            Object.keys(clients).forEach(id => {
+                const client = clients[id];
+                client.id = id;
+                const status = client.status || "waiting";
+                if (statusGroups[status]) {
+                    statusGroups[status].push(client);
+                }
+            });
+
+            ["waiting", "done", "reject"].forEach(status => {
+                const group = statusGroups[status];
+                counts[status].textContent = group.length;
+
+                if (group.length === 0) {
+                    lists[status].innerHTML = `<div class="no-status-users">لا يوجد عملاء</div>`;
+                } else {
+                    lists[status].innerHTML = group.map(client => `
+                        <div class="status-user">
+                            <div class="status-user-info">
+                                <div class="status-user-name">${client.name || 'بدون اسم'}</div>
+                                ${client.link ? `<a class="status-user-link" href="${client.link}" target="_blank">${client.link} 🔗</a>` : ''}
+                                ${status === 'done' ? `
+                                    <div class="status-user-notes">📝 ${client.notes ? client.notes : 'لا توجد ملاحظات'}</div>
+                                ` : ''}
+                            </div>
+                            <div class="quick-actions">
+                                ${status === 'waiting' ? `
+                                    <button class="btn-quick-done" onclick="changeStatus('${client.id}', 'done')">✅ Done</button>
+                                    <button class="btn-quick-reject" onclick="changeStatus('${client.id}', 'reject')">❌ Reject</button>
+                                ` : ''}
+                                ${status === 'done' ? `
+                                    <button class="btn-quick-notes" onclick="editDoneNotes('${client.id}')">📝 ملاحظات</button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `).join("");
+                }
+            });
+        }
+
+        /* ================= QUICK STATUS CHANGE ================= */
+
+        window.changeStatus = function (id, newStatus) {
+            update(ref(db, `clients/${id}`), { status: newStatus });
+        };
+
+        /* ================= EDIT NOTES FOR DONE CLIENTS ================= */
+
+        window.editDoneNotes = function (id) {
+            const currentNotes = clients[id]?.notes || '';
+            const newNotes = prompt("أدخل الملاحظات لهذا العميل:", currentNotes);
+            if (newNotes !== null) {
+                update(ref(db, `clients/${id}`), { notes: newNotes.trim() });
+            }
+        };
 
         /* ================= DISPLAY CLIENTS ================= */
 
-        window.displayClients =
-            function () {
-
-                const container =
-                    document.getElementById(
-                        "clientsContainer"
-                    );
-
-
-                const searchInput =
-                    document.getElementById(
-                        "clientSearch"
-                    );
-
-
-                const search =
-                    searchInput
-                        ? searchInput.value
-                            .trim()
-                            .toLowerCase()
-                        : "";
-
-
-                let entries =
-                    Object.entries(clients);
-
-
-                entries.sort((a, b) => {
-
-                    return (
-                        (b[1].createdAt || 0) -
-                        (a[1].createdAt || 0)
-                    );
-
-                });
-
-
-                /* البحث */
-
-                if (search) {
-
-                    entries =
-                        entries.filter(
-                            ([id, client]) => {
-
-                                const name =
-                                    String(
-                                        client.name ||
-                                        ""
-                                    ).toLowerCase();
-
-
-                                const link =
-                                    String(
-                                        client.link ||
-                                        ""
-                                    ).toLowerCase();
-
-
-                                return (
-                                    name.includes(search) ||
-                                    link.includes(search)
-                                );
-
-                            }
-                        );
-
-                }
-
-
-                if (entries.length === 0) {
-
-                    container.innerHTML =
-                        search
-                        ?
-                        `
-                            <div class="empty">
-                                لا يوجد عميل مطابق للبحث
-                            </div>
-                        `
-                        :
-                        `
-                            <div class="empty">
-                                لا يوجد عملاء حتى الآن
-                            </div>
-                        `;
-
-                    return;
-
-                }
-
-
-                container.innerHTML = "";
-
-
-                entries.forEach(
-                    ([id, client]) => {
-
-
-                        const clientStatus =
-                            client.status ||
-                            "waiting";
-
-
-                        let statusText =
-                            "⏳ على الانتظار";
-
-
-                        let statusClass =
-                            "status-waiting";
-
-
-                        if (
-                            clientStatus ===
-                            "done"
-                        ) {
-
-                            statusText =
-                                "✅ done";
-
-                            statusClass =
-                                "status-done";
-
-                        }
-
-
-                        if (
-                            clientStatus ===
-                                "reject" ||
-                            clientStatus ===
-                                "recject"
-                        ) {
-
-                            statusText =
-                                "❌ recject";
-
-                            statusClass =
-                                "status-reject";
-
-                        }
-
-
-                        const card =
-                            document.createElement(
-                                "div"
-                            );
-
-
-                        card.className =
-                            "client-card";
-
-
-                        card.id =
-                            `client_${id}`;
-
-
-                        card.innerHTML = `
-
-                            <div class="client-content">
-
-                                <div class="client-name">
-                                    ${escapeHTML(
-                                        client.name || ""
-                                    )}
-                                </div>
-
-                                <div class="client-status ${statusClass}">
-                                    ${statusText}
-                                </div>
-
-                                <a
-                                    class="client-link"
-                                    href="${escapeAttribute(
-                                        client.link || ""
-                                    )}"
-                                    target="_blank"
-                                    rel="noopener noreferrer">
-
-                                    ${escapeHTML(
-                                        client.link || ""
-                                    )}
-
-                                </a>
-
-                                ${
-                                    client.notes
-                                    ?
-                                    `
-                                    <div class="client-notes">
-                                        ${escapeHTML(
-                                            client.notes
-                                        )}
-                                    </div>
-                                    `
-                                    :
-                                    ""
-                                }
-
-                                <div class="actions">
-
-                                    <button
-                                        class="edit-btn"
-                                        onclick="editClient('${id}')">
-
-                                        تعديل
-
-                                    </button>
-
-                                    <button
-                                        class="delete-btn"
-                                        onclick="deleteClient('${id}')">
-
-                                        حذف
-
-                                    </button>
-
-                                </div>
-
-                            </div>
-
-                        `;
-
-
-                        container.appendChild(card);
-
-                    }
-                );
-
-            };
-
-
-        /* ================= EDIT ================= */
-
-        window.editClient =
-            function (id) {
-
-                const client =
-                    clients[id];
-
-
-                if (!client) return;
-
-
-                const card =
-                    document.getElementById(
-                        `client_${id}`
-                    );
-
-
-                if (!card) return;
-
-
-                let status =
-                    client.status ||
-                    "waiting";
-
-
-                if (
-                    status === "recject"
-                ) {
-
-                    status = "reject";
-
-                }
-
-
-                card.innerHTML = `
-
-                    <div class="edit-content">
-
-                        <input
-                            type="text"
-                            id="editName_${id}"
-                            value="${escapeAttribute(
-                                client.name || ""
-                            )}"
-                            placeholder="اسم العميل">
-
-
-                        <input
-                            type="text"
-                            id="editLink_${id}"
-                            value="${escapeAttribute(
-                                client.link || ""
-                            )}"
-                            placeholder="لينك العميل">
-
-
-                        <select
-                            id="editStatus_${id}"
-                            class="status-select">
-
-                            <option
-                                value="waiting"
-                                ${
-                                    status === "waiting"
-                                    ? "selected"
-                                    : ""
-                                }>
-
-                                ⏳ على الانتظار
-
-                            </option>
-
-
-                            <option
-                                value="done"
-                                ${
-                                    status === "done"
-                                    ? "selected"
-                                    : ""
-                                }>
-
-                                ✅ done
-
-                            </option>
-
-
-                            <option
-                                value="reject"
-                                ${
-                                    status === "reject"
-                                    ? "selected"
-                                    : ""
-                                }>
-
-                                ❌ recject
-
-                            </option>
-
-                        </select>
-
-
-                        <textarea
-                            id="editNotes_${id}"
-                            placeholder="ملاحظات">${escapeHTML(
-                                client.notes || ""
-                            )}</textarea>
-
-
-                        <div class="edit-actions">
-
-                            <button
-                                class="save-btn"
-                                onclick="saveClientEdit('${id}')">
-
-                                حفظ
-
-                            </button>
-
-
-                            <button
-                                class="cancel-btn"
-                                onclick="displayClients()">
-
-                                إلغاء
-
-                            </button>
-
+        window.displayClients = function () {
+            const container = document.getElementById("clientsContainer");
+            const searchVal = normalize(document.getElementById("clientSearch").value);
+
+            const keys = Object.keys(clients);
+
+            if (keys.length === 0) {
+                container.innerHTML = `<div class="empty">لا يوجد عملاء مضافين.</div>`;
+                return;
+            }
+
+            const filteredKeys = keys.filter(id => {
+                const c = clients[id];
+                const name = normalize(c.name);
+                const link = normalize(c.link);
+                return name.includes(searchVal) || link.includes(searchVal);
+            });
+
+            if (filteredKeys.length === 0) {
+                container.innerHTML = `<div class="empty">لا توجد نتائج مطابقة.</div>`;
+                return;
+            }
+
+            container.innerHTML = filteredKeys.map(id => {
+                const c = clients[id];
+                const statusClass = c.status === "done" ? "status-done" : (c.status === "reject" ? "status-reject" : "status-waiting");
+                const statusText = c.status === "done" ? "✅ done" : (c.status === "reject" ? "❌ recject" : "⏳ على الانتظار");
+
+                return `
+                    <div class="client-card" id="card-${id}">
+                        <div class="client-name">${c.name || 'بدون اسم'}</div>
+                        ${c.link ? `<a class="client-link" href="${c.link}" target="_blank">${c.link}</a>` : ''}
+                        <div class="client-status ${statusClass}">${statusText}</div>
+                        ${c.notes ? `<div class="client-notes"><strong>ملاحظات:</strong> ${c.notes}</div>` : `<div class="client-notes" style="color:#aaa;">لا توجد ملاحظات</div>`}
+                        
+                        <div class="actions">
+                            <button class="edit-btn" onclick="editClient('${id}')">تعديل</button>
+                            <button class="delete-btn" onclick="deleteClient('${id}')">حذف</button>
                         </div>
-
                     </div>
-
                 `;
-
-            };
-
-
-        /* ================= SAVE EDIT ================= */
-
-        window.saveClientEdit =
-            async function (id) {
-
-                const name =
-                    document
-                        .getElementById(
-                            `editName_${id}`
-                        )
-                        .value
-                        .trim();
-
-
-                const link =
-                    document
-                        .getElementById(
-                            `editLink_${id}`
-                        )
-                        .value
-                        .trim();
-
-
-                const status =
-                    document
-                        .getElementById(
-                            `editStatus_${id}`
-                        )
-                        .value;
-
-
-                const notes =
-                    document
-                        .getElementById(
-                            `editNotes_${id}`
-                        )
-                        .value
-                        .trim();
-
-
-                if (!name) {
-
-                    alert(
-                        "اكتب اسم العميل"
-                    );
-
-                    return;
-
-                }
-
-
-                if (!link) {
-
-                    alert(
-                        "اكتب لينك العميل"
-                    );
-
-                    return;
-
-                }
-
-
-                /* منع تغيير اسم العميل لاسم موجود */
-
-                const duplicateName =
-                    Object.entries(clients)
-                        .some(
-                            ([clientId, client]) => {
-
-                                return (
-                                    clientId !== id &&
-                                    normalize(
-                                        client.name
-                                    ) ===
-                                    normalize(name)
-                                );
-
-                            }
-                        );
-
-
-                if (duplicateName) {
-
-                    alert(
-                        "❌ اسم العميل موجود بالفعل"
-                    );
-
-                    return;
-
-                }
-
-
-                /* منع تغيير اللينك للينك موجود */
-
-                const duplicateLink =
-                    Object.entries(clients)
-                        .some(
-                            ([clientId, client]) => {
-
-                                return (
-                                    clientId !== id &&
-                                    normalize(
-                                        client.link
-                                    ) ===
-                                    normalize(link)
-                                );
-
-                            }
-                        );
-
-
-                if (duplicateLink) {
-
-                    alert(
-                        "❌ اللينك موجود بالفعل"
-                    );
-
-                    return;
-
-                }
-
-
-                try {
-
-                    const clientRef =
-                        ref(
-                            db,
-                            `clients/${id}`
-                        );
-
-
-                    await update(
-                        clientRef,
-                        {
-
-                            name: name,
-
-                            link: link,
-
-                            status: status,
-
-                            notes: notes
-
-                        }
-                    );
-
-
-                }
-
-                catch (error) {
-
-                    console.error(error);
-
-                    alert(
-                        "حدث خطأ أثناء حفظ التعديل"
-                    );
-
-                }
-
-            };
-
-
-        /* ================= DELETE ================= */
-
-        window.deleteClient =
-            async function (id) {
-
-                const client =
-                    clients[id];
-
-
-                if (!client) return;
-
-
-                const confirmed =
-                    confirm(
-                        `هل أنت متأكد من حذف العميل "${client.name || ""}"؟`
-                    );
-
-
-                if (!confirmed) return;
-
-
-                try {
-
-                    await remove(
-                        ref(
-                            db,
-                            `clients/${id}`
-                        )
-                    );
-
-                }
-
-                catch (error) {
-
-                    console.error(error);
-
-                    alert(
-                        "حدث خطأ أثناء حذف العميل"
-                    );
-
-                }
-
-            };
-
-
-        /* ================= SEARCH LIST ================= */
-
-        document
-            .getElementById(
-                "clientSearch"
-            )
-            .addEventListener(
-                "input",
-                function () {
-
-                    displayClients();
-
-                }
-            );
-
-
-        /* ================= ESCAPE ================= */
-
-        function escapeHTML(value) {
-
-            return String(value)
-                .replace(
-                    /&/g,
-                    "&amp;"
-                )
-                .replace(
-                    /</g,
-                    "&lt;"
-                )
-                .replace(
-                    />/g,
-                    "&gt;"
-                )
-                .replace(
-                    /"/g,
-                    "&quot;"
-                )
-                .replace(
-                    /'/g,
-                    "&#039;"
-                );
-
+            }).join("");
+        };
+
+        /* ================= CHECK NAME & LINK ================= */
+
+        window.checkNameAvailability = function () {
+            const name = document.getElementById("clientName").value.trim();
+            const result = document.getElementById("nameCheck");
+
+            if (!name) {
+                result.style.display = "none";
+                checkAddButton();
+                return;
+            }
+
+            const exists = Object.values(clients).some(c => normalize(c.name) === normalize(name));
+
+            if (exists) {
+                result.className = "check-result check-exists";
+                result.textContent = "❌ هذا الاسم مستخدم من قبل";
+            } else {
+                result.className = "check-result check-available";
+                result.textContent = "✅ الاسم متاح";
+            }
+            checkAddButton();
+        };
+
+        window.checkLinkAvailability = function () {
+            const link = document.getElementById("clientLink").value.trim();
+            const result = document.getElementById("linkCheck");
+
+            if (!link) {
+                result.style.display = "none";
+                checkAddButton();
+                return;
+            }
+
+            const exists = Object.values(clients).some(c => normalize(c.link) === normalize(link));
+
+            if (exists) {
+                result.className = "check-result check-exists";
+                result.textContent = "❌ هذا اللينك مستخدم من قبل";
+            } else {
+                result.className = "check-result check-available";
+                result.textContent = "✅ اللينك متاح";
+            }
+            checkAddButton();
+        };
+
+        function checkAddButton() {
+            const name = document.getElementById("clientName").value.trim();
+            const addBtn = document.getElementById("addBtn");
+            addBtn.disabled = !name;
         }
 
+        /* ================= ADD CLIENT ================= */
 
-        function escapeAttribute(value) {
+        window.addClient = function () {
+            const name = document.getElementById("clientName").value.trim();
+            const link = document.getElementById("clientLink").value.trim();
+            const status = document.getElementById("clientStatus").value;
+            const notes = document.getElementById("clientNotes").value.trim();
 
-            return String(value)
-                .replace(
-                    /&/g,
-                    "&amp;"
-                )
-                .replace(
-                    /"/g,
-                    "&quot;"
-                )
-                .replace(
-                    /'/g,
-                    "&#039;"
-                )
-                .replace(
-                    /</g,
-                    "&lt;"
-                )
-                .replace(
-                    />/g,
-                    "&gt;"
-                );
+            if (!name) return;
 
-        }
+            const newClientRef = push(clientsRef);
+            set(newClientRef, {
+                name,
+                link,
+                status,
+                notes,
+                createdAt: Date.now()
+            }).then(() => {
+                document.getElementById("clientName").value = "";
+                document.getElementById("clientLink").value = "";
+                document.getElementById("clientNotes").value = "";
+                document.getElementById("clientStatus").value = "waiting";
+                checkNameAvailability();
+                checkLinkAvailability();
+            });
+        };
+
+        /* ================= EDIT & DELETE ================= */
+
+        window.editClient = function (id) {
+            const c = clients[id];
+            const card = document.getElementById(`card-${id}`);
+
+            card.innerHTML = `
+                <div class="edit-content">
+                    <input type="text" id="edit-name-${id}" value="${c.name || ''}" placeholder="اسم العميل">
+                    <input type="text" id="edit-link-${id}" value="${c.link || ''}" placeholder="اللينك">
+                    <select id="edit-status-${id}" class="status-select">
+                        <option value="waiting" ${c.status === 'waiting' ? 'selected' : ''}>⏳ على الانتظار</option>
+                        <option value="done" ${c.status === 'done' ? 'selected' : ''}>✅ done</option>
+                        <option value="reject" ${c.status === 'reject' ? 'selected' : ''}>❌ recject</option>
+                    </select>
+                    <textarea id="edit-notes-${id}" placeholder="ملاحظات">${c.notes || ''}</textarea>
+                    <div class="edit-actions">
+                        <button class="save-btn" onclick="saveClient('${id}')">حفظ</button>
+                        <button class="cancel-btn" onclick="displayClients()">إلغاء</button>
+                    </div>
+                </div>
+            `;
+        };
+
+        window.saveClient = function (id) {
+            const name = document.getElementById(`edit-name-${id}`).value.trim();
+            const link = document.getElementById(`edit-link-${id}`).value.trim();
+            const status = document.getElementById(`edit-status-${id}`).value;
+            const notes = document.getElementById(`edit-notes-${id}`).value.trim();
+
+            update(ref(db, `clients/${id}`), {
+                name,
+                link,
+                status,
+                notes
+            });
+        };
+
+        window.deleteClient = function (id) {
+            if (confirm("هل انت متاكد من حذف هذا العميل؟")) {
+                remove(ref(db, `clients/${id}`));
+            }
+        };
 
     </script>
-
 </body>
 
 </html>
