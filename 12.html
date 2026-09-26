@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة شيتات الأكسيل والمجلدات</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f8fc;
+            color: #222;
+        }
+
+        /* ================= NAV ================= */
+
+        .top-nav {
+            background: #ffffff;
+            padding: 12px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            border-bottom: 1px solid #dce8f5;
+            box-shadow: 0 2px 8px rgba(60, 120, 180, 0.08);
+        }
+
+        .top-nav a {
+            color: #2878c8;
+            text-decoration: none;
+            background: #eef7ff;
+            border: 1px solid #cfe7fb;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+
+        .top-nav a:hover {
+            background: #dcefff;
+            color: #1764a8;
+            border-color: #b9dbf5;
+        }
+
+        /* ================= CONTAINER ================= */
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        /* ================= FORMS ================= */
+
+        .forms-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .form-box {
+            background: white;
+            padding: 18px;
+            border-radius: 10px;
+            box-shadow: 0 1px 5px #dfe8f0;
+            border: 1px solid #dce8f5;
+        }
+
+        .form-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: #1e7e34;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #444;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 9px;
+            border: 1px solid #cddce9;
+            border-radius: 6px;
+            font-size: 13px;
+            outline: none;
+            background: #fff;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #1e7e34;
+        }
+
+        .add-btn {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background: #1e7e34;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .add-btn:hover {
+            background: #155724;
+        }
+
+        .add-btn-folder {
+            background: #f0a020;
+        }
+
+        .add-btn-folder:hover {
+            background: #d88c12;
+        }
+
+        /* ================= SECTIONS & GRIDS ================= */
+
+        .section-title {
+            font-size: 17px;
+            font-weight: bold;
+            margin: 20px 0 12px 0;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        /* ================= FOLDER CARD ================= */
+
+        .folder-card {
+            background: #fffdf5;
+            border: 1px solid #f6e0b5;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+            transition: 0.2s;
+        }
+
+        .folder-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .folder-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .folder-icon {
+            font-size: 28px;
+        }
+
+        .folder-name {
+            font-weight: bold;
+            font-size: 15px;
+            color: #b86e00;
+        }
+
+        .folder-count {
+            font-size: 11px;
+            background: #fcebc9;
+            color: #8f5400;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-top: 3px;
+            display: inline-block;
+        }
+
+        .folder-body {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed #f3d498;
+            display: none;
+        }
+
+        .folder-card.open .folder-body {
+            display: block;
+        }
+
+        .folder-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 10px;
+            border-top: 1px solid #fcebc9;
+            padding-top: 8px;
+        }
+
+        /* ================= SHEET CARD ================= */
+
+        .sheet-card {
+            background: white;
+            border: 1px solid #dce5ed;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+            transition: 0.2s;
+        }
+
+        .sheet-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .sheet-card:hover {
+            border-color: #b1dfbb;
+        }
+
+        .sheet-main {
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .sheet-icon {
+            font-size: 24px;
+        }
+
+        .sheet-name {
+            font-size: 14px;
+            font-weight: bold;
+            color: #2d3748;
+            word-break: break-word;
+        }
+
+        .sheet-actions {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        /* ================= BUTTONS ================= */
+
+        .btn {
+            border: none;
+            padding: 5px 7px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+            text-decoration: none;
+            text-align: center;
+            transition: 0.2s;
+        }
+
+        .btn-open {
+            background: #eef9f1;
+            color: #1e7e34;
+            border: 1px solid #c3e6cb;
+            flex: 1;
+        }
+
+        .btn-move {
+            background: #fff8e1;
+            color: #b86e00;
+            border: 1px solid #ffe0b2;
+        }
+
+        .btn-move:hover {
+            background: #ffe0b2;
+        }
+
+        .btn-edit {
+            background: #eef7ff;
+            color: #2878c8;
+            border: 1px solid #cfe7fb;
+        }
+
+        .btn-delete {
+            background: #fdebec;
+            color: #dc3545;
+            border: 1px solid #f5c6cb;
+        }
+
+        .empty-text {
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            padding: 10px;
+        }
+
+        /* ================= MODAL ================= */
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .forms-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================= NAV ================= -->
+
+    <div class="top-nav">
+        <a href="https://elqwer14-spec.github.io/1/1.html">1. Data_Entry_links_Users</a>
+        <a href="https://elqwer14-spec.github.io/1/2.html">2. Data_Users</a>
+        <a href="https://elqwer14-spec.github.io/1/3.html">3. Last_add</a>
+        <a href="https://elqwer14-spec.github.io/1/4.html">4. Wallet</a>
+        <a href="https://elqwer14-spec.github.io/1/5.html">5. Clients</a>
+        <a href="https://elqwer14-spec.github.io/1/6.html">6. not_done_for_User</a>
+        <a href="https://elqwer14-spec.github.io/1/7.html">7. last_login</a>
+        <a href="https://elqwer14-spec.github.io/1/8.html">8. Search</a>
+    </div>
+
+    <!-- ================= MAIN CONTAINER ================= -->
+
+    <div class="container">
+
+        <div class="forms-grid">
+            <!-- FORM TO ADD FOLDER -->
+            <div class="form-box">
+                <div class="form-title">📁 إنشاء فولدر جديد</div>
+                <div class="form-group">
+                    <label>اسم الفولدر</label>
+                    <input type="text" id="folderName" placeholder="مثال: حسابات 2026">
+                </div>
+                <button class="add-btn add-btn-folder" onclick="addFolder()">إضافة الفولدر</button>
+            </div>
+
+            <!-- FORM TO ADD SHEET -->
+            <div class="form-box">
+                <div class="form-title">📊 إضافة شيت جديد</div>
+                <div class="form-group">
+                    <label>اسم الشيت</label>
+                    <input type="text" id="sheetName" placeholder="مثال: شيت مبيعات يناير">
+                </div>
+                <div class="form-group">
+                    <label>رابط الشيت (اللينك)</label>
+                    <input type="text" id="sheetLink" placeholder="https://docs.google.com/spreadsheets/d/...">
+                </div>
+                <div class="form-group">
+                    <label>الفولدر (اختياري)</label>
+                    <select id="folderSelect">
+                        <option value="">بدون فولدر (شيت حر)</option>
+                    </select>
+                </div>
+                <button class="add-btn" onclick="addSheet()">إضافة الشيت</button>
+            </div>
+        </div>
+
+        <!-- FOLDERS DISPLAY -->
+        <div class="section-title">📁 المجلدات (الفولدرات)</div>
+        <div class="grid-layout" id="foldersContainer">
+            <div class="empty-text">جاري تحميل المجلدات...</div>
+        </div>
+
+        <!-- SINGLE SHEETS DISPLAY -->
+        <div class="section-title">📊 شيتات حرة (بدون فولدر)</div>
+        <div class="grid-layout" id="freeSheetsContainer">
+            <div class="empty-text">جاري تحميل الشيتات...</div>
+        </div>
+
+    </div>
+
+    <!-- ================= MOVE SHEET MODAL ================= -->
+
+    <div class="modal" id="moveModal">
+        <div class="modal-content">
+            <div class="modal-title">🚚 نقل الشيت إلى فولدر آخر</div>
+            <div class="form-group">
+                <label>اختر المكان الجديد:</label>
+                <select id="moveFolderSelect">
+                    <option value="">بدون فولدر (شيت حر)</option>
+                </select>
+            </div>
+            <div class="modal-buttons">
+                <button class="add-btn" onclick="confirmMoveSheet()">حفظ النقل</button>
+                <button class="btn btn-delete" style="width:100px" onclick="closeMoveModal()">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= FIREBASE ================= -->
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, push, set, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        /* ================= FIREBASE CONFIG ================= */
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAB4wO937Rwc0OTWeJlGgoaxERWOdjaJM",
+            authDomain: "my-new-a6e9f.firebaseapp.com",
+            databaseURL: "https://my-new-a6e9f-default-rtdb.firebaseio.com",
+            projectId: "my-new-a6e9f",
+            storageBucket: "my-new-a6e9f.firebasestorage.app",
+            messagingSenderId: "1034729064842",
+            appId: "1:1034729064842:web:5b3d42fe7b5c0f3a3ae073"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const foldersRef = ref(db, "excel_folders");
+        const sheetsRef = ref(db, "excel_sheets");
+
+        let foldersData = {};
+        let sheetsData = {};
+        let openFolders = new Set();
+        let targetSheetIdForMove = null;
+
+        /* ================= LOAD DATA ================= */
+
+        onValue(foldersRef, (snapshot) => {
+            foldersData = snapshot.val() || {};
+            updateFolderSelectOptions();
+            renderUI();
+        });
+
+        onValue(sheetsRef, (snapshot) => {
+            sheetsData = snapshot.val() || {};
+            renderUI();
+        });
+
+        /* ================= ADD FOLDER ================= */
+
+        window.addFolder = function () {
+            const folderNameInput = document.getElementById("folderName");
+            const name = folderNameInput.value.trim();
+
+            if (!name) return alert("يرجى كتابة اسم الفولدر!");
+
+            const newFolderRef = push(foldersRef);
+            set(newFolderRef, {
+                name: name,
+                createdAt: Date.now()
+            }).then(() => {
+                folderNameInput.value = "";
+            });
+        };
+
+        /* ================= ADD SHEET ================= */
+
+        window.addSheet = function () {
+            const sheetNameInput = document.getElementById("sheetName");
+            const sheetLinkInput = document.getElementById("sheetLink");
+            const folderSelect = document.getElementById("folderSelect");
+
+            const name = sheetNameInput.value.trim();
+            let link = sheetLinkInput.value.trim();
+            const folderId = folderSelect.value;
+
+            if (!name || !link) return alert("يرجى كتابة اسم ورابط الشيت!");
+
+            if (!link.startsWith("http://") && !link.startsWith("https://")) {
+                link = "https://" + link;
+            }
+
+            const newSheetRef = push(sheetsRef);
+            set(newSheetRef, {
+                name: name,
+                link: link,
+                folderId: folderId || "",
+                createdAt: Date.now()
+            }).then(() => {
+                sheetNameInput.value = "";
+                sheetLinkInput.value = "";
+                folderSelect.value = "";
+            });
+        };
+
+        /* ================= UPDATE FOLDER SELECT OPTIONS ================= */
+
+        function updateFolderSelectOptions() {
+            const selects = [document.getElementById("folderSelect"), document.getElementById("moveFolderSelect")];
+            
+            selects.forEach(select => {
+                if (!select) return;
+                select.innerHTML = `<option value="">بدون فولدر (شيت حر)</option>`;
+                Object.keys(foldersData).forEach(id => {
+                    const folder = foldersData[id];
+                    select.innerHTML += `<option value="${id}">${folder.name}</option>`;
+                });
+            });
+        }
+
+        /* ================= RENDER UI ================= */
+
+        function renderUI() {
+            renderFolders();
+            renderFreeSheets();
+        }
+
+        /* ================= RENDER FOLDERS ================= */
+
+        function renderFolders() {
+            const container = document.getElementById("foldersContainer");
+            const folderKeys = Object.keys(foldersData);
+
+            if (folderKeys.length === 0) {
+                container.innerHTML = `<div class="empty-text">لا توجد مجلدات حالياً.</div>`;
+                return;
+            }
+
+            container.innerHTML = folderKeys.map(folderId => {
+                const folder = foldersData[folderId];
+                
+                const folderSheets = Object.keys(sheetsData)
+                    .filter(sId => sheetsData[sId].folderId === folderId)
+                    .map(sId => ({ id: sId, ...sheetsData[sId] }));
+
+                const isOpen = openFolders.has(folderId) ? "open" : "";
+
+                const sheetsHTML = folderSheets.length > 0 ? folderSheets.map(sheet => `
+                    <div class="sheet-card">
+                        <a href="${sheet.link}" target="_blank" class="sheet-main">
+                            <span class="sheet-icon">📊</span>
+                            <span class="sheet-name">${sheet.name}</span>
+                        </a>
+                        <div class="sheet-actions">
+                            <a href="${sheet.link}" target="_blank" class="btn btn-open">فتح 🔗</a>
+                            <button class="btn btn-move" onclick="openMoveModal('${sheet.id}')">نقل 🚚</button>
+                            <button class="btn btn-edit" onclick="editSheet('${sheet.id}')">تسمية ✏️</button>
+                            <button class="btn btn-delete" onclick="deleteSheet('${sheet.id}')">حذف 🗑️</button>
+                        </div>
+                    </div>
+                `).join("") : `<div class="empty-text">هذا الفولدر فارغ</div>`;
+
+                return `
+                    <div class="folder-card ${isOpen}" id="folder-${folderId}">
+                        <div class="folder-header" onclick="toggleFolder('${folderId}')">
+                            <div class="folder-info">
+                                <span class="folder-icon">📂</span>
+                                <div>
+                                    <div class="folder-name">${folder.name}</div>
+                                    <span class="folder-count">${folderSheets.length} شيت</span>
+                                </div>
+                            </div>
+                            <span style="font-size:12px; color:#888;">اضغط للفحص 🔽</span>
+                        </div>
+
+                        <div class="folder-body">
+                            ${sheetsHTML}
+                            <div class="folder-actions">
+                                <button class="btn btn-edit" style="width:50%" onclick="editFolder('${folderId}')">تسمية الفولدر ✏️</button>
+                                <button class="btn btn-delete" style="width:50%" onclick="deleteFolder('${folderId}')">حذف الفولدر 🗑️</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join("");
+        }
+
+        /* ================= RENDER FREE SHEETS ================= */
+
+        function renderFreeSheets() {
+            const container = document.getElementById("freeSheetsContainer");
+            
+            const freeSheets = Object.keys(sheetsData)
+                .filter(sId => !sheetsData[sId].folderId)
+                .map(sId => ({ id: sId, ...sheetsData[sId] }));
+
+            if (freeSheets.length === 0) {
+                container.innerHTML = `<div class="empty-text">لا توجد شيتات حرة.</div>`;
+                return;
+            }
+
+            container.innerHTML = freeSheets.map(sheet => `
+                <div class="sheet-card" style="margin-bottom:0">
+                    <a href="${sheet.link}" target="_blank" class="sheet-main">
+                        <span class="sheet-icon">📊</span>
+                        <span class="sheet-name">${sheet.name}</span>
+                    </a>
+                    <div class="sheet-actions">
+                        <a href="${sheet.link}" target="_blank" class="btn btn-open">فتح 🔗</a>
+                        <button class="btn btn-move" onclick="openMoveModal('${sheet.id}')">نقل 🚚</button>
+                        <button class="btn btn-edit" onclick="editSheet('${sheet.id}')">تسمية ✏️</button>
+                        <button class="btn btn-delete" onclick="deleteSheet('${sheet.id}')">حذف 🗑️</button>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        /* ================= MOVE SHEET LOGIC ================= */
+
+        window.openMoveModal = function (sheetId) {
+            targetSheetIdForMove = sheetId;
+            const currentFolderId = sheetsData[sheetId]?.folderId || "";
+            document.getElementById("moveFolderSelect").value = currentFolderId;
+            document.getElementById("moveModal").style.display = "flex";
+        };
+
+        window.closeMoveModal = function () {
+            document.getElementById("moveModal").style.display = "none";
+            targetSheetIdForMove = null;
+        };
+
+        window.confirmMoveSheet = function () {
+            if (!targetSheetIdForMove) return;
+            const newFolderId = document.getElementById("moveFolderSelect").value;
+            
+            update(ref(db, `excel_sheets/${targetSheetIdForMove}`), {
+                folderId: newFolderId
+            }).then(() => {
+                // فتح الفولدر المنقول إليه تلقائياً إن وجد
+                if (newFolderId) {
+                    openFolders.add(newFolderId);
+                }
+                closeMoveModal();
+            });
+        };
+
+        /* ================= TOGGLE FOLDER OPEN/CLOSE ================= */
+
+        window.toggleFolder = function (folderId) {
+            if (openFolders.has(folderId)) {
+                openFolders.delete(folderId);
+            } else {
+                openFolders.add(folderId);
+            }
+            renderFolders();
+        };
+
+        /* ================= EDIT & DELETE FOLDER ================= */
+
+        window.editFolder = function (folderId) {
+            const currentName = foldersData[folderId]?.name || "";
+            const newName = prompt("أدخل الاسم الجديد للفولدر:", currentName);
+            if (newName && newName.trim() !== "") {
+                update(ref(db, `excel_folders/${folderId}`), { name: newName.trim() });
+            }
+        };
+
+        window.deleteFolder = function (folderId) {
+            if (confirm("هل أنت تأكد من حذف هذا الفولدر؟ (ملاحظة: الشيتات بداخل هذا الفولدر لن تُحذف وستتحول إلى شيتات حرة)")) {
+                remove(ref(db, `excel_folders/${folderId}`));
+
+                Object.keys(sheetsData).forEach(sId => {
+                    if (sheetsData[sId].folderId === folderId) {
+                        update(ref(db, `excel_sheets/${sId}`), { folderId: "" });
+                    }
+                });
+            }
+        };
+
+        /* ================= EDIT & DELETE SHEET ================= */
+
+        window.editSheet = function (sheetId) {
+            const currentName = sheetsData[sheetId]?.name || "";
+            const newName = prompt("أدخل الاسم الجديد للشيت:", currentName);
+            if (newName && newName.trim() !== "") {
+                update(ref(db, `excel_sheets/${sheetId}`), { name: newName.trim() });
+            }
+        };
+
+        window.deleteSheet = function (sheetId) {
+            if (confirm("هل أنت تأكد من حذف هذا الشيت؟")) {
+                remove(ref(db, `excel_sheets/${sheetId}`));
+            }
+        };
+
+    </script>
+
+</body>
+
+</html>
