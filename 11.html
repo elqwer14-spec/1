@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الملاحظات</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f8fc;
+            color: #222;
+        }
+
+        /* ================= NAV ================= */
+
+        .top-nav {
+            background: #ffffff;
+            padding: 12px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            border-bottom: 1px solid #dce8f5;
+            box-shadow: 0 2px 8px rgba(60, 120, 180, 0.08);
+        }
+
+        .top-nav a {
+            color: #2878c8;
+            text-decoration: none;
+            background: #eef7ff;
+            border: 1px solid #cfe7fb;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+
+        .top-nav a:hover {
+            background: #dcefff;
+            color: #1764a8;
+            border-color: #b9dbf5;
+        }
+
+        /* ================= CONTAINER ================= */
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        .notes-box {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid #dce8f5;
+        }
+
+        .notes-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .notes-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2878c8;
+        }
+
+        .status-tag {
+            font-size: 12px;
+            color: #666;
+            background: #f0f4f8;
+            padding: 4px 10px;
+            border-radius: 12px;
+        }
+
+        /* ================= TEXTAREA ================= */
+
+        textarea {
+            width: 100%;
+            height: 350px;
+            padding: 15px;
+            border: 1px solid #cddce9;
+            border-radius: 8px;
+            font-size: 15px;
+            line-height: 1.6;
+            resize: vertical;
+            outline: none;
+            font-family: inherit;
+            background: #fafbfc;
+            transition: border-color 0.2s;
+        }
+
+        textarea:focus {
+            border-color: #4d9bd6;
+            background: #ffffff;
+        }
+
+        /* ================= ACTIONS ================= */
+
+        .actions {
+            margin-top: 15px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .delete-btn:hover {
+            background: #bb2d3b;
+        }
+
+        @media (max-width: 600px) {
+            .top-nav {
+                padding: 8px;
+            }
+
+            .top-nav a {
+                font-size: 11px;
+                padding: 7px 8px;
+            }
+
+            textarea {
+                height: 280px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================= NAV ================= -->
+
+    <div class="top-nav">
+        <a href="https://elqwer14-spec.github.io/1/1.html">1. Data_Entry_links_Users</a>
+        <a href="https://elqwer14-spec.github.io/1/2.html">2. Data_Users</a>
+        <a href="https://elqwer14-spec.github.io/1/3.html">3. Last_add</a>
+        <a href="https://elqwer14-spec.github.io/1/4.html">4. Wallet</a>
+        <a href="https://elqwer14-spec.github.io/1/5.html">5. Clients</a>
+        <a href="https://elqwer14-spec.github.io/1/6.html">6. not_done_for_User</a>
+        <a href="https://elqwer14-spec.github.io/1/7.html">7. last_login</a>
+        <a href="https://elqwer14-spec.github.io/1/8.html">8. Search</a>
+    </div>
+
+    <!-- ================= MAIN CONTAINER ================= -->
+
+    <div class="container">
+        <div class="notes-box">
+            <div class="notes-header">
+                <div class="notes-title">📝 الملاحظات الشخصية</div>
+                <div class="status-tag" id="statusTag">جاري التحميل...</div>
+            </div>
+
+            <textarea id="notesArea" placeholder="اكتب ملاحظاتك هنا... يتم الحفظ تلقائياً"></textarea>
+
+            <div class="actions">
+                <button class="delete-btn" onclick="deleteNotes()">🗑️ حذف الملاحظات</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= FIREBASE ================= -->
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, onValue, set, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        /* ================= FIREBASE CONFIG ================= */
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAB4wO937Rwc0OTWeJlGgoaxERWOdjaJM",
+            authDomain: "my-new-a6e9f.firebaseapp.com",
+            databaseURL: "https://my-new-a6e9f-default-rtdb.firebaseio.com",
+            projectId: "my-new-a6e9f",
+            storageBucket: "my-new-a6e9f.firebasestorage.app",
+            messagingSenderId: "1034729064842",
+            appId: "1:1034729064842:web:5b3d42fe7b5c0f3a3ae073"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const notesRef = ref(db, "my_notes");
+
+        const notesArea = document.getElementById("notesArea");
+        const statusTag = document.getElementById("statusTag");
+
+        let saveTimeout = null;
+
+        /* ================= LOAD NOTES ================= */
+
+        onValue(notesRef, (snapshot) => {
+            const data = snapshot.val();
+            // تحديث مربع النص فقط إذا لم يكن المستخدم يكتب حالياً
+            if (document.activeElement !== notesArea) {
+                notesArea.value = data || "";
+            }
+            statusTag.textContent = "تم التحميل ✅";
+        });
+
+        /* ================= AUTO SAVE ================= */
+
+        notesArea.addEventListener("input", () => {
+            statusTag.textContent = "جاري الكتابة...";
+
+            // إلغاء التوقيت السابق وحفظ بعد توقف الكتابة بـ 500 ملي ثانية
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                const text = notesArea.value;
+                set(notesRef, text).then(() => {
+                    statusTag.textContent = "تم الحفظ تلقائياً 💾";
+                }).catch(() => {
+                    statusTag.textContent = "خطأ في الحفظ ❌";
+                });
+            }, 500);
+        });
+
+        /* ================= DELETE NOTES ================= */
+
+        window.deleteNotes = function () {
+            if (confirm("هل أنت تأكد من حذف جميع الملاحظات؟")) {
+                remove(notesRef).then(() => {
+                    notesArea.value = "";
+                    statusTag.textContent = "تم الحذف 🗑️";
+                });
+            }
+        };
+    </script>
+
+</body>
+
+</html>
