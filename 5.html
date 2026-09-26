@@ -216,6 +216,11 @@
             color: #856404;
         }
 
+        .no-tasks-header {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
         .done-header {
             background: #e5f5ed;
             color: #176b48;
@@ -249,6 +254,9 @@
             padding: 10px;
             border-bottom: 1px solid #eee;
             font-size: 13px;
+        }
+
+        .status-user-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -296,6 +304,7 @@
         .quick-actions {
             display: flex;
             gap: 6px;
+            flex-wrap: wrap;
         }
 
         .btn-quick-done {
@@ -311,6 +320,21 @@
 
         .btn-quick-done:hover {
             background: #146c43;
+        }
+
+        .btn-quick-no-tasks {
+            background: #64748b;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .btn-quick-no-tasks:hover {
+            background: #475569;
         }
 
         .btn-quick-reject {
@@ -341,6 +365,110 @@
 
         .btn-quick-notes:hover {
             background: #31d2f2;
+        }
+
+        .btn-toggle-sublinks {
+            background: #e2e8f0;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+            padding: 5px 9px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-toggle-sublinks:hover {
+            background: #cbd5e1;
+        }
+
+        /* Sublinks Drawer Styling */
+        .sublinks-section {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+        }
+
+        .sublinks-section.active {
+            display: block;
+        }
+
+        .sublinks-title {
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 6px;
+            color: #475569;
+        }
+
+        .sublinks-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 8px 0;
+        }
+
+        .sublinks-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            padding: 5px 8px;
+            border: 1px solid #edf2f7;
+            border-radius: 4px;
+            margin-bottom: 4px;
+            font-size: 12px;
+        }
+
+        .sublinks-item a {
+            color: #2563eb;
+            text-decoration: none;
+            word-break: break-all;
+        }
+
+        .sublinks-item a:hover {
+            text-decoration: underline;
+        }
+
+        .btn-del-sublink {
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 12px;
+            padding: 0 4px;
+        }
+
+        .add-sublink-form {
+            display: flex;
+            gap: 5px;
+        }
+
+        .add-sublink-form input {
+            flex: 1;
+            padding: 6px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+
+        .add-sublink-form button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        .add-sublink-form button:hover {
+            background: #2563eb;
         }
 
         .no-status-users {
@@ -441,6 +569,11 @@
         .status-waiting {
             background: #fff3cd;
             color: #856404;
+        }
+
+        .status-no_tasks {
+            background: #e2e8f0;
+            color: #334155;
         }
 
         .status-done {
@@ -601,6 +734,7 @@
                 <label>الحالة</label>
                 <select id="clientStatus">
                     <option value="waiting">⏳ على الانتظار</option>
+                    <option value="no_tasks">🚫 بدون تاسكات</option>
                     <option value="done">✅ done</option>
                     <option value="reject">❌ recject</option>
                 </select>
@@ -630,6 +764,18 @@
                 <div class="status-list" id="waitingList"></div>
             </div>
 
+            <!-- قائمه بدون تاسكات الجديدة تحت قائمه الانتظار -->
+            <div class="status-box" id="noTasksBox">
+                <div class="status-header no-tasks-header" onclick="toggleStatus('noTasksBox')">
+                    <div class="status-header-left">
+                        <span class="status-arrow">▶</span>
+                        <span>🚫 بدون تاسكات</span>
+                    </div>
+                    <span class="status-count" id="noTasksCount">0</span>
+                </div>
+                <div class="status-list" id="noTasksList"></div>
+            </div>
+
             <div class="status-box" id="doneBox">
                 <div class="status-header done-header" onclick="toggleStatus('doneBox')">
                     <div class="status-header-left">
@@ -643,329 +789,4 @@
 
             <div class="status-box" id="rejectBox">
                 <div class="status-header reject-header" onclick="toggleStatus('rejectBox')">
-                    <div class="status-header-left">
-                        <span class="status-arrow">▶</span>
-                        <span>❌ recject</span>
-                    </div>
-                    <span class="status-count" id="rejectCount">0</span>
-                </div>
-                <div class="status-list" id="rejectList"></div>
-            </div>
-
-        </div>
-
-        <!-- ================= CLIENTS ================= -->
-
-        <div class="clients-box">
-            <div class="clients-title">قائمة العملاء</div>
-
-            <div class="client-search">
-                <input type="text" id="clientSearch" placeholder="🔎 ابحث عن عميل..." autocomplete="off" oninput="displayClients()">
-            </div>
-
-            <div id="clientsContainer">
-                <div class="loading">جاري تحميل العملاء...</div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- ================= FIREBASE ================= -->
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, push, set, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-        /* ================= FIREBASE CONFIG ================= */
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAB4wO937Rwc0OTWeJlGgoaxERWOdjaJM",
-            authDomain: "my-new-a6e9f.firebaseapp.com",
-            databaseURL: "https://my-new-a6e9f-default-rtdb.firebaseio.com",
-            projectId: "my-new-a6e9f",
-            storageBucket: "my-new-a6e9f.firebasestorage.app",
-            messagingSenderId: "1034729064842",
-            appId: "1:1034729064842:web:5b3d42fe7b5c0f3a3ae073"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const clientsRef = ref(db, "clients");
-
-        let clients = {};
-
-        /* ================= LOAD CLIENTS ================= */
-
-        onValue(clientsRef, (snapshot) => {
-            clients = snapshot.val() || {};
-            displayStatusSummary();
-            displayClients();
-            checkNameAvailability();
-            checkLinkAvailability();
-        });
-
-        /* ================= NORMALIZE ================= */
-
-        function normalize(value) {
-            return String(value || "").trim().toLowerCase();
-        }
-
-        /* ================= TOGGLE STATUS ================= */
-
-        window.toggleStatus = function (boxId) {
-            const box = document.getElementById(boxId);
-            if (box) {
-                box.classList.toggle("open");
-            }
-        };
-
-        /* ================= DISPLAY STATUS SUMMARY ================= */
-
-        function displayStatusSummary() {
-            const lists = {
-                waiting: document.getElementById("waitingList"),
-                done: document.getElementById("doneList"),
-                reject: document.getElementById("rejectList")
-            };
-
-            const counts = {
-                waiting: document.getElementById("waitingCount"),
-                done: document.getElementById("doneCount"),
-                reject: document.getElementById("rejectCount")
-            };
-
-            const statusGroups = {
-                waiting: [],
-                done: [],
-                reject: []
-            };
-
-            Object.keys(clients).forEach(id => {
-                const client = clients[id];
-                client.id = id;
-                const status = client.status || "waiting";
-                if (statusGroups[status]) {
-                    statusGroups[status].push(client);
-                }
-            });
-
-            ["waiting", "done", "reject"].forEach(status => {
-                const group = statusGroups[status];
-                counts[status].textContent = group.length;
-
-                if (group.length === 0) {
-                    lists[status].innerHTML = `<div class="no-status-users">لا يوجد عملاء</div>`;
-                } else {
-                    lists[status].innerHTML = group.map(client => `
-                        <div class="status-user">
-                            <div class="status-user-info">
-                                <div class="status-user-name">${client.name || 'بدون اسم'}</div>
-                                ${client.link ? `<a class="status-user-link" href="${client.link}" target="_blank">${client.link} 🔗</a>` : ''}
-                                ${status === 'done' ? `
-                                    <div class="status-user-notes">📝 ${client.notes ? client.notes : 'لا توجد ملاحظات'}</div>
-                                ` : ''}
-                            </div>
-                            <div class="quick-actions">
-                                ${status === 'waiting' ? `
-                                    <button class="btn-quick-done" onclick="changeStatus('${client.id}', 'done')">✅ Done</button>
-                                    <button class="btn-quick-reject" onclick="changeStatus('${client.id}', 'reject')">❌ Reject</button>
-                                ` : ''}
-                                ${status === 'done' ? `
-                                    <button class="btn-quick-notes" onclick="editDoneNotes('${client.id}')">📝 ملاحظات</button>
-                                ` : ''}
-                            </div>
-                        </div>
-                    `).join("");
-                }
-            });
-        }
-
-        /* ================= QUICK STATUS CHANGE ================= */
-
-        window.changeStatus = function (id, newStatus) {
-            update(ref(db, `clients/${id}`), { status: newStatus });
-        };
-
-        /* ================= EDIT NOTES FOR DONE CLIENTS ================= */
-
-        window.editDoneNotes = function (id) {
-            const currentNotes = clients[id]?.notes || '';
-            const newNotes = prompt("أدخل الملاحظات لهذا العميل:", currentNotes);
-            if (newNotes !== null) {
-                update(ref(db, `clients/${id}`), { notes: newNotes.trim() });
-            }
-        };
-
-        /* ================= DISPLAY CLIENTS ================= */
-
-        window.displayClients = function () {
-            const container = document.getElementById("clientsContainer");
-            const searchVal = normalize(document.getElementById("clientSearch").value);
-
-            const keys = Object.keys(clients);
-
-            if (keys.length === 0) {
-                container.innerHTML = `<div class="empty">لا يوجد عملاء مضافين.</div>`;
-                return;
-            }
-
-            const filteredKeys = keys.filter(id => {
-                const c = clients[id];
-                const name = normalize(c.name);
-                const link = normalize(c.link);
-                return name.includes(searchVal) || link.includes(searchVal);
-            });
-
-            if (filteredKeys.length === 0) {
-                container.innerHTML = `<div class="empty">لا توجد نتائج مطابقة.</div>`;
-                return;
-            }
-
-            container.innerHTML = filteredKeys.map(id => {
-                const c = clients[id];
-                const statusClass = c.status === "done" ? "status-done" : (c.status === "reject" ? "status-reject" : "status-waiting");
-                const statusText = c.status === "done" ? "✅ done" : (c.status === "reject" ? "❌ recject" : "⏳ على الانتظار");
-
-                return `
-                    <div class="client-card" id="card-${id}">
-                        <div class="client-name">${c.name || 'بدون اسم'}</div>
-                        ${c.link ? `<a class="client-link" href="${c.link}" target="_blank">${c.link}</a>` : ''}
-                        <div class="client-status ${statusClass}">${statusText}</div>
-                        ${c.notes ? `<div class="client-notes"><strong>ملاحظات:</strong> ${c.notes}</div>` : `<div class="client-notes" style="color:#aaa;">لا توجد ملاحظات</div>`}
-                        
-                        <div class="actions">
-                            <button class="edit-btn" onclick="editClient('${id}')">تعديل</button>
-                            <button class="delete-btn" onclick="deleteClient('${id}')">حذف</button>
-                        </div>
-                    </div>
-                `;
-            }).join("");
-        };
-
-        /* ================= CHECK NAME & LINK ================= */
-
-        window.checkNameAvailability = function () {
-            const name = document.getElementById("clientName").value.trim();
-            const result = document.getElementById("nameCheck");
-
-            if (!name) {
-                result.style.display = "none";
-                checkAddButton();
-                return;
-            }
-
-            const exists = Object.values(clients).some(c => normalize(c.name) === normalize(name));
-
-            if (exists) {
-                result.className = "check-result check-exists";
-                result.textContent = "❌ هذا الاسم مستخدم من قبل";
-            } else {
-                result.className = "check-result check-available";
-                result.textContent = "✅ الاسم متاح";
-            }
-            checkAddButton();
-        };
-
-        window.checkLinkAvailability = function () {
-            const link = document.getElementById("clientLink").value.trim();
-            const result = document.getElementById("linkCheck");
-
-            if (!link) {
-                result.style.display = "none";
-                checkAddButton();
-                return;
-            }
-
-            const exists = Object.values(clients).some(c => normalize(c.link) === normalize(link));
-
-            if (exists) {
-                result.className = "check-result check-exists";
-                result.textContent = "❌ هذا اللينك مستخدم من قبل";
-            } else {
-                result.className = "check-result check-available";
-                result.textContent = "✅ اللينك متاح";
-            }
-            checkAddButton();
-        };
-
-        function checkAddButton() {
-            const name = document.getElementById("clientName").value.trim();
-            const addBtn = document.getElementById("addBtn");
-            addBtn.disabled = !name;
-        }
-
-        /* ================= ADD CLIENT ================= */
-
-        window.addClient = function () {
-            const name = document.getElementById("clientName").value.trim();
-            const link = document.getElementById("clientLink").value.trim();
-            const status = document.getElementById("clientStatus").value;
-            const notes = document.getElementById("clientNotes").value.trim();
-
-            if (!name) return;
-
-            const newClientRef = push(clientsRef);
-            set(newClientRef, {
-                name,
-                link,
-                status,
-                notes,
-                createdAt: Date.now()
-            }).then(() => {
-                document.getElementById("clientName").value = "";
-                document.getElementById("clientLink").value = "";
-                document.getElementById("clientNotes").value = "";
-                document.getElementById("clientStatus").value = "waiting";
-                checkNameAvailability();
-                checkLinkAvailability();
-            });
-        };
-
-        /* ================= EDIT & DELETE ================= */
-
-        window.editClient = function (id) {
-            const c = clients[id];
-            const card = document.getElementById(`card-${id}`);
-
-            card.innerHTML = `
-                <div class="edit-content">
-                    <input type="text" id="edit-name-${id}" value="${c.name || ''}" placeholder="اسم العميل">
-                    <input type="text" id="edit-link-${id}" value="${c.link || ''}" placeholder="اللينك">
-                    <select id="edit-status-${id}" class="status-select">
-                        <option value="waiting" ${c.status === 'waiting' ? 'selected' : ''}>⏳ على الانتظار</option>
-                        <option value="done" ${c.status === 'done' ? 'selected' : ''}>✅ done</option>
-                        <option value="reject" ${c.status === 'reject' ? 'selected' : ''}>❌ recject</option>
-                    </select>
-                    <textarea id="edit-notes-${id}" placeholder="ملاحظات">${c.notes || ''}</textarea>
-                    <div class="edit-actions">
-                        <button class="save-btn" onclick="saveClient('${id}')">حفظ</button>
-                        <button class="cancel-btn" onclick="displayClients()">إلغاء</button>
-                    </div>
-                </div>
-            `;
-        };
-
-        window.saveClient = function (id) {
-            const name = document.getElementById(`edit-name-${id}`).value.trim();
-            const link = document.getElementById(`edit-link-${id}`).value.trim();
-            const status = document.getElementById(`edit-status-${id}`).value;
-            const notes = document.getElementById(`edit-notes-${id}`).value.trim();
-
-            update(ref(db, `clients/${id}`), {
-                name,
-                link,
-                status,
-                notes
-            });
-        };
-
-        window.deleteClient = function (id) {
-            if (confirm("هل انت متاكد من حذف هذا العميل؟")) {
-                remove(ref(db, `clients/${id}`));
-            }
-        };
-
-    </script>
-</body>
-
-</html>
+  
