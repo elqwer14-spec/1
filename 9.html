@@ -120,6 +120,32 @@
             gap: 8px;
         }
 
+        /* زر النسخ */
+        .copy-btn {
+            background: #e9ecef;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .copy-btn:hover {
+            background: #0d6efd;
+            color: white;
+            border-color: #0d6efd;
+        }
+
+        .copy-btn.copied {
+            background: #198754;
+            color: white;
+            border-color: #198754;
+        }
+
         .arrow-icon {
             font-size: 12px;
             color: #777;
@@ -395,6 +421,38 @@
                 .replace(/>/g, "&gt;");
         }
 
+        // دالة آمنة للنسخ تعمل في كافة البيئات وحتى في الأطر المضمنة (Iframe)
+        async function copyToClipboard(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                try {
+                    await navigator.clipboard.writeText(text);
+                    return true;
+                } catch (err) {
+                    console.warn("Clipboard API blocked, falling back to execCommand", err);
+                }
+            }
+
+            // Fallback Method
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-999999px";
+            textArea.style.top = "-999999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+
+            let successful = false;
+            try {
+                successful = document.execCommand('copy');
+            } catch (err) {
+                console.error('Fallback copy failed', err);
+            }
+
+            document.body.removeChild(textArea);
+            return successful;
+        }
+
         let users = {};
         const searchInput = document.getElementById("searchInput");
         const toggleAddUserBtn = document.getElementById("toggleAddUserBtn");
@@ -506,7 +564,8 @@
                 card.innerHTML = `
                     <div class="user-header">
                         <div class="username">
-                            👤 ${escapeHTML(username)}
+                            <span>👤 ${escapeHTML(username)}</span>
+                            <button class="copy-btn" data-copy="${escapeAttribute(username)}" title="نسخ اسم المستخدم">📋</button>
                         </div>
                         <span class="arrow-icon">▼</span>
                     </div>
@@ -592,6 +651,27 @@
                 const header = card.querySelector(".user-header");
                 header.addEventListener("click", () => {
                     card.classList.toggle("active");
+                });
+
+                // Copy Username Event
+                const copyBtn = card.querySelector(`[data-copy]`);
+                copyBtn.addEventListener("click", async (e) => {
+                    e.stopPropagation(); // منع فتح/إغلاق الكارت عند الضغط على زر النسخ
+                    const textToCopy = copyBtn.getAttribute("data-copy");
+
+                    const success = await copyToClipboard(textToCopy);
+
+                    if (success) {
+                        copyBtn.textContent = "✓ تم النسخ";
+                        copyBtn.classList.add("copied");
+
+                        setTimeout(() => {
+                            copyBtn.textContent = "📋";
+                            copyBtn.classList.remove("copied");
+                        }, 1500);
+                    } else {
+                        alert("تعذر النسخ التلقائي، يمكنك تحديد الاسم ونسخه يدوياً.");
+                    }
                 });
 
                 // Toggle Edit Form
