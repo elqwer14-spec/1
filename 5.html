@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>العملاء</title>
+    <title>العملاء والكامبينات</title>
 
     <style>
         * {
@@ -52,9 +52,75 @@
         /* ================= CONTAINER ================= */
 
         .container {
-            max-width: 900px;
+            max-width: 950px;
             margin: 20px auto;
             padding: 0 10px;
+        }
+
+        /* ================= LOGIN BAR ================= */
+
+        .login-bar {
+            background: #ffffff;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 5px #dfe8f0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            border-right: 4px solid #2878c8;
+        }
+
+        .login-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+
+        .login-select {
+            padding: 8px 12px;
+            border: 1px solid #cddce9;
+            border-radius: 6px;
+            font-size: 13px;
+            min-width: 180px;
+            background-color: #fff;
+        }
+
+        .btn-login {
+            background: #2878c8;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .btn-login:hover {
+            background: #1764a8;
+        }
+
+        .btn-logout {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .user-status {
+            font-size: 13px;
+            font-weight: bold;
+            color: #157347;
         }
 
         /* ================= SEARCH & ACTION BAR ================= */
@@ -81,11 +147,6 @@
             font-size: 14px;
         }
 
-        .search-input:focus {
-            outline: none;
-            border-color: #4d9bd6;
-        }
-
         .toggle-add-btn {
             background: #2878c8;
             color: white;
@@ -95,14 +156,9 @@
             cursor: pointer;
             font-size: 14px;
             font-weight: bold;
-            transition: 0.2s;
         }
 
-        .toggle-add-btn:hover {
-            background: #1764a8;
-        }
-
-        /* ================= FORM (Hidden by Default) ================= */
+        /* ================= FORM ================= */
 
         .form-box {
             display: none;
@@ -144,22 +200,7 @@
             border: 1px solid #cddce9;
             border-radius: 6px;
             font-size: 13px;
-            font-family: inherit;
         }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: #6daee5;
-        }
-
-        .form-group textarea {
-            min-height: 70px;
-            resize: vertical;
-        }
-
-        /* ================= ADD BUTTON ================= */
 
         .add-btn {
             width: 100%;
@@ -173,8 +214,85 @@
             font-weight: bold;
         }
 
-        .add-btn:hover {
-            background: #157347;
+        /* ================= CAMPAIGNS SECTION ================= */
+
+        .campaigns-container {
+            margin-bottom: 20px;
+        }
+
+        .campaign-card {
+            background: #ffffff;
+            border: 2px solid #6f42c1;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 6px rgba(111, 66, 193, 0.1);
+        }
+
+        .campaign-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .campaign-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #6f42c1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .campaign-client-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            padding: 10px 14px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+
+        .campaign-client-item.visited {
+            background-color: #e2f0d9;
+            border-color: #b2d8a0;
+        }
+
+        .visit-tag {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+
+        .visit-tag.visited {
+            background: #198754;
+            color: white;
+        }
+
+        .visit-tag.not-visited {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-remove-from-campaign {
+            background: #e2e8f0;
+            color: #dc3545;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 11px;
         }
 
         /* ================= STATUS SUMMARY ================= */
@@ -183,14 +301,34 @@
             background: white;
             padding: 15px;
             border-radius: 8px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             box-shadow: 0 1px 5px #dfe8f0;
         }
 
-        .status-summary-title {
-            font-size: 17px;
-            font-weight: bold;
+        .status-summary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .status-summary-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2878c8;
+        }
+
+        .btn-add-campaign {
+            background: #6f42c1;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
         }
 
         .status-box {
@@ -208,51 +346,18 @@
             align-items: center;
             font-size: 13px;
             font-weight: bold;
-            user-select: none;
         }
 
-        .status-header-left {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-        }
-
-        .status-arrow {
-            font-size: 12px;
-            transition: 0.2s;
-        }
-
-        .status-box.open .status-arrow {
-            transform: rotate(90deg);
-        }
-
-        .waiting-header {
-            background: #fff8df;
-            color: #856404;
-        }
-
-        .no-tasks-header {
-            background: #e2e8f0;
-            color: #334155;
-        }
-
-        .done-header {
-            background: #e5f5ed;
-            color: #176b48;
-        }
-
-        .reject-header {
-            background: #fdebec;
-            color: #842029;
-        }
+        .waiting-header { background: #fff8df; color: #856404; }
+        .no-tasks-header { background: #e2e8f0; color: #334155; }
+        .done-header { background: #e5f5ed; color: #176b48; }
+        .reject-header { background: #fdebec; color: #842029; }
 
         .status-count {
             background: white;
             padding: 3px 8px;
             border-radius: 12px;
             font-size: 11px;
-            min-width: 25px;
-            text-align: center;
         }
 
         .status-list {
@@ -265,78 +370,37 @@
             display: block;
         }
 
-        .client-checkbox {
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-            accent-color: #2878c8;
-        }
-
         .status-user {
             padding: 10px;
             border-bottom: 1px solid #eee;
             font-size: 13px;
-            transition: background-color 0.2s;
-        }
-
-        .status-user.is-checked {
-            background-color: #f0f7ff;
         }
 
         .status-user-top {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             gap: 10px;
             flex-wrap: wrap;
         }
 
-        .status-user-info-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex: 1;
-            min-width: 180px;
-        }
-
-        .status-user-info {
-            flex: 1;
-        }
-
-        .status-user-name {
-            font-weight: bold;
-            margin-bottom: 3px;
-        }
-
-        .status-user-link {
-            color: #2878c8;
-            text-decoration: none;
-            font-size: 12px;
-            word-break: break-all;
+        .client-link-text {
             display: block;
-        }
-
-        .status-user-notes {
-            margin-top: 5px;
+            margin-top: 4px;
             font-size: 12px;
-            color: #495057;
-            background: #f1f8f5;
-            padding: 5px 8px;
-            border-radius: 4px;
-            border-right: 3px solid #198754;
-            white-space: pre-wrap;
+            color: #2878c8;
+            word-break: break-all;
+            text-decoration: underline;
         }
 
         .quick-actions {
             display: flex;
-            gap: 6px;
+            gap: 5px;
             flex-wrap: wrap;
-            align-items: center;
+            margin-top: 5px;
         }
 
-        .btn-quick-done {
-            background: #198754;
-            color: white;
+        .quick-actions button {
             border: none;
             padding: 5px 10px;
             border-radius: 5px;
@@ -345,53 +409,10 @@
             font-weight: bold;
         }
 
-        .btn-quick-no-tasks {
-            background: #64748b;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        .btn-quick-reject {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        .btn-quick-note {
-            background: #0dcaf0;
-            color: #000;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        .btn-quick-delete {
-            background: #6c757d;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        .btn-quick-delete:hover {
-            background: #b02a37;
-        }
+        .btn-quick-done { background: #198754; color: white; }
+        .btn-quick-no-tasks { background: #64748b; color: white; }
+        .btn-quick-reject { background: #dc3545; color: white; }
+        .btn-quick-campaign { background: #6f42c1; color: white; }
 
         .no-status-users {
             color: #888;
@@ -400,33 +421,48 @@
             font-size: 12px;
         }
 
-        /* تعديل الملاحظات المدمج */
-        .notes-edit-box {
+        /* Modal */
+        .modal-overlay {
             display: none;
-            margin-top: 8px;
-            gap: 6px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
         }
 
-        .notes-edit-box.open {
-            display: flex;
+        .modal-overlay.open { display: flex; }
+
+        .modal-box {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            width: 90%;
+            max-width: 400px;
         }
 
-        .notes-edit-box input {
-            flex: 1;
-            padding: 5px 8px;
-            font-size: 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        .notes-edit-box button {
-            padding: 5px 10px;
-            font-size: 11px;
-            background: #198754;
+        .btn-modal-confirm {
+            background: #6f42c1;
             color: white;
             border: none;
-            border-radius: 4px;
+            padding: 8px 16px;
+            border-radius: 6px;
             cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-modal-cancel {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -451,26 +487,36 @@
 
     <div class="container">
 
+        <!-- ================= LOGIN BAR ================= -->
+        <div class="login-bar">
+            <div class="login-controls">
+                <label for="userSelect"><b>المستخدم:</b></label>
+                <select id="userSelect" class="login-select">
+                    <option value="">جاري تحميل المستخدمين...</option>
+                </select>
+                <button id="loginBtn" class="btn-login">تسجيل دخول</button>
+                <button id="logoutBtn" class="btn-logout">تسجيل خروج</button>
+            </div>
+            <div id="userStatus" class="user-status">غير مسجل دخول (زائر)</div>
+        </div>
+
         <!-- ================= SEARCH & ACTION BAR ================= -->
-        <div class="action-bar">
-            <input type="text" id="searchInput" class="search-input" placeholder="🔍 بحث عن عميل بالاسم أو اللينك أو الملاحظات...">
+        <div class="action-bar" id="actionBar">
+            <input type="text" id="searchInput" class="search-input" placeholder="🔍 بحث عن عميل...">
             <button class="toggle-add-btn" id="toggleAddBtn">➕ إضافة عميل جديد</button>
         </div>
 
         <!-- ================= ADD CLIENT (Form Box) ================= -->
         <div class="form-box" id="formBox">
             <div class="form-title">إضافة عميل جديد</div>
-
             <div class="form-group">
                 <label>اسم العميل *</label>
-                <input type="text" id="clientName" placeholder="اكتب اسم العميل" autocomplete="off">
+                <input type="text" id="clientName" placeholder="اكتب اسم العميل">
             </div>
-
             <div class="form-group">
                 <label>لينك العميل</label>
-                <input type="text" id="clientLink" placeholder="https://example.com" autocomplete="off">
+                <input type="text" id="clientLink" placeholder="https://example.com">
             </div>
-
             <div class="form-group">
                 <label>الحالة</label>
                 <select id="clientStatus">
@@ -480,40 +526,33 @@
                     <option value="reject">❌ reject</option>
                 </select>
             </div>
-
             <div class="form-group">
                 <label>ملاحظات</label>
                 <textarea id="clientNotes" placeholder="اكتب ملاحظات..."></textarea>
             </div>
-
             <button class="add-btn" id="addBtn">إضافة العميل</button>
         </div>
 
-        <!-- ================= STATUS SUMMARY ================= -->
-        <div class="status-summary">
-            <div class="status-summary-title">حالات العملاء</div>
+        <!-- ================= 1. STATUS SUMMARY (حالات العملاء أولاً) ================= -->
+        <div class="status-summary" id="statusSummarySection">
+            <div class="status-summary-header">
+                <div class="status-summary-title">حالات العملاء</div>
+                <button class="btn-add-campaign" id="createCampaignBtn">➕ إضافة كامبين جديد</button>
+            </div>
 
             <!-- قائمة الانتظار -->
             <div class="status-box" id="waitingBox">
                 <div class="status-header waiting-header" onclick="toggleStatus('waitingBox')">
-                    <div class="status-header-left">
-                        <span class="status-arrow">▶</span>
-                        <span>⏳ على الانتظار</span>
-                    </div>
+                    <span>⏳ على الانتظار</span>
                     <span class="status-count" id="waitingCount">0</span>
                 </div>
-                <div class="status-list" id="waitingList">
-                    <div id="waitingItems"></div>
-                </div>
+                <div class="status-list" id="waitingList"><div id="waitingItems"></div></div>
             </div>
 
             <!-- قائمة بدون تاسكات -->
             <div class="status-box" id="noTasksBox">
                 <div class="status-header no-tasks-header" onclick="toggleStatus('noTasksBox')">
-                    <div class="status-header-left">
-                        <span class="status-arrow">▶</span>
-                        <span>🚫 بدون تاسكات</span>
-                    </div>
+                    <span>🚫 بدون تاسكات</span>
                     <span class="status-count" id="noTasksCount">0</span>
                 </div>
                 <div class="status-list" id="noTasksList"></div>
@@ -522,10 +561,7 @@
             <!-- قائمة تم -->
             <div class="status-box" id="doneBox">
                 <div class="status-header done-header" onclick="toggleStatus('doneBox')">
-                    <div class="status-header-left">
-                        <span class="status-arrow">▶</span>
-                        <span>✅ done</span>
-                    </div>
+                    <span>✅ done</span>
                     <span class="status-count" id="doneCount">0</span>
                 </div>
                 <div class="status-list" id="doneList"></div>
@@ -534,15 +570,29 @@
             <!-- قائمة مرفوض -->
             <div class="status-box" id="rejectBox">
                 <div class="status-header reject-header" onclick="toggleStatus('rejectBox')">
-                    <div class="status-header-left">
-                        <span class="status-arrow">▶</span>
-                        <span>❌ reject</span>
-                    </div>
+                    <span>❌ reject</span>
                     <span class="status-count" id="rejectCount">0</span>
                 </div>
                 <div class="status-list" id="rejectList"></div>
             </div>
+        </div>
 
+        <!-- ================= 2. CAMPAIGNS SECTION (الكامبينات ثانياً) ================= -->
+        <div class="campaigns-container" id="campaignsContainer"></div>
+
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="campaignModal">
+        <div class="modal-box">
+            <div class="modal-title" style="font-weight:bold; color:#6f42c1; margin-bottom:10px;">🚀 اختر الكامبين لتحويل العميل إليه</div>
+            <div class="form-group">
+                <select id="modalCampaignSelect"></select>
+            </div>
+            <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:15px;">
+                <button class="btn-modal-confirm" id="confirmAssignCampaignBtn">تأكيد</button>
+                <button class="btn-modal-cancel" id="cancelAssignCampaignBtn">إلغاء</button>
+            </div>
         </div>
     </div>
 
@@ -564,23 +614,112 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         const clientsRef = ref(db, 'clients');
+        const usersRef = ref(db, 'users');
+        const campaignsRef = ref(db, 'campaigns');
 
         let rawClientsData = null;
+        let rawCampaignsData = null;
+        let currentUser = localStorage.getItem('logged_user') || null;
+        let selectedClientIdForCampaign = null;
 
-        // إظهار / إخفاء فورم إضافة العميل
-        const toggleAddBtn = document.getElementById('toggleAddBtn');
+        const userSelect = document.getElementById('userSelect');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const userStatus = document.getElementById('userStatus');
+
+        const actionBar = document.getElementById('actionBar');
         const formBox = document.getElementById('formBox');
+        const statusSummarySection = document.getElementById('statusSummarySection');
 
-        toggleAddBtn.addEventListener('click', () => {
-            formBox.classList.toggle('open');
-            if (formBox.classList.contains('open')) {
-                toggleAddBtn.textContent = '❌ إغلاق نموذج الإضافة';
+        function escapeHTML(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function escapeAttribute(str) {
+            if (!str) return '';
+            return String(str).replace(/"/g, '&quot;');
+        }
+
+        window.toggleStatus = function(boxId) {
+            const el = document.getElementById(boxId);
+            if (el) el.classList.toggle('open');
+        };
+
+        function updateLoginUI() {
+            if (currentUser) {
+                userStatus.textContent = `مرحباً، ${currentUser}`;
+                userSelect.style.display = 'none';
+                loginBtn.style.display = 'none';
+                logoutBtn.style.display = 'inline-block';
+
+                actionBar.style.display = 'none';
+                formBox.style.display = 'none';
+                statusSummarySection.style.display = 'none';
             } else {
-                toggleAddBtn.textContent = '➕ إضافة عميل جديد';
+                userStatus.textContent = 'غير مسجل دخول (زائر)';
+                userSelect.style.display = 'inline-block';
+                loginBtn.style.display = 'inline-block';
+                logoutBtn.style.display = 'none';
+
+                actionBar.style.display = 'flex';
+                statusSummarySection.style.display = 'block';
             }
+        }
+
+        onValue(usersRef, (snapshot) => {
+            const usersData = snapshot.val();
+            userSelect.innerHTML = '<option value="">-- اختر مستخدم --</option>';
+            if (usersData) {
+                Object.keys(usersData).forEach(id => {
+                    const u = usersData[id];
+                    const userName = typeof u === 'string' ? u : (u.name || u.username || id);
+                    const opt = document.createElement('option');
+                    opt.value = userName;
+                    opt.textContent = userName;
+                    userSelect.appendChild(opt);
+                });
+            }
+            updateLoginUI();
         });
 
-        // إضافة عميل جديد
+        loginBtn.addEventListener('click', () => {
+            const selected = userSelect.value;
+            if (!selected) {
+                alert('يرجى اختيار اسم مستخدم من القائمة');
+                return;
+            }
+            currentUser = selected;
+            localStorage.setItem('logged_user', currentUser);
+            updateLoginUI();
+            renderAll();
+        });
+
+        logoutBtn.addEventListener('click', () => {
+            if (rawClientsData) {
+                Object.keys(rawClientsData).forEach(clientId => {
+                    if (rawClientsData[clientId].visited) {
+                        update(ref(db, `clients/${clientId}`), { visited: false });
+                    }
+                });
+            }
+
+            currentUser = null;
+            localStorage.removeItem('logged_user');
+            updateLoginUI();
+            renderAll();
+        });
+
+        const toggleAddBtn = document.getElementById('toggleAddBtn');
+        toggleAddBtn.addEventListener('click', () => {
+            formBox.classList.toggle('open');
+        });
+
         document.getElementById('addBtn').addEventListener('click', () => {
             const name = document.getElementById('clientName').value.trim();
             const link = document.getElementById('clientLink').value.trim();
@@ -593,209 +732,244 @@
             }
 
             push(clientsRef, {
-                name,
-                link,
-                status,
-                notes,
-                checked: false,
+                name, link, status, notes,
+                visited: false,
+                addedBy: currentUser || 'زائر',
                 createdAt: Date.now()
             }).then(() => {
                 document.getElementById('clientName').value = '';
                 document.getElementById('clientLink').value = '';
                 document.getElementById('clientNotes').value = '';
                 formBox.classList.remove('open');
-                toggleAddBtn.textContent = '➕ إضافة عميل جديد';
             });
         });
 
-        // البحث التلقائي
-        document.getElementById('searchInput').addEventListener('input', () => {
-            renderClients(rawClientsData);
+        document.getElementById('createCampaignBtn').addEventListener('click', () => {
+            const campaignName = prompt("أدخل اسم الكامبين الجديد:");
+            if (campaignName && campaignName.trim()) {
+                push(campaignsRef, { name: campaignName.trim(), createdAt: Date.now() });
+            }
         });
 
-        // مراقبة البيانات من Firebase
+        onValue(campaignsRef, (snapshot) => {
+            rawCampaignsData = snapshot.val();
+            renderAll();
+        });
+
         onValue(clientsRef, (snapshot) => {
             rawClientsData = snapshot.val();
-            renderClients(rawClientsData);
+            renderAll();
         });
 
-        // دالة العرض والبحث
-        function renderClients(data) {
-            const searchQuery = document.getElementById('searchInput').value.trim().toLowerCase();
+        document.getElementById('searchInput').addEventListener('input', renderAll);
 
-            const containers = {
-                waiting: document.getElementById('waitingItems'),
-                no_tasks: document.getElementById('noTasksList'),
-                done: document.getElementById('doneList'),
-                reject: document.getElementById('rejectList')
-            };
+        function renderAll() {
+            renderCampaigns(rawCampaignsData, rawClientsData);
+            renderClients(rawClientsData);
+        }
 
-            const counts = { waiting: 0, no_tasks: 0, done: 0, reject: 0 };
-            Object.keys(containers).forEach(key => containers[key].innerHTML = '');
+        function renderCampaigns(campaigns, clients) {
+            const container = document.getElementById('campaignsContainer');
+            container.innerHTML = '';
 
-            if (data) {
-                const waitingClients = [];
+            if (!campaigns) return;
 
-                Object.keys(data).forEach(id => {
-                    const client = data[id];
-                    client.id = id;
-                    const status = client.status || 'waiting';
+            Object.keys(campaigns).forEach(cId => {
+                const campaign = campaigns[cId];
+                let clientsHTML = '';
+                let count = 0;
 
-                    // التصفية بالبحث
-                    const nameMatch = (client.name || '').toLowerCase().includes(searchQuery);
-                    const linkMatch = (client.link || '').toLowerCase().includes(searchQuery);
-                    const notesMatch = (client.notes || '').toLowerCase().includes(searchQuery);
+                if (clients) {
+                    Object.keys(clients).forEach(clientId => {
+                        const client = clients[clientId];
+                        if (client.campaignId === cId) {
+                            count++;
+                            const isVisited = client.visited === true;
 
-                    if (searchQuery && !nameMatch && !linkMatch && !notesMatch) {
-                        return; // يتخطى العنصر إن لم يطابق البحث
-                    }
-
-                    if (counts[status] !== undefined) {
-                        counts[status]++;
-
-                        if (status === 'waiting') {
-                            waitingClients.push(client);
-                        } else {
-                            // القوائم الأخرى غير الانتظار
-                            containers[status].innerHTML += createClientHTML(client, false);
+                            clientsHTML += `
+                                <div class="campaign-client-item ${isVisited ? 'visited' : ''}">
+                                    <div>
+                                        <strong>${escapeHTML(client.name)}</strong>
+                                        ${client.link ? `<a href="${escapeAttribute(client.link)}" target="_blank" class="client-link-action client-link-text" data-id="${clientId}">${escapeHTML(client.link)}</a>` : ''}
+                                    </div>
+                                    <div style="display:flex; align-items:center; gap:8px;">
+                                        <button class="visit-toggle-btn visit-tag ${isVisited ? 'visited' : 'not-visited'}" data-id="${clientId}" style="border:none; cursor:pointer;">
+                                            ${isVisited ? 'تم الدخول 👁️' : 'لم يتم الدخول ❌'}
+                                        </button>
+                                        ${!currentUser ? `<button class="btn-remove-from-campaign" data-id="${clientId}">إزالة ✖</button>` : ''}
+                                    </div>
+                                </div>
+                            `;
                         }
+                    });
+                }
+
+                if (count === 0) {
+                    clientsHTML = '<div class="no-status-users">لا يوجد عملاء داخل هذا الكامبين حالياً</div>';
+                }
+
+                container.innerHTML += `
+                    <div class="campaign-card">
+                        <div class="campaign-header">
+                            <div class="campaign-title">
+                                <span>🎯 ${escapeHTML(campaign.name)}</span>
+                                <span class="status-count">${count}</span>
+                            </div>
+                        </div>
+                        <div>${clientsHTML}</div>
+                    </div>
+                `;
+            });
+
+            document.querySelectorAll('.visit-toggle-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    if (id && rawClientsData && rawClientsData[id]) {
+                        const current = rawClientsData[id].visited || false;
+                        update(ref(db, `clients/${id}`), { visited: !current });
                     }
                 });
+            });
 
-                // ترتيب عملاء الانتظار: المحدد يظهر في الأعلى
-                waitingClients.sort((a, b) => (b.checked === true ? 1 : 0) - (a.checked === true ? 1 : 0));
+            document.querySelectorAll('.client-link-action').forEach(a => {
+                a.addEventListener('click', (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    if (id) {
+                        update(ref(db, `clients/${id}`), { visited: true });
+                    }
+                });
+            });
 
-                // عرض قائمة الانتظار
-                waitingClients.forEach(client => {
-                    containers.waiting.innerHTML += createClientHTML(client, true);
+            document.querySelectorAll('.btn-remove-from-campaign').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    if (id) {
+                        update(ref(db, `clients/${id}`), { campaignId: null });
+                    }
+                });
+            });
+        }
+
+        function renderClients(clients) {
+            const filter = document.getElementById('searchInput').value.trim().toLowerCase();
+
+            const items = {
+                waiting: [],
+                no_tasks: [],
+                done: [],
+                reject: []
+            };
+
+            if (clients) {
+                Object.keys(clients).forEach(id => {
+                    const client = clients[id];
+                    client.id = id;
+
+                    if (filter) {
+                        const matchName = client.name && client.name.toLowerCase().includes(filter);
+                        const matchNotes = client.notes && client.notes.toLowerCase().includes(filter);
+                        if (!matchName && !matchNotes) return;
+                    }
+
+                    const st = client.status || 'waiting';
+                    if (items[st]) {
+                        items[st].push(client);
+                    }
                 });
             }
 
-            // تحديث العدادات
-            document.getElementById('waitingCount').innerText = counts.waiting;
-            document.getElementById('noTasksCount').innerText = counts.no_tasks;
-            document.getElementById('doneCount').innerText = counts.done;
-            document.getElementById('rejectCount').innerText = counts.reject;
+            document.getElementById('waitingCount').textContent = items.waiting.length;
+            document.getElementById('noTasksCount').textContent = items.no_tasks.length;
+            document.getElementById('doneCount').textContent = items.done.length;
+            document.getElementById('rejectCount').textContent = items.reject.length;
 
-            // رسائل للقوائم الفارغة
-            Object.keys(containers).forEach(key => {
-                if (containers[key].children.length === 0) {
-                    containers[key].innerHTML = '<div class="no-status-users">لا يوجد عملاء</div>';
-                }
-            });
-
-            // ربط أحداث الأزرار والـ Checkbox
-            attachEvents();
+            renderStatusList('waitingItems', items.waiting);
+            renderStatusList('noTasksList', items.no_tasks);
+            renderStatusList('doneList', items.done);
+            renderStatusList('rejectList', items.reject);
         }
 
-        // دالة إنشاء كود الـ HTML لكل عميل
-        function createClientHTML(client, isWaitingList) {
-            const isChecked = client.checked ? 'checked' : '';
-            const checkedClass = client.checked ? 'is-checked' : '';
+        function renderStatusList(containerId, list) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
 
-            return `
-                <div class="status-user ${isWaitingList ? checkedClass : ''}">
-                    <div class="status-user-top">
-                        <div class="status-user-info-wrapper">
-                            ${isWaitingList ? `<input type="checkbox" class="client-checkbox waiting-checkbox" data-id="${client.id}" ${isChecked}>` : ''}
-                            <div class="status-user-info">
-                                <div class="status-user-name">${escapeHTML(client.name)}</div>
-                                ${client.link ? `<a href="${escapeAttribute(client.link)}" target="_blank" class="status-user-link auto-check-link" data-id="${client.id}">${escapeHTML(client.link)}</a>` : ''}
+            container.innerHTML = '';
+            if (list.length === 0) {
+                container.innerHTML = '<div class="no-status-users">لا يوجد عملاء</div>';
+                return;
+            }
+
+            list.forEach(client => {
+                container.innerHTML += `
+                    <div class="status-user">
+                        <div class="status-user-top">
+                            <div>
+                                <strong>${escapeHTML(client.name)}</strong>
+                                ${client.link ? `<a href="${escapeAttribute(client.link)}" target="_blank" class="client-link-text">${escapeHTML(client.link)}</a>` : ''}
+                            </div>
+                            <div class="quick-actions">
+                                <button class="btn-quick-done" data-id="${client.id}" data-status="done">✅ done</button>
+                                <button class="btn-quick-no-tasks" data-id="${client.id}" data-status="no_tasks">🚫 بدون تاسكات</button>
+                                <button class="btn-quick-reject" data-id="${client.id}" data-status="reject">❌ reject</button>
+                                <button class="btn-quick-campaign" data-id="${client.id}">🚀 تحويل لكامبين</button>
                             </div>
                         </div>
-                        <div class="quick-actions">
-                            ${client.status !== 'waiting' ? `<button class="btn-quick-no-tasks" data-id="${client.id}" data-status="waiting">⏳ انتظار</button>` : ''}
-                            ${client.status !== 'done' ? `<button class="btn-quick-done" data-id="${client.id}" data-status="done">✅ done</button>` : ''}
-                            ${client.status !== 'no_tasks' ? `<button class="btn-quick-no-tasks" data-id="${client.id}" data-status="no_tasks">🚫 بدون تاسكات</button>` : ''}
-                            ${client.status !== 'reject' ? `<button class="btn-quick-reject" data-id="${client.id}" data-status="reject">❌ reject</button>` : ''}
-                            <button class="btn-quick-note" data-id="${client.id}">📝 ملاحظات</button>
-                            <button class="btn-quick-delete" data-id="${client.id}">🗑️ حذف</button>
-                        </div>
+                        ${client.notes ? `<div style="font-size:12px; color:#666; margin-top:6px;">📝 ${escapeHTML(client.notes)}</div>` : ''}
                     </div>
-                    ${client.notes ? `<div class="status-user-notes" id="note-display-${client.id}">${escapeHTML(client.notes)}</div>` : ''}
-                    <div class="notes-edit-box" id="note-box-${client.id}">
-                        <input type="text" id="note-input-${client.id}" value="${escapeAttribute(client.notes || '')}" placeholder="اكتب ملاحظات جديدة...">
-                        <button class="btn-save-note" data-id="${client.id}">حفظ</button>
-                    </div>
-                </div>
-            `;
-        }
+                `;
+            });
 
-        // ربط الأحداث التفاعلية
-        function attachEvents() {
-            // تحويل حالة العميل
-            document.querySelectorAll('.quick-actions button[data-status]').forEach(btn => {
+            container.querySelectorAll('button[data-status]').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const id = e.target.getAttribute('data-id');
-                    const newStatus = e.target.getAttribute('data-status');
-                    update(ref(db, `clients/${id}`), { status: newStatus });
+                    const status = e.target.getAttribute('data-status');
+                    update(ref(db, `clients/${id}`), { status });
                 });
             });
 
-            // حذف العميل
-            document.querySelectorAll('.btn-quick-delete').forEach(btn => {
+            container.querySelectorAll('.btn-quick-campaign').forEach(btn => {
                 btn.addEventListener('click', (e) => {
-                    const id = e.target.getAttribute('data-id');
-                    if (confirm("هل أنت تأكد من حذف هذا العميل نهائياً؟")) {
-                        remove(ref(db, `clients/${id}`));
-                    }
-                });
-            });
-
-            // إظهار/إخفاء مربع الملاحظات
-            document.querySelectorAll('.btn-quick-note').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const id = e.target.getAttribute('data-id');
-                    const noteBox = document.getElementById(`note-box-${id}`);
-                    noteBox.classList.toggle('open');
-                });
-            });
-
-            // حفظ الملاحظات الجديدة
-            document.querySelectorAll('.btn-save-note').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const id = e.target.getAttribute('data-id');
-                    const newNote = document.getElementById(`note-input-${id}`).value.trim();
-                    update(ref(db, `clients/${id}`), { notes: newNote });
-                });
-            });
-
-            // ربط ה- Checkbox يدوي
-            document.querySelectorAll('.waiting-checkbox').forEach(cb => {
-                cb.addEventListener('change', (e) => {
-                    const id = e.target.getAttribute('data-id');
-                    const isChecked = e.target.checked;
-                    update(ref(db, `clients/${id}`), { checked: isChecked });
-                });
-            });
-
-            // تحديد العميل عند الضغط على اللينك
-            document.querySelectorAll('.auto-check-link').forEach(link => {
-                link.addEventListener('click', (e) => {
-                    const id = e.target.getAttribute('data-id');
-                    update(ref(db, `clients/${id}`), { checked: true });
+                    selectedClientIdForCampaign = e.target.getAttribute('data-id');
+                    openCampaignModal();
                 });
             });
         }
 
-        function escapeHTML(text) {
-            if (!text) return '';
-            const div = document.createElement("div");
-            div.textContent = text;
-            return div.innerHTML;
+        function openCampaignModal() {
+            const modalSelect = document.getElementById('modalCampaignSelect');
+            modalSelect.innerHTML = '';
+
+            if (rawCampaignsData) {
+                Object.keys(rawCampaignsData).forEach(cId => {
+                    const opt = document.createElement('option');
+                    opt.value = cId;
+                    opt.textContent = rawCampaignsData[cId].name;
+                    modalSelect.appendChild(opt);
+                });
+            }
+
+            if (modalSelect.children.length === 0) {
+                alert('لا يوجد كامبينات متاحة، قم بإنشاء كامبين جديد أولاً');
+                return;
+            }
+
+            document.getElementById('campaignModal').classList.add('open');
         }
 
-        function escapeAttribute(text) {
-            if (!text) return '';
-            return String(text).replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-        }
-    </script>
+        document.getElementById('confirmAssignCampaignBtn').addEventListener('click', () => {
+            const cId = document.getElementById('modalCampaignSelect').value;
+            if (selectedClientIdForCampaign && cId) {
+                update(ref(db, `clients/${selectedClientIdForCampaign}`), { campaignId: cId });
+                document.getElementById('campaignModal').classList.remove('open');
+                selectedClientIdForCampaign = null;
+            }
+        });
 
-    <script>
-        function toggleStatus(boxId) {
-            const box = document.getElementById(boxId);
-            box.classList.toggle('open');
-        }
+        document.getElementById('cancelAssignCampaignBtn').addEventListener('click', () => {
+            document.getElementById('campaignModal').classList.remove('open');
+            selectedClientIdForCampaign = null;
+        });
+
     </script>
 </body>
 
