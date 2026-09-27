@@ -106,37 +106,6 @@
             resize: vertical;
         }
 
-        /* ================= CHECK NAME ================= */
-
-        .check-result {
-            margin-top: 5px;
-            padding: 7px 9px;
-            border-radius: 5px;
-            font-size: 12px;
-            display: none;
-        }
-
-        .check-available {
-            display: block;
-            background: #e7f7ed;
-            color: #157347;
-            border: 1px solid #b9e4ca;
-        }
-
-        .check-exists {
-            display: block;
-            background: #fde8e8;
-            color: #b42318;
-            border: 1px solid #f2b8b5;
-        }
-
-        .check-searching {
-            display: block;
-            background: #eef7ff;
-            color: #2878c8;
-            border: 1px solid #cfe7fb;
-        }
-
         /* ================= ADD BUTTON ================= */
 
         .add-btn {
@@ -152,11 +121,6 @@
 
         .add-btn:hover {
             background: #378ac8;
-        }
-
-        .add-btn:disabled {
-            background: #b7c5d1;
-            cursor: not-allowed;
         }
 
         /* ================= STATUS SUMMARY ================= */
@@ -190,10 +154,6 @@
             align-items: center;
             font-size: 13px;
             font-weight: bold;
-        }
-
-        .status-header:hover {
-            opacity: 0.9;
         }
 
         .status-header-left {
@@ -250,10 +210,23 @@
             display: block;
         }
 
+        .client-checkbox {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: #2878c8;
+        }
+
         .status-user {
             padding: 10px;
             border-bottom: 1px solid #eee;
             font-size: 13px;
+            transition: background-color 0.2s;
+        }
+
+        /* خلفية مُميّزة للعميل المُعلّم عليه */
+        .status-user.is-checked {
+            background-color: #f0f7ff;
         }
 
         .status-user-top {
@@ -264,13 +237,16 @@
             flex-wrap: wrap;
         }
 
-        .status-user:last-child {
-            border-bottom: none;
+        .status-user-info-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            min-width: 180px;
         }
 
         .status-user-info {
             flex: 1;
-            min-width: 180px;
         }
 
         .status-user-name {
@@ -284,10 +260,6 @@
             font-size: 12px;
             word-break: break-all;
             display: block;
-        }
-
-        .status-user-link:hover {
-            text-decoration: underline;
         }
 
         .status-user-notes {
@@ -318,10 +290,6 @@
             font-weight: bold;
         }
 
-        .btn-quick-done:hover {
-            background: #146c43;
-        }
-
         .btn-quick-no-tasks {
             background: #64748b;
             color: white;
@@ -331,10 +299,6 @@
             cursor: pointer;
             font-size: 11px;
             font-weight: bold;
-        }
-
-        .btn-quick-no-tasks:hover {
-            background: #475569;
         }
 
         .btn-quick-reject {
@@ -348,358 +312,18 @@
             font-weight: bold;
         }
 
-        .btn-quick-reject:hover {
-            background: #b22a37;
-        }
-
-        .btn-quick-notes {
-            background: #0dcaf0;
-            color: #212529;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        .btn-quick-notes:hover {
-            background: #31d2f2;
-        }
-
-        .btn-toggle-sublinks {
-            background: #e2e8f0;
-            color: #334155;
-            border: 1px solid #cbd5e1;
-            padding: 5px 9px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .btn-toggle-sublinks:hover {
-            background: #cbd5e1;
-        }
-
-        /* Sublinks Drawer Styling */
-        .sublinks-section {
-            display: none;
-            margin-top: 10px;
-            padding: 10px;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-        }
-
-        .sublinks-section.active {
-            display: block;
-        }
-
-        .sublinks-title {
-            font-weight: bold;
-            font-size: 12px;
-            margin-bottom: 6px;
-            color: #475569;
-        }
-
-        .sublinks-list {
-            list-style: none;
-            padding: 0;
-            margin: 0 0 8px 0;
-        }
-
-        .sublinks-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #fff;
-            padding: 5px 8px;
-            border: 1px solid #edf2f7;
-            border-radius: 4px;
-            margin-bottom: 4px;
-            font-size: 12px;
-        }
-
-        .sublinks-item a {
-            color: #2563eb;
-            text-decoration: none;
-            word-break: break-all;
-        }
-
-        .sublinks-item a:hover {
-            text-decoration: underline;
-        }
-
-        .btn-del-sublink {
-            background: none;
-            border: none;
-            color: #ef4444;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 12px;
-            padding: 0 4px;
-        }
-
-        .add-sublink-form {
-            display: flex;
-            gap: 5px;
-        }
-
-        .add-sublink-form input {
-            flex: 1;
-            padding: 6px;
-            border: 1px solid #cbd5e1;
-            border-radius: 4px;
-            font-size: 11px;
-        }
-
-        .add-sublink-form button {
-            background: #3b82f6;
-            color: white;
-            border: none;
-            padding: 6px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 11px;
-        }
-
-        .add-sublink-form button:hover {
-            background: #2563eb;
-        }
-
         .no-status-users {
             color: #888;
             text-align: center;
             padding: 8px;
             font-size: 12px;
         }
-
-        /* ================= CLIENTS ================= */
-
-        .clients-box {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 1px 5px #dfe8f0;
-        }
-
-        .clients-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 12px;
-        }
-
-        /* ================= SEARCH ================= */
-
-        .client-search {
-            background: #f5f9fd;
-            padding: 10px;
-            border-radius: 7px;
-            margin-bottom: 15px;
-        }
-
-        .client-search input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #cddce9;
-            border-radius: 6px;
-            font-size: 13px;
-        }
-
-        .client-search input:focus {
-            outline: none;
-            border-color: #6daee5;
-        }
-
-        /* ================= CLIENT CARD ================= */
-
-        .client-card {
-            border: 1px solid #dce5ed;
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 10px;
-            background: #fff;
-        }
-
-        .client-name {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .client-link {
-            display: block;
-            color: #2878c8;
-            text-decoration: none;
-            word-break: break-all;
-            margin-bottom: 6px;
-            font-size: 13px;
-        }
-
-        .client-link:hover {
-            text-decoration: underline;
-        }
-
-        .client-notes {
-            font-size: 13px;
-            color: #555;
-            margin-top: 7px;
-            white-space: pre-wrap;
-            background: #f8f9fa;
-            padding: 8px;
-            border-radius: 5px;
-            border-right: 3px solid #2878c8;
-        }
-
-        /* ================= STATUS ================= */
-
-        .client-status {
-            display: inline-block;
-            margin: 5px 0 8px 0;
-            padding: 5px 9px;
-            border-radius: 5px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .status-waiting {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .status-no_tasks {
-            background: #e2e8f0;
-            color: #334155;
-        }
-
-        .status-done {
-            background: #d1e7dd;
-            color: #0f5132;
-        }
-
-        .status-reject {
-            background: #f8d7da;
-            color: #842029;
-        }
-
-        .status-select {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 13px;
-            margin-bottom: 7px;
-        }
-
-        /* ================= ACTIONS ================= */
-
-        .actions {
-            display: flex;
-            gap: 7px;
-            margin-top: 10px;
-        }
-
-        .actions button {
-            border: none;
-            padding: 7px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            color: white;
-            font-size: 12px;
-        }
-
-        .edit-btn {
-            background: #4d9bd6;
-        }
-
-        .edit-btn:hover {
-            background: #378ac8;
-        }
-
-        .delete-btn {
-            background: #dc3545;
-        }
-
-        .delete-btn:hover {
-            background: #bb2d3b;
-        }
-
-        .save-btn {
-            background: #198754;
-        }
-
-        .cancel-btn {
-            background: #6c757d;
-        }
-
-        /* ================= EDIT ================= */
-
-        .edit-content input,
-        .edit-content textarea {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            margin-bottom: 7px;
-            font-size: 13px;
-        }
-
-        .edit-content textarea {
-            min-height: 70px;
-            resize: vertical;
-        }
-
-        .edit-actions {
-            display: flex;
-            gap: 7px;
-        }
-
-        .edit-actions button {
-            border: none;
-            padding: 7px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            color: white;
-            font-size: 12px;
-        }
-
-        /* ================= EMPTY ================= */
-
-        .loading,
-        .empty {
-            text-align: center;
-            padding: 20px;
-            color: #777;
-            font-size: 14px;
-        }
-
-        @media (max-width: 600px) {
-
-            .top-nav {
-                padding: 8px;
-            }
-
-            .top-nav a {
-                font-size: 11px;
-                padding: 7px 8px;
-            }
-
-            .container {
-                margin-top: 12px;
-            }
-        }
     </style>
-
 </head>
 
 <body>
 
     <!-- ================= NAV ================= -->
-
     <div class="top-nav">
         <a href="https://elqwer14-spec.github.io/1/1.html">1. Data_Entry_links_Users</a>
         <a href="https://elqwer14-spec.github.io/1/2.html">2. Data_Users</a>
@@ -714,20 +338,17 @@
     <div class="container">
 
         <!-- ================= ADD CLIENT ================= -->
-
         <div class="form-box">
             <div class="form-title">إضافة عميل</div>
 
             <div class="form-group">
                 <label>اسم العميل</label>
-                <input type="text" id="clientName" placeholder="اكتب اسم العميل" autocomplete="off" oninput="checkNameAvailability()">
-                <div id="nameCheck" class="check-result"></div>
+                <input type="text" id="clientName" placeholder="اكتب اسم العميل" autocomplete="off">
             </div>
 
             <div class="form-group">
                 <label>لينك العميل</label>
-                <input type="text" id="clientLink" placeholder="https://example.com" autocomplete="off" oninput="checkLinkAvailability()">
-                <div id="linkCheck" class="check-result"></div>
+                <input type="text" id="clientLink" placeholder="https://example.com" autocomplete="off">
             </div>
 
             <div class="form-group">
@@ -736,7 +357,7 @@
                     <option value="waiting">⏳ على الانتظار</option>
                     <option value="no_tasks">🚫 بدون تاسكات</option>
                     <option value="done">✅ done</option>
-                    <option value="reject">❌ recject</option>
+                    <option value="reject">❌ reject</option>
                 </select>
             </div>
 
@@ -745,15 +366,15 @@
                 <textarea id="clientNotes" placeholder="اكتب ملاحظات..."></textarea>
             </div>
 
-            <button class="add-btn" id="addBtn" onclick="addClient()">إضافة العميل</button>
+            <button class="add-btn" id="addBtn">إضافة العميل</button>
         </div>
 
         <!-- ================= STATUS SUMMARY ================= -->
-
         <div class="status-summary">
             <div class="status-summary-title">حالات العملاء</div>
 
-            <div class="status-box" id="waitingBox">
+            <!-- قائمة الانتظار -->
+            <div class="status-box open" id="waitingBox">
                 <div class="status-header waiting-header" onclick="toggleStatus('waitingBox')">
                     <div class="status-header-left">
                         <span class="status-arrow">▶</span>
@@ -761,10 +382,12 @@
                     </div>
                     <span class="status-count" id="waitingCount">0</span>
                 </div>
-                <div class="status-list" id="waitingList"></div>
+                <div class="status-list" id="waitingList">
+                    <div id="waitingItems"></div>
+                </div>
             </div>
 
-            <!-- قائمه بدون تاسكات الجديدة تحت قائمه الانتظار -->
+            <!-- قائمة بدون تاسكات -->
             <div class="status-box" id="noTasksBox">
                 <div class="status-header no-tasks-header" onclick="toggleStatus('noTasksBox')">
                     <div class="status-header-left">
@@ -776,6 +399,7 @@
                 <div class="status-list" id="noTasksList"></div>
             </div>
 
+            <!-- قائمة تم -->
             <div class="status-box" id="doneBox">
                 <div class="status-header done-header" onclick="toggleStatus('doneBox')">
                     <div class="status-header-left">
@@ -787,6 +411,199 @@
                 <div class="status-list" id="doneList"></div>
             </div>
 
+            <!-- قائمة مرفوض -->
             <div class="status-box" id="rejectBox">
                 <div class="status-header reject-header" onclick="toggleStatus('rejectBox')">
-  
+                    <div class="status-header-left">
+                        <span class="status-arrow">▶</span>
+                        <span>❌ reject</span>
+                    </div>
+                    <span class="status-count" id="rejectCount">0</span>
+                </div>
+                <div class="status-list" id="rejectList"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ================= FIREBASE & APP SCRIPT ================= -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, push, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAB4wO937rCwc0OTWeJlGgoaxERWOdjaJM",
+            authDomain: "my-new-a6e9f.firebaseapp.com",
+            databaseURL: "https://my-new-a6e9f-default-rtdb.firebaseio.com",
+            projectId: "my-new-a6e9f",
+            storageBucket: "my-new-a6e9f.firebasestorage.app",
+            messagingSenderId: "1034729064842",
+            appId: "1:1034729064842:web:5b3d42fe7b5c0f3a3ae073"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const clientsRef = ref(db, 'clients');
+
+        // إضافة عميل جديد
+        document.getElementById('addBtn').addEventListener('click', () => {
+            const name = document.getElementById('clientName').value.trim();
+            const link = document.getElementById('clientLink').value.trim();
+            const status = document.getElementById('clientStatus').value;
+            const notes = document.getElementById('clientNotes').value.trim();
+
+            if (!name) {
+                alert('يرجى إدخال اسم العميل');
+                return;
+            }
+
+            push(clientsRef, {
+                name,
+                link,
+                status,
+                notes,
+                checked: false,
+                createdAt: Date.now()
+            }).then(() => {
+                document.getElementById('clientName').value = '';
+                document.getElementById('clientLink').value = '';
+                document.getElementById('clientNotes').value = '';
+            });
+        });
+
+        // مراقبة البيانات من Firebase
+        onValue(clientsRef, (snapshot) => {
+            const data = snapshot.val();
+            
+            const containers = {
+                waiting: document.getElementById('waitingItems'),
+                no_tasks: document.getElementById('noTasksList'),
+                done: document.getElementById('doneList'),
+                reject: document.getElementById('rejectList')
+            };
+
+            const counts = { waiting: 0, no_tasks: 0, done: 0, reject: 0 };
+            Object.keys(containers).forEach(key => containers[key].innerHTML = '');
+
+            if (data) {
+                const waitingClients = [];
+
+                Object.keys(data).forEach(id => {
+                    const client = data[id];
+                    client.id = id;
+                    const status = client.status || 'waiting';
+
+                    if (counts[status] !== undefined) {
+                        counts[status]++;
+
+                        if (status === 'waiting') {
+                            waitingClients.push(client);
+                        } else {
+                            // باقي القوائم
+                            containers[status].innerHTML += `
+                                <div class="status-user">
+                                    <div class="status-user-top">
+                                        <div class="status-user-info">
+                                            <div class="status-user-name">${client.name}</div>
+                                            ${client.link ? `<a href="${client.link}" target="_blank" class="status-user-link">${client.link}</a>` : ''}
+                                        </div>
+                                        <div class="quick-actions">
+                                            <button class="btn-quick-no-tasks" data-id="${id}" data-status="waiting">⏳ انتظار</button>
+                                            <button class="btn-quick-done" data-id="${id}" data-status="done">✅ done</button>
+                                            <button class="btn-quick-no-tasks" data-id="${id}" data-status="no_tasks">🚫 بدون تاسكات</button>
+                                            <button class="btn-quick-reject" data-id="${id}" data-status="reject">❌ reject</button>
+                                        </div>
+                                    </div>
+                                    ${client.notes ? `<div class="status-user-notes">${client.notes}</div>` : ''}
+                                </div>
+                            `;
+                        }
+                    }
+                });
+
+                // ترتيب عملاء الانتظار: المحدد يظهر في الأعلى
+                waitingClients.sort((a, b) => (b.checked === true ? 1 : 0) - (a.checked === true ? 1 : 0));
+
+                // عرض عملاء قائمة الانتظار
+                waitingClients.forEach(client => {
+                    const isChecked = client.checked ? 'checked' : '';
+                    const checkedClass = client.checked ? 'is-checked' : '';
+
+                    containers.waiting.innerHTML += `
+                        <div class="status-user ${checkedClass}">
+                            <div class="status-user-top">
+                                <div class="status-user-info-wrapper">
+                                    <input type="checkbox" class="client-checkbox waiting-checkbox" data-id="${client.id}" ${isChecked}>
+                                    <div class="status-user-info">
+                                        <div class="status-user-name">${client.name}</div>
+                                        ${client.link ? `<a href="${client.link}" target="_blank" class="status-user-link auto-check-link" data-id="${client.id}">${client.link}</a>` : ''}
+                                    </div>
+                                </div>
+                                <div class="quick-actions">
+                                    <button class="btn-quick-done" data-id="${client.id}" data-status="done">✅ done</button>
+                                    <button class="btn-quick-no-tasks" data-id="${client.id}" data-status="no_tasks">🚫 بدون تاسكات</button>
+                                    <button class="btn-quick-reject" data-id="${client.id}" data-status="reject">❌ reject</button>
+                                </div>
+                            </div>
+                            ${client.notes ? `<div class="status-user-notes">${client.notes}</div>` : ''}
+                        </div>
+                    `;
+                });
+            }
+
+            // تحديث العدادات
+            document.getElementById('waitingCount').innerText = counts.waiting;
+            document.getElementById('noTasksCount').innerText = counts.no_tasks;
+            document.getElementById('doneCount').innerText = counts.done;
+            document.getElementById('rejectCount').innerText = counts.reject;
+
+            // رسائل للقوائم الفارغة
+            Object.keys(containers).forEach(key => {
+                if (counts[key] === 0) {
+                    containers[key].innerHTML = '<div class="no-status-users">لا يوجد عملاء</div>';
+                }
+            });
+
+            // ربط أزرار تحويل الحالة
+            document.querySelectorAll('.quick-actions button').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    const newStatus = e.target.getAttribute('data-status');
+                    updateStatus(id, newStatus);
+                });
+            });
+
+            // ربط الـ Checkbox يدوي
+            document.querySelectorAll('.waiting-checkbox').forEach(cb => {
+                cb.addEventListener('change', (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    const isChecked = e.target.checked;
+                    update(ref(db, `clients/${id}`), { checked: isChecked });
+                });
+            });
+
+            // التعديل الجديد: تحديد العميل تلقائياً عند الضغط على الرابط
+            document.querySelectorAll('.auto-check-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    update(ref(db, `clients/${id}`), { checked: true });
+                });
+            });
+        });
+
+        // دالة تحديث حالة العميل
+        function updateStatus(id, newStatus) {
+            const itemRef = ref(db, `clients/${id}`);
+            update(itemRef, { status: newStatus });
+        }
+    </script>
+
+    <script>
+        function toggleStatus(boxId) {
+            const box = document.getElementById(boxId);
+            box.classList.toggle('open');
+        }
+    </script>
+</body>
+
+</html>
