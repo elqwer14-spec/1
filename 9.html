@@ -4,11 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>بيانات المستخدمين</title>
 
     <style>
-
         * {
             box-sizing: border-box;
         }
@@ -21,7 +19,7 @@
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 900px;
             margin: auto;
         }
 
@@ -30,78 +28,168 @@
             margin-bottom: 20px;
         }
 
-        .total-box {
+        /* شريط التحكم */
+        .actions-bar {
             background: white;
             padding: 15px;
             border-radius: 10px;
             margin-bottom: 15px;
             box-shadow: 0 1px 5px #ddd;
-            font-size: 17px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
+        .search-input {
+            padding: 9px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            width: 250px;
+        }
+
+        .add-user-btn {
+            background: #198754;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .add-user-btn:hover {
+            background: #157347;
+        }
+
+        /* كارت إضافة مستخدم */
+        .add-user-card {
+            display: none;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border: 2px solid #198754;
+        }
+
+        .add-user-card.open {
+            display: block;
+        }
+
+        .add-user-card h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 18px;
+            color: #198754;
+        }
+
+        /* كارت المستخدم */
         .user-card {
             background: white;
             border-radius: 10px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 8px #ddd;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
             overflow: hidden;
+            border: 1px solid #e0e0e0;
+            transition: all 0.2s ease;
         }
 
         .user-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-            gap: 10px;
+            padding: 16px 20px;
+            cursor: pointer;
+            background: white;
+            user-select: none;
+        }
+
+        .user-header:hover {
+            background: #f8f9fa;
         }
 
         .username {
-            font-size: 18px;
+            font-size: 17px;
             font-weight: bold;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .arrow-icon {
+            font-size: 12px;
+            color: #777;
+            transition: transform 0.3s ease;
+        }
+
+        .user-card.active .arrow-icon {
+            transform: rotate(180deg);
+        }
+
+        /* تفاصيل البيانات (مخفية افتراضياً) */
+        .user-details {
+            display: none;
+            border-top: 1px solid #eee;
+            background: #fafafa;
+        }
+
+        .user-card.active .user-details {
+            display: block;
+        }
+
+        .user-body {
+            padding: 15px 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 12px;
+        }
+
+        .data-label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 4px;
+            color: #666;
+            font-size: 13px;
+        }
+
+        .data-value {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 6px;
+            min-height: 40px;
+            word-break: break-all;
+            font-size: 14px;
+        }
+
+        .card-actions {
+            padding: 0 20px 15px 20px;
         }
 
         .edit-btn {
             background: #0d6efd;
             color: white;
             border: none;
-            padding: 9px 15px;
+            padding: 8px 16px;
             border-radius: 6px;
             cursor: pointer;
+            font-size: 14px;
         }
 
         .edit-btn:hover {
             background: #0b5ed7;
         }
 
-        .user-body {
-            padding: 15px;
-        }
-
-        .data-row {
-            margin-bottom: 12px;
-        }
-
-        .data-label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 6px;
-        }
-
-        .data-value {
-            background: #f8f9fa;
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 6px;
-            min-height: 40px;
-            word-break: break-all;
-        }
-
+        /* فورم التعديل */
         .edit-form {
             display: none;
-            padding: 15px;
-            background: #f8f9fa;
-            border-top: 1px solid #eee;
+            padding: 15px 20px;
+            background: #f1f3f5;
+            border-top: 1px solid #ddd;
         }
 
         .edit-form.open {
@@ -119,18 +207,29 @@
         }
 
         textarea {
-            min-height: 90px;
+            min-height: 80px;
             resize: vertical;
         }
 
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+        }
+
         .form-group {
-            margin-bottom: 12px;
+            margin-bottom: 8px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
         }
 
         .form-label {
             display: block;
             font-weight: bold;
             margin-bottom: 6px;
+            font-size: 13px;
         }
 
         .buttons {
@@ -143,7 +242,7 @@
             background: #198754;
             color: white;
             border: none;
-            padding: 10px 18px;
+            padding: 9px 16px;
             border-radius: 6px;
             cursor: pointer;
         }
@@ -152,11 +251,16 @@
             background: #157347;
         }
 
+        .save-btn:disabled {
+            background: #a5d6a7;
+            cursor: not-allowed;
+        }
+
         .cancel-btn {
             background: #6c757d;
             color: white;
             border: none;
-            padding: 10px 18px;
+            padding: 9px 16px;
             border-radius: 6px;
             cursor: pointer;
         }
@@ -188,555 +292,376 @@
         }
 
         @media (max-width: 600px) {
-
             body {
                 padding: 10px;
             }
 
-            .user-header {
-                padding: 12px;
+            .search-input {
+                width: 100%;
             }
 
-            .username {
-                font-size: 15px;
+            .actions-bar {
+                flex-direction: column;
+                align-items: stretch;
             }
-
-            .edit-btn {
-                padding: 8px 10px;
-                font-size: 12px;
-            }
-
         }
-
     </style>
-
 </head>
-
 
 <body>
 
-<div class="container">
+    <div class="container">
+        <h1>بيانات المستخدمين</h1>
 
-    <h1>بيانات المستخدمين</h1>
+        <!-- شريط الإجراءات والبحث -->
+        <div class="actions-bar">
+            <span id="totalUsers">إجمالي المستخدمين: 0</span>
+            <input type="text" id="searchInput" class="search-input" placeholder="🔍 بحث عن مستخدم...">
+            <button class="add-user-btn" id="toggleAddUserBtn">➕ إضافة مستخدم جديد</button>
+        </div>
 
-    <div class="total-box" id="totalUsers">
-        إجمالي المستخدمين: 0
-    </div>
-
-    <div id="usersContainer" class="loading">
-        جاري تحميل المستخدمين...
-    </div>
-
-</div>
-
-
-<script type="module">
-
-    /* =====================================================
-       Firebase
-    ===================================================== */
-
-    import {
-        initializeApp
-    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-
-
-    import {
-        getDatabase,
-        ref,
-        onValue,
-        update
-    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-
-    /* =====================================================
-       Firebase Config
-    ===================================================== */
-
-    const firebaseConfig = {
-
-        apiKey:
-            "AIzaSyAB4wO937rCwc0OTWeJlGgoaxErWOdjaJM",
-
-        authDomain:
-            "my-new-a6e9f.firebaseapp.com",
-
-        databaseURL:
-            "https://my-new-a6e9f-default-rtdb.firebaseio.com",
-
-        projectId:
-            "my-new-a6e9f",
-
-        storageBucket:
-            "my-new-a6e9f.firebasestorage.app",
-
-        messagingSenderId:
-            "1034729064842",
-
-        appId:
-            "1:1034729064842:web:5b3d42fe7b5c0f3a3ae073"
-
-    };
-
-
-    /* تشغيل Firebase */
-
-    const app =
-        initializeApp(firebaseConfig);
-
-    const db =
-        getDatabase(app);
-
-
-    /* =====================================================
-       المستخدمين
-    ===================================================== */
-
-    let users = {};
-
-
-    /* =====================================================
-       تحميل المستخدمين
-    ===================================================== */
-
-    onValue(
-        ref(db, "users"),
-        (snapshot) => {
-
-            users =
-                snapshot.val() || {};
-
-            displayUsers();
-
-        }
-    );
-
-
-    /* =====================================================
-       عرض المستخدمين
-    ===================================================== */
-
-    function displayUsers() {
-
-        const container =
-            document.getElementById("usersContainer");
-
-        const totalUsers =
-            document.getElementById("totalUsers");
-
-
-        container.innerHTML = "";
-
-
-        const userEntries =
-            Object.entries(users);
-
-
-        totalUsers.innerHTML =
-            `إجمالي المستخدمين: <b>${userEntries.length}</b>`;
-
-
-        if (userEntries.length === 0) {
-
-            container.innerHTML = `
-                <div class="empty">
-                    لا يوجد مستخدمين حتى الآن
+        <!-- نموذج إضافة مستخدم جديد -->
+        <div class="add-user-card" id="addUserCard">
+            <h2>➕ إضافة مستخدم جديد</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">اسم المستخدم *</label>
+                    <input type="text" id="newUsername" placeholder="مثال: أحمد محمد">
                 </div>
-            `;
+                <div class="form-group">
+                    <label class="form-label">البريد الإلكتروني (Email)</label>
+                    <input type="email" id="newEmail" placeholder="example@mail.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">المُحيل (Referred By)</label>
+                    <input type="text" id="newReferrer" placeholder="اسم أو ID المحيل">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">الرصيد الابتدائي</label>
+                    <input type="number" id="newBalance" value="0" step="0.01">
+                </div>
+                <div class="form-group full-width">
+                    <label class="form-label">رابط Reff</label>
+                    <input type="url" id="newReff" placeholder="https://...">
+                </div>
+                <div class="form-group full-width">
+                    <label class="form-label">ملاحظات</label>
+                    <textarea id="newNotes" placeholder="أدخل أي ملاحظات هنا..."></textarea>
+                </div>
+            </div>
+            <div class="buttons">
+                <button class="save-btn" id="submitNewUserBtn">💾 حفظ المستخدم</button>
+                <button class="cancel-btn" id="closeAddUserBtn">إلغاء</button>
+            </div>
+        </div>
 
-            return;
+        <!-- قائمة المستخدمين -->
+        <div id="usersContainer" class="loading">
+            جاري تحميل المستخدمين...
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, onValue, update, push, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAB4wO937rCwc0OTWeJlGgoaxErWOdjaJM",
+            authDomain: "my-new-a6e9f.firebaseapp.com",
+            databaseURL: "https://my-new-a6e9f-default-rtdb.firebaseio.com",
+            projectId: "my-new-a6e9f",
+            storageBucket: "my-new-a6e9f.firebasestorage.app",
+            messagingSenderId: "1034729064842",
+            appId: "1:1034729064842:web:5b3d42fe7b5c0f3a3ae073"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        function escapeHTML(text) {
+            if (text === null || text === undefined) return '';
+            const div = document.createElement("div");
+            div.textContent = String(text);
+            return div.innerHTML;
         }
 
+        function escapeAttribute(text) {
+            if (text === null || text === undefined) return '';
+            return String(text)
+                .replace(/&/g, "&amp;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
+        }
 
-        /* =================================================
-           كل مستخدم
-        ================================================= */
+        let users = {};
+        const searchInput = document.getElementById("searchInput");
+        const toggleAddUserBtn = document.getElementById("toggleAddUserBtn");
+        const closeAddUserBtn = document.getElementById("closeAddUserBtn");
+        const addUserCard = document.getElementById("addUserCard");
+        const submitNewUserBtn = document.getElementById("submitNewUserBtn");
 
-        userEntries.forEach(
-            ([userId, user]) => {
+        toggleAddUserBtn.addEventListener("click", () => {
+            addUserCard.classList.toggle("open");
+        });
 
-                const card =
-                    document.createElement("div");
+        closeAddUserBtn.addEventListener("click", () => {
+            addUserCard.classList.remove("open");
+        });
 
-                card.className =
-                    "user-card";
+        submitNewUserBtn.addEventListener("click", createNewUser);
+        searchInput.addEventListener("input", displayUsers);
 
+        onValue(ref(db, "users"), (snapshot) => {
+            users = snapshot.val() || {};
+            displayUsers();
+        });
 
-                const username =
-                    user.username || userId;
+        async function createNewUser() {
+            const username = document.getElementById("newUsername").value.trim();
+            const email = document.getElementById("newEmail").value.trim();
+            const referrer = document.getElementById("newReferrer").value.trim();
+            const reff = document.getElementById("newReff").value.trim();
+            const notes = document.getElementById("newNotes").value.trim();
+            const balanceValue = document.getElementById("newBalance").value;
+            const balance = Number(balanceValue);
 
+            if (!username) {
+                alert("برجاء كتابة اسم المستخدم على الأقل");
+                return;
+            }
 
-                const reff =
-                    user.reff || "";
+            try {
+                submitNewUserBtn.disabled = true;
+                submitNewUserBtn.textContent = "جاري الإضافة...";
 
+                const newUserRef = push(ref(db, "users"));
+                await set(newUserRef, {
+                    username: username,
+                    email: email,
+                    referrer: referrer,
+                    reff: reff,
+                    notes: notes,
+                    balance: isNaN(balance) ? 0 : balance
+                });
 
-                const notes =
-                    user.notes || "";
+                alert("تمت إضافة المستخدم بنجاح ✅");
+                
+                document.getElementById("newUsername").value = "";
+                document.getElementById("newEmail").value = "";
+                document.getElementById("newReferrer").value = "";
+                document.getElementById("newReff").value = "";
+                document.getElementById("newNotes").value = "";
+                document.getElementById("newBalance").value = "0";
+                
+                addUserCard.classList.remove("open");
 
+            } catch (error) {
+                console.error(error);
+                alert("حدث خطأ أثناء إدخال المستخدم:\n" + error.message);
+            } finally {
+                submitNewUserBtn.disabled = false;
+                submitNewUserBtn.textContent = "💾 حفظ المستخدم";
+            }
+        }
 
-                const balance =
-                    user.balance || 0;
+        function displayUsers() {
+            const container = document.getElementById("usersContainer");
+            const totalUsers = document.getElementById("totalUsers");
+            const searchQuery = searchInput.value.trim().toLowerCase();
 
+            container.innerHTML = "";
 
-                /* =================================================
-                   بطاقة المستخدم
-                ================================================= */
+            const userEntries = Object.entries(users).filter(([userId, user]) => {
+                const name = (user.username || userId).toLowerCase();
+                const email = (user.email || "").toLowerCase();
+                const referrer = (user.referrer || "").toLowerCase();
+
+                return name.includes(searchQuery) || email.includes(searchQuery) || referrer.includes(searchQuery);
+            });
+
+            totalUsers.innerHTML = `إجمالي المستخدمين: <b>${userEntries.length}</b>`;
+
+            if (userEntries.length === 0) {
+                container.innerHTML = `
+                    <div class="empty">
+                        ${searchQuery ? "لا توجد نتائج مطابقة للبحث" : "لا يوجد مستخدمين حتى الآن"}
+                    </div>
+                `;
+                return;
+            }
+
+            userEntries.forEach(([userId, user]) => {
+                const card = document.createElement("div");
+                card.className = "user-card";
+
+                const username = user.username || userId;
+                const email = user.email || "";
+                const referrer = user.referrer || "";
+                const reff = user.reff || "";
+                const notes = user.notes || "";
+                const balance = user.balance !== undefined ? user.balance : 0;
 
                 card.innerHTML = `
-
                     <div class="user-header">
-
                         <div class="username">
                             👤 ${escapeHTML(username)}
                         </div>
-
-                        <button
-                            class="edit-btn"
-                            data-edit="${userId}"
-                        >
-                            ✏️ تعديل البيانات
-                        </button>
-
+                        <span class="arrow-icon">▼</span>
                     </div>
 
-
-                    <div class="user-body">
-
-                        <!-- Reff -->
-
-                        <div class="data-row">
-
-                            <span class="data-label">
-                                🔗 Reff
-                            </span>
-
-                            <div class="data-value">
-
-                                ${
-                                    reff
-                                    ?
-                                    `<a
-                                        class="reff-link"
-                                        href="${escapeHTML(reff)}"
-                                        target="_blank"
-                                        rel="noopener"
-                                    >
-                                        ${escapeHTML(reff)}
-                                    </a>`
-                                    :
-                                    "لا يوجد"
-                                }
-
+                    <div class="user-details">
+                        <div class="user-body">
+                            <div class="data-row">
+                                <span class="data-label">📧 البريد الإلكتروني (Email)</span>
+                                <div class="data-value">${escapeHTML(email) || "غير محدد"}</div>
                             </div>
 
-                        </div>
-
-
-                        <!-- الملاحظات -->
-
-                        <div class="data-row">
-
-                            <span class="data-label">
-                                📝 ملاحظات
-                            </span>
-
-                            <div class="data-value">
-                                ${escapeHTML(notes) || "لا توجد ملاحظات"}
+                            <div class="data-row">
+                                <span class="data-label">👥 المُحيل (Referred By)</span>
+                                <div class="data-value">${escapeHTML(referrer) || "لا يوجد"}</div>
                             </div>
 
-                        </div>
-
-
-                        <!-- الرصيد -->
-
-                        <div class="data-row">
-
-                            <span class="data-label">
-                                💰 الرصيد
-                            </span>
-
-                            <div class="data-value balance">
-                                ${escapeHTML(String(balance))}
+                            <div class="data-row">
+                                <span class="data-label">🔗 Reff Link</span>
+                                <div class="data-value">
+                                    ${reff
+                                        ? `<a class="reff-link" href="${escapeAttribute(reff)}" target="_blank" rel="noopener">${escapeHTML(reff)}</a>`
+                                        : "لا يوجد"}
+                                </div>
                             </div>
 
+                            <div class="data-row">
+                                <span class="data-label">💰 الرصيد</span>
+                                <div class="data-value balance">${escapeHTML(String(balance))}</div>
+                            </div>
+
+                            <div class="data-row" style="grid-column: 1 / -1;">
+                                <span class="data-label">📝 ملاحظات</span>
+                                <div class="data-value">${escapeHTML(notes) || "لا توجد ملاحظات"}</div>
+                            </div>
                         </div>
 
+                        <div class="card-actions">
+                            <button class="edit-btn" data-edit="${userId}">✏️ تعديل البيانات</button>
+                        </div>
+
+                        <div class="edit-form" id="edit-${userId}">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">اسم المستخدم</label>
+                                    <input type="text" id="username-${userId}" value="${escapeAttribute(username)}">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">📧 البريد الإلكتروني</label>
+                                    <input type="email" id="email-${userId}" value="${escapeAttribute(email)}">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">👥 المُحيل (Referred By)</label>
+                                    <input type="text" id="referrer-${userId}" value="${escapeAttribute(referrer)}">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">💰 الرصيد</label>
+                                    <input type="number" id="balance-${userId}" value="${escapeAttribute(String(balance))}" step="0.01">
+                                </div>
+
+                                <div class="form-group full-width">
+                                    <label class="form-label">🔗 Reff Link</label>
+                                    <input type="url" id="reff-${userId}" value="${escapeAttribute(reff)}">
+                                </div>
+
+                                <div class="form-group full-width">
+                                    <label class="form-label">📝 ملاحظات</label>
+                                    <textarea id="notes-${userId}">${escapeHTML(notes)}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="buttons">
+                                <button class="save-btn" data-save="${userId}">💾 حفظ التعديلات</button>
+                                <button class="cancel-btn" data-cancel="${userId}">إلغاء</button>
+                            </div>
+                        </div>
                     </div>
-
-
-                    <!-- نموذج التعديل -->
-
-                    <div
-                        class="edit-form"
-                        id="edit-${userId}"
-                    >
-
-                        <div class="form-group">
-
-                            <label class="form-label">
-                                🔗 Reff
-                            </label>
-
-                            <input
-                                type="url"
-                                id="reff-${userId}"
-                                value="${escapeAttribute(reff)}"
-                                placeholder="ضع لينك الـ Reff هنا"
-                            >
-
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <label class="form-label">
-                                📝 ملاحظات
-                            </label>
-
-                            <textarea
-                                id="notes-${userId}"
-                                placeholder="اكتب الملاحظات هنا..."
-                            >${escapeHTML(notes)}</textarea>
-
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <label class="form-label">
-                                💰 الرصيد
-                            </label>
-
-                            <input
-                                type="number"
-                                id="balance-${userId}"
-                                value="${escapeAttribute(String(balance))}"
-                                placeholder="الرصيد"
-                                step="0.01"
-                            >
-
-                        </div>
-
-
-                        <div class="buttons">
-
-                            <button
-                                class="save-btn"
-                                data-save="${userId}"
-                            >
-                                💾 حفظ
-                            </button>
-
-                            <button
-                                class="cancel-btn"
-                                data-cancel="${userId}"
-                            >
-                                إلغاء
-                            </button>
-
-                        </div>
-
-                    </div>
-
                 `;
 
+                // Toggle User Details on Header Click
+                const header = card.querySelector(".user-header");
+                header.addEventListener("click", () => {
+                    card.classList.toggle("active");
+                });
 
-                /* =================================================
-                   زر التعديل
-                ================================================= */
+                // Toggle Edit Form
+                const editButton = card.querySelector(`[data-edit="${userId}"]`);
+                editButton.addEventListener("click", (e) => {
+                    e.stopPropagation(); // منع إغلاق الكارت
+                    const form = document.getElementById(`edit-${userId}`);
+                    form.classList.toggle("open");
+                });
 
-                const editButton =
-                    card.querySelector(
-                        `[data-edit="${userId}"]`
-                    );
+                // Save Data
+                const saveButton = card.querySelector(`[data-save="${userId}"]`);
+                saveButton.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    saveUserData(userId, saveButton);
+                });
 
-
-                editButton.addEventListener(
-                    "click",
-                    () => {
-
-                        const form =
-                            document.getElementById(
-                                `edit-${userId}`
-                            );
-
-                        form.classList.toggle("open");
-
-                    }
-                );
-
-
-                /* =================================================
-                   زر الحفظ
-                ================================================= */
-
-                const saveButton =
-                    card.querySelector(
-                        `[data-save="${userId}"]`
-                    );
-
-
-                saveButton.addEventListener(
-                    "click",
-                    () => {
-
-                        saveUserData(userId);
-
-                    }
-                );
-
-
-                /* =================================================
-                   زر إلغاء
-                ================================================= */
-
-                const cancelButton =
-                    card.querySelector(
-                        `[data-cancel="${userId}"]`
-                    );
-
-
-                cancelButton.addEventListener(
-                    "click",
-                    () => {
-
-                        const form =
-                            document.getElementById(
-                                `edit-${userId}`
-                            );
-
-                        form.classList.remove("open");
-
-                    }
-                );
-
+                // Cancel Edit
+                const cancelButton = card.querySelector(`[data-cancel="${userId}"]`);
+                cancelButton.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    const form = document.getElementById(`edit-${userId}`);
+                    form.classList.remove("open");
+                });
 
                 container.appendChild(card);
+            });
+        }
 
+        async function saveUserData(userId, btn) {
+            const username = document.getElementById(`username-${userId}`).value.trim();
+            const email = document.getElementById(`email-${userId}`).value.trim();
+            const referrer = document.getElementById(`referrer-${userId}`).value.trim();
+            const reff = document.getElementById(`reff-${userId}`).value.trim();
+            const notes = document.getElementById(`notes-${userId}`).value.trim();
+            const balanceValue = document.getElementById(`balance-${userId}`).value;
+            const balance = Number(balanceValue);
+
+            if (balanceValue !== "" && !Number.isFinite(balance)) {
+                alert("من فضلك أدخل رصيد صحيح");
+                return;
             }
-        );
 
-    }
+            try {
+                btn.disabled = true;
+                btn.textContent = "جاري الحفظ...";
 
-
-    /* =====================================================
-       حفظ بيانات المستخدم
-    ===================================================== */
-
-    async function saveUserData(userId) {
-
-        const reff =
-            document.getElementById(
-                `reff-${userId}`
-            ).value.trim();
-
-
-        const notes =
-            document.getElementById(
-                `notes-${userId}`
-            ).value.trim();
-
-
-        const balanceValue =
-            document.getElementById(
-                `balance-${userId}`
-            ).value;
-
-
-        const balance =
-            Number(balanceValue);
-
-
-        /* التأكد من الرصيد */
-
-        if (
-            balanceValue !== "" &&
-            !Number.isFinite(balance)
-        ) {
-
-            alert("من فضلك أدخل رصيد صحيح");
-
-            return;
-        }
-
-
-        try {
-
-            await update(
-                ref(
-                    db,
-                    "users/" + userId
-                ),
-                {
-
+                await update(ref(db, "users/" + userId), {
+                    username: username,
+                    email: email,
+                    referrer: referrer,
                     reff: reff,
-
                     notes: notes,
+                    balance: balanceValue === "" ? 0 : balance
+                });
 
-                    balance:
-                        balanceValue === ""
-                        ? 0
-                        : balance
+                alert("تم حفظ بيانات المستخدم بنجاح ✅");
+                
+                const form = document.getElementById(`edit-${userId}`);
+                if (form) form.classList.remove("open");
 
-                }
-            );
-
-
-            alert(
-                "تم حفظ بيانات المستخدم بنجاح ✅"
-            );
-
+            } catch (error) {
+                console.error(error);
+                alert("حدث خطأ أثناء حفظ البيانات:\n" + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "💾 حفظ التعديلات";
+            }
         }
-
-        catch (error) {
-
-            console.error(error);
-
-            alert(
-                "حدث خطأ أثناء حفظ البيانات:\n"
-                +
-                error.message
-            );
-
-        }
-
-    }
-
-
-    /* =====================================================
-       حماية HTML
-    ===================================================== */
-
-    function escapeHTML(text) {
-
-        const div =
-            document.createElement("div");
-
-        div.textContent =
-            text;
-
-        return div.innerHTML;
-
-    }
-
-
-    /* =====================================================
-       حماية Attribute
-    ===================================================== */
-
-    function escapeAttribute(text) {
-
-        return String(text)
-            .replace(/&/g, "&amp;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;");
-
-    }
-
-</script>
-
+    </script>
 </body>
 
 </html>
