@@ -57,20 +57,72 @@
             padding: 0 10px;
         }
 
-        /* ================= FORM ================= */
+        /* ================= SEARCH & ACTION BAR ================= */
 
-        .form-box {
+        .action-bar {
             background: white;
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 15px;
             box-shadow: 0 1px 5px #dfe8f0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 12px;
+            border: 1px solid #cddce9;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #4d9bd6;
+        }
+
+        .toggle-add-btn {
+            background: #2878c8;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .toggle-add-btn:hover {
+            background: #1764a8;
+        }
+
+        /* ================= FORM (Hidden by Default) ================= */
+
+        .form-box {
+            display: none;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 5px #dfe8f0;
+            border: 2px solid #2878c8;
+        }
+
+        .form-box.open {
+            display: block;
         }
 
         .form-title {
             font-size: 18px;
             font-weight: bold;
             margin-bottom: 12px;
+            color: #2878c8;
         }
 
         .form-group {
@@ -92,6 +144,7 @@
             border: 1px solid #cddce9;
             border-radius: 6px;
             font-size: 13px;
+            font-family: inherit;
         }
 
         .form-group input:focus,
@@ -112,15 +165,16 @@
             width: 100%;
             padding: 10px;
             border: none;
-            background: #4d9bd6;
+            background: #198754;
             color: white;
             border-radius: 6px;
             cursor: pointer;
             font-size: 14px;
+            font-weight: bold;
         }
 
         .add-btn:hover {
-            background: #378ac8;
+            background: #157347;
         }
 
         /* ================= STATUS SUMMARY ================= */
@@ -154,6 +208,7 @@
             align-items: center;
             font-size: 13px;
             font-weight: bold;
+            user-select: none;
         }
 
         .status-header-left {
@@ -224,7 +279,6 @@
             transition: background-color 0.2s;
         }
 
-        /* خلفية مُميّزة للعميل المُعلّم عليه */
         .status-user.is-checked {
             background-color: #f0f7ff;
         }
@@ -277,6 +331,7 @@
             display: flex;
             gap: 6px;
             flex-wrap: wrap;
+            align-items: center;
         }
 
         .btn-quick-done {
@@ -312,11 +367,66 @@
             font-weight: bold;
         }
 
+        .btn-quick-note {
+            background: #0dcaf0;
+            color: #000;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .btn-quick-delete {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .btn-quick-delete:hover {
+            background: #b02a37;
+        }
+
         .no-status-users {
             color: #888;
             text-align: center;
             padding: 8px;
             font-size: 12px;
+        }
+
+        /* تعديل الملاحظات المدمج */
+        .notes-edit-box {
+            display: none;
+            margin-top: 8px;
+            gap: 6px;
+        }
+
+        .notes-edit-box.open {
+            display: flex;
+        }
+
+        .notes-edit-box input {
+            flex: 1;
+            padding: 5px 8px;
+            font-size: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .notes-edit-box button {
+            padding: 5px 10px;
+            font-size: 11px;
+            background: #198754;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -341,12 +451,18 @@
 
     <div class="container">
 
-        <!-- ================= ADD CLIENT ================= -->
-        <div class="form-box">
-            <div class="form-title">إضافة عميل</div>
+        <!-- ================= SEARCH & ACTION BAR ================= -->
+        <div class="action-bar">
+            <input type="text" id="searchInput" class="search-input" placeholder="🔍 بحث عن عميل بالاسم أو اللينك أو الملاحظات...">
+            <button class="toggle-add-btn" id="toggleAddBtn">➕ إضافة عميل جديد</button>
+        </div>
+
+        <!-- ================= ADD CLIENT (Form Box) ================= -->
+        <div class="form-box" id="formBox">
+            <div class="form-title">إضافة عميل جديد</div>
 
             <div class="form-group">
-                <label>اسم العميل</label>
+                <label>اسم العميل *</label>
                 <input type="text" id="clientName" placeholder="اكتب اسم العميل" autocomplete="off">
             </div>
 
@@ -377,7 +493,7 @@
         <div class="status-summary">
             <div class="status-summary-title">حالات العملاء</div>
 
-            <!-- قائمة الانتظار (مغلقة افتراضياً) -->
+            <!-- قائمة الانتظار -->
             <div class="status-box" id="waitingBox">
                 <div class="status-header waiting-header" onclick="toggleStatus('waitingBox')">
                     <div class="status-header-left">
@@ -433,7 +549,7 @@
     <!-- ================= FIREBASE & APP SCRIPT ================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, push, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, push, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAB4wO937rCwc0OTWeJlGgoaxERWOdjaJM",
@@ -448,6 +564,21 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         const clientsRef = ref(db, 'clients');
+
+        let rawClientsData = null;
+
+        // إظهار / إخفاء فورم إضافة العميل
+        const toggleAddBtn = document.getElementById('toggleAddBtn');
+        const formBox = document.getElementById('formBox');
+
+        toggleAddBtn.addEventListener('click', () => {
+            formBox.classList.toggle('open');
+            if (formBox.classList.contains('open')) {
+                toggleAddBtn.textContent = '❌ إغلاق نموذج الإضافة';
+            } else {
+                toggleAddBtn.textContent = '➕ إضافة عميل جديد';
+            }
+        });
 
         // إضافة عميل جديد
         document.getElementById('addBtn').addEventListener('click', () => {
@@ -472,13 +603,26 @@
                 document.getElementById('clientName').value = '';
                 document.getElementById('clientLink').value = '';
                 document.getElementById('clientNotes').value = '';
+                formBox.classList.remove('open');
+                toggleAddBtn.textContent = '➕ إضافة عميل جديد';
             });
+        });
+
+        // البحث التلقائي
+        document.getElementById('searchInput').addEventListener('input', () => {
+            renderClients(rawClientsData);
         });
 
         // مراقبة البيانات من Firebase
         onValue(clientsRef, (snapshot) => {
-            const data = snapshot.val();
-            
+            rawClientsData = snapshot.val();
+            renderClients(rawClientsData);
+        });
+
+        // دالة العرض والبحث
+        function renderClients(data) {
+            const searchQuery = document.getElementById('searchInput').value.trim().toLowerCase();
+
             const containers = {
                 waiting: document.getElementById('waitingItems'),
                 no_tasks: document.getElementById('noTasksList'),
@@ -497,30 +641,23 @@
                     client.id = id;
                     const status = client.status || 'waiting';
 
+                    // التصفية بالبحث
+                    const nameMatch = (client.name || '').toLowerCase().includes(searchQuery);
+                    const linkMatch = (client.link || '').toLowerCase().includes(searchQuery);
+                    const notesMatch = (client.notes || '').toLowerCase().includes(searchQuery);
+
+                    if (searchQuery && !nameMatch && !linkMatch && !notesMatch) {
+                        return; // يتخطى العنصر إن لم يطابق البحث
+                    }
+
                     if (counts[status] !== undefined) {
                         counts[status]++;
 
                         if (status === 'waiting') {
                             waitingClients.push(client);
                         } else {
-                            // باقي القوائم
-                            containers[status].innerHTML += `
-                                <div class="status-user">
-                                    <div class="status-user-top">
-                                        <div class="status-user-info">
-                                            <div class="status-user-name">${client.name}</div>
-                                            ${client.link ? `<a href="${client.link}" target="_blank" class="status-user-link">${client.link}</a>` : ''}
-                                        </div>
-                                        <div class="quick-actions">
-                                            <button class="btn-quick-no-tasks" data-id="${id}" data-status="waiting">⏳ انتظار</button>
-                                            <button class="btn-quick-done" data-id="${id}" data-status="done">✅ done</button>
-                                            <button class="btn-quick-no-tasks" data-id="${id}" data-status="no_tasks">🚫 بدون تاسكات</button>
-                                            <button class="btn-quick-reject" data-id="${id}" data-status="reject">❌ reject</button>
-                                        </div>
-                                    </div>
-                                    ${client.notes ? `<div class="status-user-notes">${client.notes}</div>` : ''}
-                                </div>
-                            `;
+                            // القوائم الأخرى غير الانتظار
+                            containers[status].innerHTML += createClientHTML(client, false);
                         }
                     }
                 });
@@ -528,30 +665,9 @@
                 // ترتيب عملاء الانتظار: المحدد يظهر في الأعلى
                 waitingClients.sort((a, b) => (b.checked === true ? 1 : 0) - (a.checked === true ? 1 : 0));
 
-                // عرض عملاء قائمة الانتظار
+                // عرض قائمة الانتظار
                 waitingClients.forEach(client => {
-                    const isChecked = client.checked ? 'checked' : '';
-                    const checkedClass = client.checked ? 'is-checked' : '';
-
-                    containers.waiting.innerHTML += `
-                        <div class="status-user ${checkedClass}">
-                            <div class="status-user-top">
-                                <div class="status-user-info-wrapper">
-                                    <input type="checkbox" class="client-checkbox waiting-checkbox" data-id="${client.id}" ${isChecked}>
-                                    <div class="status-user-info">
-                                        <div class="status-user-name">${client.name}</div>
-                                        ${client.link ? `<a href="${client.link}" target="_blank" class="status-user-link auto-check-link" data-id="${client.id}">${client.link}</a>` : ''}
-                                    </div>
-                                </div>
-                                <div class="quick-actions">
-                                    <button class="btn-quick-done" data-id="${client.id}" data-status="done">✅ done</button>
-                                    <button class="btn-quick-no-tasks" data-id="${client.id}" data-status="no_tasks">🚫 بدون تاسكات</button>
-                                    <button class="btn-quick-reject" data-id="${client.id}" data-status="reject">❌ reject</button>
-                                </div>
-                            </div>
-                            ${client.notes ? `<div class="status-user-notes">${client.notes}</div>` : ''}
-                        </div>
-                    `;
+                    containers.waiting.innerHTML += createClientHTML(client, true);
                 });
             }
 
@@ -563,21 +679,88 @@
 
             // رسائل للقوائم الفارغة
             Object.keys(containers).forEach(key => {
-                if (counts[key] === 0) {
+                if (containers[key].children.length === 0) {
                     containers[key].innerHTML = '<div class="no-status-users">لا يوجد عملاء</div>';
                 }
             });
 
-            // ربط أزرار تحويل الحالة
-            document.querySelectorAll('.quick-actions button').forEach(btn => {
+            // ربط أحداث الأزرار والـ Checkbox
+            attachEvents();
+        }
+
+        // دالة إنشاء كود الـ HTML لكل عميل
+        function createClientHTML(client, isWaitingList) {
+            const isChecked = client.checked ? 'checked' : '';
+            const checkedClass = client.checked ? 'is-checked' : '';
+
+            return `
+                <div class="status-user ${isWaitingList ? checkedClass : ''}">
+                    <div class="status-user-top">
+                        <div class="status-user-info-wrapper">
+                            ${isWaitingList ? `<input type="checkbox" class="client-checkbox waiting-checkbox" data-id="${client.id}" ${isChecked}>` : ''}
+                            <div class="status-user-info">
+                                <div class="status-user-name">${escapeHTML(client.name)}</div>
+                                ${client.link ? `<a href="${escapeAttribute(client.link)}" target="_blank" class="status-user-link auto-check-link" data-id="${client.id}">${escapeHTML(client.link)}</a>` : ''}
+                            </div>
+                        </div>
+                        <div class="quick-actions">
+                            ${client.status !== 'waiting' ? `<button class="btn-quick-no-tasks" data-id="${client.id}" data-status="waiting">⏳ انتظار</button>` : ''}
+                            ${client.status !== 'done' ? `<button class="btn-quick-done" data-id="${client.id}" data-status="done">✅ done</button>` : ''}
+                            ${client.status !== 'no_tasks' ? `<button class="btn-quick-no-tasks" data-id="${client.id}" data-status="no_tasks">🚫 بدون تاسكات</button>` : ''}
+                            ${client.status !== 'reject' ? `<button class="btn-quick-reject" data-id="${client.id}" data-status="reject">❌ reject</button>` : ''}
+                            <button class="btn-quick-note" data-id="${client.id}">📝 ملاحظات</button>
+                            <button class="btn-quick-delete" data-id="${client.id}">🗑️ حذف</button>
+                        </div>
+                    </div>
+                    ${client.notes ? `<div class="status-user-notes" id="note-display-${client.id}">${escapeHTML(client.notes)}</div>` : ''}
+                    <div class="notes-edit-box" id="note-box-${client.id}">
+                        <input type="text" id="note-input-${client.id}" value="${escapeAttribute(client.notes || '')}" placeholder="اكتب ملاحظات جديدة...">
+                        <button class="btn-save-note" data-id="${client.id}">حفظ</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ربط الأحداث التفاعلية
+        function attachEvents() {
+            // تحويل حالة العميل
+            document.querySelectorAll('.quick-actions button[data-status]').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const id = e.target.getAttribute('data-id');
                     const newStatus = e.target.getAttribute('data-status');
-                    updateStatus(id, newStatus);
+                    update(ref(db, `clients/${id}`), { status: newStatus });
                 });
             });
 
-            // ربط الـ Checkbox يدوي
+            // حذف العميل
+            document.querySelectorAll('.btn-quick-delete').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    if (confirm("هل أنت تأكد من حذف هذا العميل نهائياً؟")) {
+                        remove(ref(db, `clients/${id}`));
+                    }
+                });
+            });
+
+            // إظهار/إخفاء مربع الملاحظات
+            document.querySelectorAll('.btn-quick-note').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    const noteBox = document.getElementById(`note-box-${id}`);
+                    noteBox.classList.toggle('open');
+                });
+            });
+
+            // حفظ الملاحظات الجديدة
+            document.querySelectorAll('.btn-save-note').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    const newNote = document.getElementById(`note-input-${id}`).value.trim();
+                    update(ref(db, `clients/${id}`), { notes: newNote });
+                });
+            });
+
+            // ربط ה- Checkbox يدوي
             document.querySelectorAll('.waiting-checkbox').forEach(cb => {
                 cb.addEventListener('change', (e) => {
                     const id = e.target.getAttribute('data-id');
@@ -586,19 +769,25 @@
                 });
             });
 
-            // تحديد العميل تلقائياً عند الضغط على الرابط
+            // تحديد العميل عند الضغط على اللينك
             document.querySelectorAll('.auto-check-link').forEach(link => {
                 link.addEventListener('click', (e) => {
                     const id = e.target.getAttribute('data-id');
                     update(ref(db, `clients/${id}`), { checked: true });
                 });
             });
-        });
+        }
 
-        // دالة تحديث حالة العميل
-        function updateStatus(id, newStatus) {
-            const itemRef = ref(db, `clients/${id}`);
-            update(itemRef, { status: newStatus });
+        function escapeHTML(text) {
+            if (!text) return '';
+            const div = document.createElement("div");
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function escapeAttribute(text) {
+            if (!text) return '';
+            return String(text).replace(/"/g, "&quot;").replace(/'/g, "&#039;");
         }
     </script>
 
