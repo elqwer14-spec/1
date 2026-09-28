@@ -413,6 +413,7 @@
         .btn-quick-no-tasks { background: #64748b; color: white; }
         .btn-quick-reject { background: #dc3545; color: white; }
         .btn-quick-campaign { background: #6f42c1; color: white; }
+        .btn-quick-delete { background: #d9534f; color: white; }
 
         .no-status-users {
             color: #888;
@@ -727,7 +728,7 @@
             formBox.classList.toggle('open');
         });
 
-        // ================= زر الإضافة المعدل والمصلح =================
+        // ================= زر الإضافة =================
         document.getElementById('submitClientBtn').addEventListener('click', () => {
             const nameInput = document.getElementById('clientName');
             const linkInput = document.getElementById('clientLink');
@@ -811,6 +812,15 @@
             renderClients(rawClientsData);
         }
 
+        // دالة مساعدة لحذف العميل بشكل كامل من Firebase
+        function deleteClient(id, clientName) {
+            if (confirm(`هل أنت ألكيد من رغبتك في حذف العميل "${clientName || ''}" نهائياً؟`)) {
+                remove(ref(db, `clients/${id}`))
+                    .then(() => alert('🗑️ تم حذف العميل بنجاح'))
+                    .catch(err => alert('حدث خطأ أثناء الحذف: ' + err.message));
+            }
+        }
+
         function renderCampaigns(campaigns, clients) {
             const container = document.getElementById('campaignsContainer');
             container.innerHTML = '';
@@ -840,6 +850,7 @@
                                             ${isVisited ? 'تم الدخول 👁️' : 'لم يتم الدخول ❌'}
                                         </button>
                                         ${!currentUser ? `<button class="btn-remove-from-campaign" data-id="${clientId}">إزالة ✖</button>` : ''}
+                                        <button class="btn-quick-delete btn-delete-client" data-id="${clientId}" data-name="${escapeAttribute(client.name)}">حذف 🗑️</button>
                                     </div>
                                 </div>
                             `;
@@ -889,6 +900,14 @@
                     if (id) {
                         update(ref(db, `clients/${id}`), { campaignId: null });
                     }
+                });
+            });
+
+            document.querySelectorAll('.campaigns-container .btn-delete-client').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    const name = e.target.getAttribute('data-name');
+                    if (id) deleteClient(id, name);
                 });
             });
         }
@@ -955,6 +974,7 @@
                                 <button class="btn-quick-no-tasks" data-id="${client.id}" data-status="no_tasks">🚫 بدون تاسكات</button>
                                 <button class="btn-quick-reject" data-id="${client.id}" data-status="reject">❌ reject</button>
                                 <button class="btn-quick-campaign" data-id="${client.id}">🚀 تحويل لكامبين</button>
+                                <button class="btn-quick-delete btn-delete-client" data-id="${client.id}" data-name="${escapeAttribute(client.name)}">🗑️ حذف</button>
                             </div>
                         </div>
                         ${client.notes ? `<div style="font-size:12px; color:#666; margin-top:6px;">📝 ${escapeHTML(client.notes)}</div>` : ''}
@@ -974,6 +994,14 @@
                 btn.addEventListener('click', (e) => {
                     selectedClientIdForCampaign = e.target.getAttribute('data-id');
                     openCampaignModal();
+                });
+            });
+
+            container.querySelectorAll('.btn-delete-client').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    const name = e.target.getAttribute('data-name');
+                    if (id) deleteClient(id, name);
                 });
             });
         }
