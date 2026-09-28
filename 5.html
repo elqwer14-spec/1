@@ -171,7 +171,7 @@
         }
 
         .form-box.open {
-            display: block;
+            display: block !important;
         }
 
         .form-title {
@@ -530,10 +530,10 @@
                 <label>ملاحظات</label>
                 <textarea id="clientNotes" placeholder="اكتب ملاحظات..."></textarea>
             </div>
-            <button class="add-btn" id="addBtn">إضافة العميل</button>
+            <button class="add-btn" id="submitClientBtn">إضافة العميل</button>
         </div>
 
-        <!-- ================= 1. STATUS SUMMARY (حالات العملاء أولاً) ================= -->
+        <!-- ================= 1. STATUS SUMMARY ================= -->
         <div class="status-summary" id="statusSummarySection">
             <div class="status-summary-header">
                 <div class="status-summary-title">حالات العملاء</div>
@@ -577,7 +577,7 @@
             </div>
         </div>
 
-        <!-- ================= 2. CAMPAIGNS SECTION (الكامبينات ثانياً) ================= -->
+        <!-- ================= 2. CAMPAIGNS SECTION ================= -->
         <div class="campaigns-container" id="campaignsContainer"></div>
 
     </div>
@@ -631,6 +631,13 @@
         const formBox = document.getElementById('formBox');
         const statusSummarySection = document.getElementById('statusSummarySection');
 
+        const statusNames = {
+            'waiting': '⏳ على الانتظار',
+            'no_tasks': '🚫 بدون تاسكات',
+            'done': '✅ done',
+            'reject': '❌ reject'
+        };
+
         function escapeHTML(str) {
             if (!str) return '';
             return String(str)
@@ -659,7 +666,7 @@
                 logoutBtn.style.display = 'inline-block';
 
                 actionBar.style.display = 'none';
-                formBox.style.display = 'none';
+                formBox.classList.remove('open');
                 statusSummarySection.style.display = 'none';
             } else {
                 userStatus.textContent = 'غير مسجل دخول (زائر)';
@@ -720,27 +727,63 @@
             formBox.classList.toggle('open');
         });
 
-        document.getElementById('addBtn').addEventListener('click', () => {
-            const name = document.getElementById('clientName').value.trim();
-            const link = document.getElementById('clientLink').value.trim();
-            const status = document.getElementById('clientStatus').value;
-            const notes = document.getElementById('clientNotes').value.trim();
+        // ================= زر الإضافة المعدل والمصلح =================
+        document.getElementById('submitClientBtn').addEventListener('click', () => {
+            const nameInput = document.getElementById('clientName');
+            const linkInput = document.getElementById('clientLink');
+            const statusInput = document.getElementById('clientStatus');
+            const notesInput = document.getElementById('clientNotes');
+
+            const name = nameInput.value.trim();
+            const link = linkInput.value.trim();
+            const status = statusInput.value;
+            const notes = notesInput.value.trim();
 
             if (!name) {
                 alert('يرجى إدخال اسم العميل');
                 return;
             }
 
+            // فحص التكرارات في البيانات الموجودة
+            if (rawClientsData) {
+                const normalizedNewName = name.toLowerCase();
+                const normalizedNewLink = link ? link.toLowerCase().replace(/\/+$/, '') : '';
+
+                for (const id in rawClientsData) {
+                    const client = rawClientsData[id];
+                    const existingName = client.name ? client.name.trim().toLowerCase() : '';
+                    const existingLink = client.link ? client.link.trim().toLowerCase().replace(/\/+$/, '') : '';
+                    const clientStatusText = statusNames[client.status] || client.status || 'غير محددة';
+
+                    if (existingName === normalizedNewName) {
+                        alert(`⚠️ خطأ: العميل "${client.name}" مضاف بالفعل مسبقاً وبحالة: (${clientStatusText})`);
+                        return;
+                    }
+
+                    if (normalizedNewLink && existingLink && existingLink === normalizedNewLink) {
+                        alert(`⚠️ خطأ: لينك العميل مضاف بالفعل مسبقاً مع العميل "${client.name}" وبحالة: (${clientStatusText})`);
+                        return;
+                    }
+                }
+            }
+
+            // حفظ العميل في داتابيز Firebase
             push(clientsRef, {
-                name, link, status, notes,
+                name: name,
+                link: link,
+                status: status,
+                notes: notes,
                 visited: false,
                 addedBy: currentUser || 'زائر',
                 createdAt: Date.now()
             }).then(() => {
-                document.getElementById('clientName').value = '';
-                document.getElementById('clientLink').value = '';
-                document.getElementById('clientNotes').value = '';
+                nameInput.value = '';
+                linkInput.value = '';
+                notesInput.value = '';
                 formBox.classList.remove('open');
+                alert('✅ تم إضافة العميل بنجاح');
+            }).catch((err) => {
+                alert('حدث خطأ أثناء الإضافة: ' + err.message);
             });
         });
 
@@ -935,41 +978,36 @@
             });
         }
 
-        function openCampaignModal() {
-            const modalSelect = document.getElementById('modalCampaignSelect');
-            modalSelect.innerHTML = '';
+        const campaignModal = document.getElementById('campaignModal');
+        const modalCampaignSelect = document.getElementById('modalCampaignSelect');
 
+        function openCampaignModal() {
+            modalCampaignSelect.innerHTML = '';
             if (rawCampaignsData) {
                 Object.keys(rawCampaignsData).forEach(cId => {
                     const opt = document.createElement('option');
                     opt.value = cId;
                     opt.textContent = rawCampaignsData[cId].name;
-                    modalSelect.appendChild(opt);
+                    modalCampaignSelect.appendChild(opt);
                 });
             }
-
-            if (modalSelect.children.length === 0) {
-                alert('لا يوجد كامبينات متاحة، قم بإنشاء كامبين جديد أولاً');
-                return;
-            }
-
-            document.getElementById('campaignModal').classList.add('open');
+            campaignModal.classList.add('open');
         }
 
-        document.getElementById('confirmAssignCampaignBtn').addEventListener('click', () => {
-            const cId = document.getElementById('modalCampaignSelect').value;
-            if (selectedClientIdForCampaign && cId) {
-                update(ref(db, `clients/${selectedClientIdForCampaign}`), { campaignId: cId });
-                document.getElementById('campaignModal').classList.remove('open');
-                selectedClientIdForCampaign = null;
-            }
-        });
-
         document.getElementById('cancelAssignCampaignBtn').addEventListener('click', () => {
-            document.getElementById('campaignModal').classList.remove('open');
+            campaignModal.classList.remove('open');
             selectedClientIdForCampaign = null;
         });
 
+        document.getElementById('confirmAssignCampaignBtn').addEventListener('click', () => {
+            const campaignId = modalCampaignSelect.value;
+            if (selectedClientIdForCampaign && campaignId) {
+                update(ref(db, `clients/${selectedClientIdForCampaign}`), { campaignId }).then(() => {
+                    campaignModal.classList.remove('open');
+                    selectedClientIdForCampaign = null;
+                });
+            }
+        });
     </script>
 </body>
 
