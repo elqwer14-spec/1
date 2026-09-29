@@ -214,6 +214,55 @@
             font-weight: bold;
         }
 
+        /* ================= CAMPAIGN FORM BOX ================= */
+
+        .campaign-form-box {
+            display: none;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 5px #dfe8f0;
+            border: 2px solid #6f42c1;
+        }
+
+        .campaign-form-box.open {
+            display: block !important;
+        }
+
+        .campaign-form-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: #6f42c1;
+        }
+
+        .btn-save-campaign {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background: #6f42c1;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* Inline Edit Box for Campaign */
+        .campaign-edit-box {
+            display: none;
+            background: #fdfbff;
+            border: 1px dashed #6f42c1;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .campaign-edit-box.open {
+            display: block;
+        }
+
         /* ================= CAMPAIGNS SECTION ================= */
 
         .campaigns-container {
@@ -247,6 +296,44 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .campaign-balance {
+            background: #eef9f1;
+            color: #198754;
+            border: 1px solid #c3e6cb;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .campaign-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .btn-edit-campaign {
+            background: #ffc107;
+            color: #000;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .btn-delete-campaign {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
         }
 
         .campaign-client-item {
@@ -534,11 +621,25 @@
             <button class="add-btn" id="submitClientBtn">إضافة العميل</button>
         </div>
 
+        <!-- ================= ADD CAMPAIGN (Form Box) ================= -->
+        <div class="campaign-form-box" id="campaignFormBox">
+            <div class="campaign-form-title">🚀 إضافة كامبين جديد</div>
+            <div class="form-group">
+                <label>اسم الكامبين *</label>
+                <input type="text" id="newCampaignName" placeholder="أدخل اسم الكامبين">
+            </div>
+            <div class="form-group">
+                <label>الرصيد المبدئي</label>
+                <input type="number" id="newCampaignBalance" placeholder="0.00" value="0">
+            </div>
+            <button class="btn-save-campaign" id="submitCampaignBtn">حفظ الكامبين</button>
+        </div>
+
         <!-- ================= 1. STATUS SUMMARY ================= -->
         <div class="status-summary" id="statusSummarySection">
             <div class="status-summary-header">
                 <div class="status-summary-title">حالات العملاء</div>
-                <button class="btn-add-campaign" id="createCampaignBtn">➕ إضافة كامبين جديد</button>
+                <button class="btn-add-campaign" id="toggleCampaignAddBtn">➕ إضافة كامبين جديد</button>
             </div>
 
             <!-- قائمة الانتظار -->
@@ -630,6 +731,7 @@
 
         const actionBar = document.getElementById('actionBar');
         const formBox = document.getElementById('formBox');
+        const campaignFormBox = document.getElementById('campaignFormBox');
         const statusSummarySection = document.getElementById('statusSummarySection');
 
         const statusNames = {
@@ -668,6 +770,7 @@
 
                 actionBar.style.display = 'none';
                 formBox.classList.remove('open');
+                campaignFormBox.classList.remove('open');
                 statusSummarySection.style.display = 'none';
             } else {
                 userStatus.textContent = 'غير مسجل دخول (زائر)';
@@ -728,7 +831,12 @@
             formBox.classList.toggle('open');
         });
 
-        // ================= زر الإضافة =================
+        const toggleCampaignAddBtn = document.getElementById('toggleCampaignAddBtn');
+        toggleCampaignAddBtn.addEventListener('click', () => {
+            campaignFormBox.classList.toggle('open');
+        });
+
+        // ================= إضافة عميل جديد =================
         document.getElementById('submitClientBtn').addEventListener('click', () => {
             const nameInput = document.getElementById('clientName');
             const linkInput = document.getElementById('clientLink');
@@ -745,7 +853,6 @@
                 return;
             }
 
-            // فحص التكرارات في البيانات الموجودة
             if (rawClientsData) {
                 const normalizedNewName = name.toLowerCase();
                 const normalizedNewLink = link ? link.toLowerCase().replace(/\/+$/, '') : '';
@@ -768,7 +875,6 @@
                 }
             }
 
-            // حفظ العميل في داتابيز Firebase
             push(clientsRef, {
                 name: name,
                 link: link,
@@ -782,17 +888,35 @@
                 linkInput.value = '';
                 notesInput.value = '';
                 formBox.classList.remove('open');
-                alert('✅ تم إضافة العميل بنجاح');
             }).catch((err) => {
                 alert('حدث خطأ أثناء الإضافة: ' + err.message);
             });
         });
 
-        document.getElementById('createCampaignBtn').addEventListener('click', () => {
-            const campaignName = prompt("أدخل اسم الكامبين الجديد:");
-            if (campaignName && campaignName.trim()) {
-                push(campaignsRef, { name: campaignName.trim(), createdAt: Date.now() });
+        // ================= إضافة كامبين جديد من الخانات =================
+        document.getElementById('submitCampaignBtn').addEventListener('click', () => {
+            const nameInput = document.getElementById('newCampaignName');
+            const balanceInput = document.getElementById('newCampaignBalance');
+
+            const name = nameInput.value.trim();
+            const balance = balanceInput.value.trim();
+
+            if (!name) {
+                alert('يرجى إدخال اسم الكامبين');
+                return;
             }
+
+            push(campaignsRef, {
+                name: name,
+                balance: balance || "0",
+                createdAt: Date.now()
+            }).then(() => {
+                nameInput.value = '';
+                balanceInput.value = '0';
+                campaignFormBox.classList.remove('open');
+            }).catch((err) => {
+                alert('حدث خطأ أثناء إضافة الكامبين: ' + err.message);
+            });
         });
 
         onValue(campaignsRef, (snapshot) => {
@@ -812,11 +936,23 @@
             renderClients(rawClientsData);
         }
 
-        // دالة مساعدة لحذف العميل بشكل كامل من Firebase
         function deleteClient(id, clientName) {
-            if (confirm(`هل أنت ألكيد من رغبتك في حذف العميل "${clientName || ''}" نهائياً؟`)) {
+            if (confirm(`هل أنت تأكيد من رغبتك في حذف العميل "${clientName || ''}" نهائياً؟`)) {
                 remove(ref(db, `clients/${id}`))
-                    .then(() => alert('🗑️ تم حذف العميل بنجاح'))
+                    .catch(err => alert('حدث خطأ أثناء الحذف: ' + err.message));
+            }
+        }
+
+        function deleteCampaign(cId, campaignName) {
+            if (confirm(`هل أنت تأكيد من حذف الكامبين "${campaignName}"؟ سيبقى العملاء دون حذف ولكن سيزال ربطهم بهذا الكامبين.`)) {
+                if (rawClientsData) {
+                    Object.keys(rawClientsData).forEach(clientId => {
+                        if (rawClientsData[clientId].campaignId === cId) {
+                            update(ref(db, `clients/${clientId}`), { campaignId: null });
+                        }
+                    });
+                }
+                remove(ref(db, `campaigns/${cId}`))
                     .catch(err => alert('حدث خطأ أثناء الحذف: ' + err.message));
             }
         }
@@ -862,17 +998,89 @@
                     clientsHTML = '<div class="no-status-users">لا يوجد عملاء داخل هذا الكامبين حالياً</div>';
                 }
 
+                const balanceText = campaign.balance !== undefined && campaign.balance !== "" ? campaign.balance : "0";
+
                 container.innerHTML += `
                     <div class="campaign-card">
                         <div class="campaign-header">
                             <div class="campaign-title">
                                 <span>🎯 ${escapeHTML(campaign.name)}</span>
-                                <span class="status-count">${count}</span>
+                                <span class="campaign-balance">💰 الرصيد: ${escapeHTML(balanceText)}</span>
+                                <span class="status-count">${count} عملاء</span>
+                            </div>
+                            <div class="campaign-actions">
+                                <button class="btn-edit-campaign" data-id="${cId}">✏️ تعديل</button>
+                                <button class="btn-delete-campaign" data-id="${cId}" data-name="${escapeAttribute(campaign.name)}">🗑️ حذف الكامبين</button>
                             </div>
                         </div>
+
+                        <!-- نموذج التعديل المدمج -->
+                        <div class="campaign-edit-box" id="editBox-${cId}">
+                            <div class="form-group">
+                                <label style="font-size:12px; font-weight:bold;">اسم الكامبين</label>
+                                <input type="text" id="editName-${cId}" value="${escapeAttribute(campaign.name)}">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size:12px; font-weight:bold;">الرصيد</label>
+                                <input type="number" id="editBalance-${cId}" value="${escapeAttribute(balanceText)}">
+                            </div>
+                            <div style="display:flex; gap:6px;">
+                                <button class="btn-login save-edit-btn" data-id="${cId}" style="flex:1;">حفظ التغييرات</button>
+                                <button class="btn-logout cancel-edit-btn" data-id="${cId}" style="display:inline-block; background:#6c757d; flex:1;">إلغاء</button>
+                            </div>
+                        </div>
+
                         <div>${clientsHTML}</div>
                     </div>
                 `;
+            });
+
+            // فتح نموذج التعديل
+            document.querySelectorAll('.btn-edit-campaign').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    const editBox = document.getElementById(`editBox-${id}`);
+                    if (editBox) editBox.classList.toggle('open');
+                });
+            });
+
+            // إلغاء التعديل
+            document.querySelectorAll('.cancel-edit-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    const editBox = document.getElementById(`editBox-${id}`);
+                    if (editBox) editBox.classList.remove('open');
+                });
+            });
+
+            // حفظ التعديلات
+            document.querySelectorAll('.save-edit-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    const newName = document.getElementById(`editName-${id}`).value.trim();
+                    const newBalance = document.getElementById(`editBalance-${id}`).value.trim();
+
+                    if (!newName) {
+                        alert('اسم الكامبين مطلوب');
+                        return;
+                    }
+
+                    update(ref(db, `campaigns/${id}`), {
+                        name: newName,
+                        balance: newBalance
+                    }).then(() => {
+                        const editBox = document.getElementById(`editBox-${id}`);
+                        if (editBox) editBox.classList.remove('open');
+                    }).catch(err => alert('حدث خطأ أثناء التعديل: ' + err.message));
+                });
+            });
+
+            document.querySelectorAll('.btn-delete-campaign').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    const name = e.target.getAttribute('data-name');
+                    if (id) deleteCampaign(id, name);
+                });
             });
 
             document.querySelectorAll('.visit-toggle-btn').forEach(btn => {
