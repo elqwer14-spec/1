@@ -4,9 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بيانات المستخدمين</title>
+    <title>إدارة المستخدمين والإحالات</title>
 
     <style>
+        :root {
+            --bg-color: #f4f7fa;
+            --card-bg: #ffffff;
+            --primary-blue: #0d6efd;
+            --primary-hover: #0b5ed7;
+            --light-blue: #e7f1ff;
+            --border-blue: #b6d4fe;
+            --text-color: #212529;
+            --text-secondary: #6c757d;
+            --danger-color: #dc3545;
+            --border-color: #e3e8ee;
+        }
+
         * {
             box-sizing: border-box;
         }
@@ -15,64 +28,122 @@
             margin: 0;
             padding: 20px;
             font-family: Arial, sans-serif;
-            background: #f5f5f5;
+            background: var(--bg-color);
+            color: var(--text-color);
         }
 
         .container {
-            max-width: 900px;
+            max-width: 950px;
             margin: auto;
         }
 
         h1 {
             text-align: center;
+            margin-bottom: 25px;
+            color: var(--primary-blue);
+            font-size: 26px;
+        }
+
+        /* شريط التبويبات */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
             margin-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 5px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            font-size: 15px;
+            font-weight: bold;
+            background: #ffffff;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            background: var(--light-blue);
+            color: var(--primary-blue);
+        }
+
+        .tab-btn.active {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
         }
 
         /* شريط التحكم */
         .actions-bar {
-            background: white;
+            background: var(--card-bg);
             padding: 15px;
             border-radius: 10px;
             margin-bottom: 15px;
-            box-shadow: 0 1px 5px #ddd;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 12px;
+        }
+
+        .search-input, select, input[type="date"], input[type="number"], input[type="text"], input[type="email"], input[type="url"] {
+            padding: 9px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: #fff;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus, select:focus, input:focus, textarea:focus {
+            border-color: var(--primary-blue);
         }
 
         .search-input {
-            padding: 9px 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 14px;
-            width: 250px;
+            width: 240px;
         }
 
-        .add-user-btn {
-            background: #198754;
+        .add-user-btn, .action-btn {
+            background: var(--primary-blue);
             color: white;
             border: none;
-            padding: 10px 16px;
+            padding: 9px 16px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
+            font-size: 14px;
+            transition: background 0.2s;
         }
 
-        .add-user-btn:hover {
-            background: #157347;
+        .add-user-btn:hover, .action-btn:hover {
+            background: var(--primary-hover);
         }
 
-        /* كارت إضافة مستخدم */
+        /* كروت الإضافة */
         .add-user-card {
             display: none;
-            background: white;
+            background: var(--card-bg);
             border-radius: 10px;
             padding: 20px;
             margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            border: 2px solid #198754;
+            box-shadow: 0 4px 12px rgba(13, 110, 253, 0.08);
+            border: 1px solid var(--border-blue);
         }
 
         .add-user-card.open {
@@ -83,17 +154,17 @@
             margin-top: 0;
             margin-bottom: 15px;
             font-size: 18px;
-            color: #198754;
+            color: var(--primary-blue);
         }
 
-        /* كارت المستخدم */
-        .user-card {
-            background: white;
+        /* كروت المستخدمين والمحيلين وتقارير الأداء */
+        .user-card, .referrer-card, .report-card {
+            background: var(--card-bg);
             border-radius: 10px;
-            margin-bottom: 10px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 12px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
             overflow: hidden;
-            border: 1px solid #e0e0e0;
+            border: 1px solid var(--border-color);
             transition: all 0.2s ease;
         }
 
@@ -103,41 +174,37 @@
             align-items: center;
             padding: 16px 20px;
             cursor: pointer;
-            background: white;
+            background: var(--card-bg);
             user-select: none;
         }
 
         .user-header:hover {
-            background: #f8f9fa;
+            background: var(--light-blue);
         }
 
         .username {
-            font-size: 17px;
+            font-size: 16px;
             font-weight: bold;
-            color: #333;
+            color: var(--text-color);
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        /* زر النسخ */
         .copy-btn {
-            background: #e9ecef;
-            border: 1px solid #ced4da;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
             border-radius: 4px;
             padding: 2px 6px;
             font-size: 13px;
             cursor: pointer;
             transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .copy-btn:hover {
-            background: #0d6efd;
+            background: var(--primary-blue);
             color: white;
-            border-color: #0d6efd;
+            border-color: var(--primary-blue);
         }
 
         .copy-btn.copied {
@@ -148,22 +215,21 @@
 
         .arrow-icon {
             font-size: 12px;
-            color: #777;
+            color: var(--text-secondary);
             transition: transform 0.3s ease;
         }
 
-        .user-card.active .arrow-icon {
+        .user-card.active .arrow-icon, .referrer-card.active .arrow-icon {
             transform: rotate(180deg);
         }
 
-        /* تفاصيل البيانات (مخفية افتراضياً) */
         .user-details {
             display: none;
-            border-top: 1px solid #eee;
-            background: #fafafa;
+            border-top: 1px solid var(--border-color);
+            background: #fafbfc;
         }
 
-        .user-card.active .user-details {
+        .user-card.active .user-details, .referrer-card.active .user-details {
             display: block;
         }
 
@@ -178,13 +244,13 @@
             display: block;
             font-weight: bold;
             margin-bottom: 4px;
-            color: #666;
+            color: var(--text-secondary);
             font-size: 13px;
         }
 
         .data-value {
             background: white;
-            border: 1px solid #ddd;
+            border: 1px solid var(--border-color);
             padding: 10px;
             border-radius: 6px;
             min-height: 40px;
@@ -194,10 +260,12 @@
 
         .card-actions {
             padding: 0 20px 15px 20px;
+            display: flex;
+            gap: 10px;
         }
 
         .edit-btn {
-            background: #0d6efd;
+            background: var(--primary-blue);
             color: white;
             border: none;
             padding: 8px 16px;
@@ -207,32 +275,61 @@
         }
 
         .edit-btn:hover {
-            background: #0b5ed7;
+            background: var(--primary-hover);
         }
 
-        /* فورم التعديل */
+        .remove-btn {
+            background: var(--danger-color);
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .remove-btn:hover {
+            background: #bb2d3b;
+        }
+
+        /* قائمة المحالين */
+        .referrals-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .referral-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
         .edit-form {
             display: none;
             padding: 15px 20px;
-            background: #f1f3f5;
-            border-top: 1px solid #ddd;
+            background: var(--light-blue);
+            border-top: 1px solid var(--border-blue);
         }
 
         .edit-form.open {
             display: block;
         }
 
-        input,
         textarea {
             width: 100%;
             padding: 10px;
-            border: 1px solid #ccc;
+            border: 1px solid var(--border-color);
             border-radius: 6px;
             font-size: 14px;
             font-family: Arial, sans-serif;
-        }
-
-        textarea {
             min-height: 80px;
             resize: vertical;
         }
@@ -265,7 +362,7 @@
         }
 
         .save-btn {
-            background: #198754;
+            background: var(--primary-blue);
             color: white;
             border: none;
             padding: 9px 16px;
@@ -274,16 +371,11 @@
         }
 
         .save-btn:hover {
-            background: #157347;
-        }
-
-        .save-btn:disabled {
-            background: #a5d6a7;
-            cursor: not-allowed;
+            background: var(--primary-hover);
         }
 
         .cancel-btn {
-            background: #6c757d;
+            background: var(--text-secondary);
             color: white;
             border: none;
             padding: 9px 16px;
@@ -291,30 +383,79 @@
             cursor: pointer;
         }
 
-        .cancel-btn:hover {
-            background: #5c636a;
-        }
-
-        .loading,
-        .empty {
+        .loading, .empty {
             text-align: center;
             background: white;
             padding: 25px;
             border-radius: 10px;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
         }
 
         .balance {
             font-weight: bold;
-            color: #198754;
+            color: var(--primary-blue);
         }
 
         .reff-link {
-            color: #0d6efd;
+            color: var(--primary-blue);
             text-decoration: none;
         }
 
-        .reff-link:hover {
-            text-decoration: underline;
+        .add-referral-box {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            align-items: center;
+        }
+
+        .rate-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--light-blue);
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-blue);
+            color: var(--primary-blue);
+        }
+
+        .rate-input-inline {
+            width: 70px !important;
+            padding: 4px 8px !important;
+            font-size: 13px !important;
+            display: inline-block !important;
+            margin: 0 4px;
+        }
+
+        /* جدول الأداء الأسبوعي */
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background: white;
+        }
+
+        .report-table th, .report-table td {
+            border: 1px solid var(--border-color);
+            padding: 11px;
+            text-align: right;
+            font-size: 14px;
+        }
+
+        .report-table th {
+            background: var(--light-blue);
+            color: var(--primary-blue);
+        }
+
+        .weekly-header {
+            background: var(--light-blue);
+            border: 1px solid var(--border-blue);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            color: var(--primary-blue);
         }
 
         @media (max-width: 600px) {
@@ -330,6 +471,16 @@
                 flex-direction: column;
                 align-items: stretch;
             }
+
+            .add-referral-box, .rate-box {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .referral-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
         }
     </style>
 </head>
@@ -337,53 +488,120 @@
 <body>
 
     <div class="container">
-        <h1>بيانات المستخدمين</h1>
+        <h1>نظام إدارة المستخدمين والإحالات</h1>
 
-        <!-- شريط الإجراءات والبحث -->
-        <div class="actions-bar">
-            <span id="totalUsers">إجمالي المستخدمين: 0</span>
-            <input type="text" id="searchInput" class="search-input" placeholder="🔍 بحث عن مستخدم...">
-            <button class="add-user-btn" id="toggleAddUserBtn">➕ إضافة مستخدم جديد</button>
+        <!-- شريط التبويبات -->
+        <div class="nav-tabs">
+            <button class="tab-btn active" id="tabUsersBtn">👤 قائمة المستخدمين</button>
+            <button class="tab-btn" id="tabReferralsBtn">🔗 قسم المحيلين والإحالات</button>
+            <button class="tab-btn" id="tabWeeklyBtn">📊 ملخص الأداء الأسبوعي</button>
         </div>
 
-        <!-- نموذج إضافة مستخدم جديد -->
-        <div class="add-user-card" id="addUserCard">
-            <h2>➕ إضافة مستخدم جديد</h2>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label class="form-label">اسم المستخدم *</label>
-                    <input type="text" id="newUsername" placeholder="مثال: أحمد محمد">
+        <!-- التبويب الأول: قائمة المستخدمين -->
+        <div class="tab-content active" id="tabUsers">
+            <div class="actions-bar">
+                <span id="totalUsers">إجمالي المستخدمين: 0</span>
+                <input type="text" id="searchInput" class="search-input" placeholder="🔍 بحث عن مستخدم...">
+                <button class="add-user-btn" id="toggleAddUserBtn">➕ إضافة مستخدم جديد</button>
+            </div>
+
+            <!-- نموذج إضافة مستخدم جديد -->
+            <div class="add-user-card" id="addUserCard">
+                <h2>➕ إضافة مستخدم جديد</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">اسم المستخدم *</label>
+                        <input type="text" id="newUsername" placeholder="مثال: أحمد محمد">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">البريد الإلكتروني (Email)</label>
+                        <input type="email" id="newEmail" placeholder="example@mail.com">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">المُحيل (Referred By)</label>
+                        <input type="text" id="newReferrer" placeholder="اسم أو ID المحيل">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">الرصيد الابتدائي</label>
+                        <input type="number" id="newBalance" value="0" step="0.01">
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label">رابط Reff</label>
+                        <input type="url" id="newReff" placeholder="https://...">
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label">ملاحظات</label>
+                        <textarea id="newNotes" placeholder="أدخل أي ملاحظات هنا..."></textarea>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">البريد الإلكتروني (Email)</label>
-                    <input type="email" id="newEmail" placeholder="example@mail.com">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">المُحيل (Referred By)</label>
-                    <input type="text" id="newReferrer" placeholder="اسم أو ID المحيل">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">الرصيد الابتدائي</label>
-                    <input type="number" id="newBalance" value="0" step="0.01">
-                </div>
-                <div class="form-group full-width">
-                    <label class="form-label">رابط Reff</label>
-                    <input type="url" id="newReff" placeholder="https://...">
-                </div>
-                <div class="form-group full-width">
-                    <label class="form-label">ملاحظات</label>
-                    <textarea id="newNotes" placeholder="أدخل أي ملاحظات هنا..."></textarea>
+                <div class="buttons">
+                    <button class="save-btn" id="submitNewUserBtn">💾 حفظ المستخدم</button>
+                    <button class="cancel-btn" id="closeAddUserBtn">إلغاء</button>
                 </div>
             </div>
-            <div class="buttons">
-                <button class="save-btn" id="submitNewUserBtn">💾 حفظ المستخدم</button>
-                <button class="cancel-btn" id="closeAddUserBtn">إلغاء</button>
+
+            <div id="usersContainer" class="loading">
+                جاري تحميل المستخدمين...
             </div>
         </div>
 
-        <!-- قائمة المستخدمين -->
-        <div id="usersContainer" class="loading">
-            جاري تحميل المستخدمين...
+        <!-- التبويب الثاني: قسم المحيلين -->
+        <div class="tab-content" id="tabReferrals">
+            <div class="actions-bar">
+                <span>🔗 إدارة المحيلين والرئيسيين</span>
+                <input type="text" id="searchReferralInput" class="search-input" placeholder="🔍 بحث عن محيل...">
+                <button class="add-user-btn" id="toggleAddMainReferrerBtn">➕ إضافة محيل رئيسي</button>
+            </div>
+
+            <!-- نموذج اختيار وإضافة محيل رئيسي -->
+            <div class="add-user-card" id="addMainReferrerCard">
+                <h2>👑 إضافة محيل رئيسي يدويًا</h2>
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label class="form-label">اختر مستخدم من القائمة:</label>
+                        <select id="mainReferrerSelect">
+                            <option value="">-- اختر مستخدم --</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="buttons">
+                    <button class="save-btn" id="submitMainReferrerBtn">💾 إعلان كمحيل رئيسي</button>
+                    <button class="cancel-btn" id="closeAddMainReferrerBtn">إلغاء</button>
+                </div>
+            </div>
+
+            <div id="referralsContainer" class="loading">
+                جاري تحميل بيانات المحيلين...
+            </div>
+        </div>
+
+        <!-- التبويب الثالث: ملخص الأداء الأسبوعي -->
+        <div class="tab-content" id="tabWeekly">
+            <div class="actions-bar">
+                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; width: 100%;">
+                    <div>
+                        <label style="font-weight: bold; margin-left: 5px;">👑 اختر المحيل الرئيسي:</label>
+                        <select id="weeklyReferrerSelect" style="min-width: 180px;">
+                            <option value="all">-- عرض جميع المحيلين --</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label style="font-weight: bold; margin-left: 5px;">📅 بداية الأسبوع:</label>
+                        <input type="date" id="startDateInput">
+                    </div>
+
+                    <button class="add-user-btn" id="generateWeeklyReportBtn">⚡ عرض الملخص</button>
+                </div>
+            </div>
+
+            <div class="weekly-header" id="weeklyRangeLabel">
+                📌 اختر المحيل والتاريخ لعرض ملخص الأداء الأسبوعي.
+            </div>
+
+            <div id="weeklyReportContainer">
+                <div class="empty">يرجى تحديد المحيل والتاريخ ثم اضغط على "عرض الملخص"</div>
+            </div>
         </div>
     </div>
 
@@ -421,23 +639,20 @@
                 .replace(/>/g, "&gt;");
         }
 
-        // دالة آمنة للنسخ تعمل في كافة البيئات وحتى في الأطر المضمنة (Iframe)
         async function copyToClipboard(text) {
             if (navigator.clipboard && window.isSecureContext) {
                 try {
                     await navigator.clipboard.writeText(text);
                     return true;
                 } catch (err) {
-                    console.warn("Clipboard API blocked, falling back to execCommand", err);
+                    console.warn("Clipboard API blocked", err);
                 }
             }
 
-            // Fallback Method
             const textArea = document.createElement("textarea");
             textArea.value = text;
             textArea.style.position = "fixed";
             textArea.style.left = "-999999px";
-            textArea.style.top = "-999999px";
             document.body.appendChild(textArea);
             textArea.focus();
             textArea.select();
@@ -454,26 +669,78 @@
         }
 
         let users = {};
+
+        // عناصر التبويبات
+        const tabUsersBtn = document.getElementById("tabUsersBtn");
+        const tabReferralsBtn = document.getElementById("tabReferralsBtn");
+        const tabWeeklyBtn = document.getElementById("tabWeeklyBtn");
+
+        const tabUsers = document.getElementById("tabUsers");
+        const tabReferrals = document.getElementById("tabReferrals");
+        const tabWeekly = document.getElementById("tabWeekly");
+
         const searchInput = document.getElementById("searchInput");
+        const searchReferralInput = document.getElementById("searchReferralInput");
+        
         const toggleAddUserBtn = document.getElementById("toggleAddUserBtn");
         const closeAddUserBtn = document.getElementById("closeAddUserBtn");
         const addUserCard = document.getElementById("addUserCard");
         const submitNewUserBtn = document.getElementById("submitNewUserBtn");
 
-        toggleAddUserBtn.addEventListener("click", () => {
-            addUserCard.classList.toggle("open");
+        const toggleAddMainReferrerBtn = document.getElementById("toggleAddMainReferrerBtn");
+        const closeAddMainReferrerBtn = document.getElementById("closeAddMainReferrerBtn");
+        const addMainReferrerCard = document.getElementById("addMainReferrerCard");
+        const submitMainReferrerBtn = document.getElementById("submitMainReferrerBtn");
+
+        const startDateInput = document.getElementById("startDateInput");
+        const weeklyReferrerSelect = document.getElementById("weeklyReferrerSelect");
+        const generateWeeklyReportBtn = document.getElementById("generateWeeklyReportBtn");
+
+        // ضبط التاريخ التلقائي لاليوم
+        const today = new Date().toISOString().split('T')[0];
+        startDateInput.value = today;
+
+        // التنقل بين التبويبات
+        tabUsersBtn.addEventListener("click", () => switchTab(tabUsersBtn, tabUsers));
+        tabReferralsBtn.addEventListener("click", () => switchTab(tabReferralsBtn, tabReferrals));
+        tabWeeklyBtn.addEventListener("click", () => {
+            switchTab(tabWeeklyBtn, tabWeekly);
+            populateWeeklyReferrerDropdown();
+            renderWeeklyReport();
         });
 
-        closeAddUserBtn.addEventListener("click", () => {
-            addUserCard.classList.remove("open");
+        function switchTab(activeBtn, activeTab) {
+            [tabUsersBtn, tabReferralsBtn, tabWeeklyBtn].forEach(b => b.classList.remove("active"));
+            [tabUsers, tabReferrals, tabWeekly].forEach(t => t.classList.remove("active"));
+            activeBtn.classList.add("active");
+            activeTab.classList.add("active");
+        }
+
+        toggleAddUserBtn.addEventListener("click", () => addUserCard.classList.toggle("open"));
+        closeAddUserBtn.addEventListener("click", () => addUserCard.classList.remove("open"));
+
+        toggleAddMainReferrerBtn.addEventListener("click", () => {
+            populateMainReferrerDropdown();
+            addMainReferrerCard.classList.toggle("open");
         });
+        closeAddMainReferrerBtn.addEventListener("click", () => addMainReferrerCard.classList.remove("open"));
 
         submitNewUserBtn.addEventListener("click", createNewUser);
-        searchInput.addEventListener("input", displayUsers);
+        submitMainReferrerBtn.addEventListener("click", setMainReferrer);
+        generateWeeklyReportBtn.addEventListener("click", renderWeeklyReport);
 
+        searchInput.addEventListener("input", displayUsers);
+        searchReferralInput.addEventListener("input", displayReferrals);
+
+        // جلب البيانات من Firebase
         onValue(ref(db, "users"), (snapshot) => {
             users = snapshot.val() || {};
             displayUsers();
+            displayReferrals();
+            populateWeeklyReferrerDropdown();
+            if (tabWeekly.classList.contains("active")) {
+                renderWeeklyReport();
+            }
         });
 
         async function createNewUser() {
@@ -501,7 +768,10 @@
                     referrer: referrer,
                     reff: reff,
                     notes: notes,
-                    balance: isNaN(balance) ? 0 : balance
+                    balance: isNaN(balance) ? 0 : balance,
+                    createdAt: new Date().toISOString(),
+                    isMainReferrer: false,
+                    referralRate: 0
                 });
 
                 alert("تمت إضافة المستخدم بنجاح ✅");
@@ -524,6 +794,64 @@
             }
         }
 
+        function populateMainReferrerDropdown() {
+            const select = document.getElementById("mainReferrerSelect");
+            select.innerHTML = `<option value="">-- اختر مستخدم لتحديده كمحيل رئيسي --</option>`;
+
+            Object.entries(users).forEach(([userId, user]) => {
+                if (!user.isMainReferrer) {
+                    const option = document.createElement("option");
+                    option.value = userId;
+                    option.textContent = `${user.username || userId} (${user.email || 'بدون بريد'})`;
+                    select.appendChild(option);
+                }
+            });
+        }
+
+        function populateWeeklyReferrerDropdown() {
+            const currentSelected = weeklyReferrerSelect.value;
+            weeklyReferrerSelect.innerHTML = `<option value="all">-- عرض جميع المحيلين --</option>`;
+
+            Object.entries(users).forEach(([userId, user]) => {
+                if (user.isMainReferrer) {
+                    const option = document.createElement("option");
+                    option.value = userId;
+                    option.textContent = `👑 ${user.username || userId}`;
+                    weeklyReferrerSelect.appendChild(option);
+                }
+            });
+
+            if (currentSelected) {
+                weeklyReferrerSelect.value = currentSelected;
+            }
+        }
+
+        async function setMainReferrer() {
+            const selectedUserId = document.getElementById("mainReferrerSelect").value;
+
+            if (!selectedUserId) {
+                alert("يرجى اختيار مستخدم من القائمة");
+                return;
+            }
+
+            try {
+                submitMainReferrerBtn.disabled = true;
+                submitMainReferrerBtn.textContent = "جاري الحفظ...";
+
+                await update(ref(db, "users/" + selectedUserId), {
+                    isMainReferrer: true
+                });
+
+                alert("تم إضافة المستخدم كمحيل رئيسي بنجاح ✅");
+                addMainReferrerCard.classList.remove("open");
+            } catch (error) {
+                alert("حدث خطأ: " + error.message);
+            } finally {
+                submitMainReferrerBtn.disabled = false;
+                submitMainReferrerBtn.textContent = "💾 إعلان كمحيل رئيسي";
+            }
+        }
+
         function displayUsers() {
             const container = document.getElementById("usersContainer");
             const totalUsers = document.getElementById("totalUsers");
@@ -542,11 +870,7 @@
             totalUsers.innerHTML = `إجمالي المستخدمين: <b>${userEntries.length}</b>`;
 
             if (userEntries.length === 0) {
-                container.innerHTML = `
-                    <div class="empty">
-                        ${searchQuery ? "لا توجد نتائج مطابقة للبحث" : "لا يوجد مستخدمين حتى الآن"}
-                    </div>
-                `;
+                container.innerHTML = `<div class="empty">${searchQuery ? "لا توجد نتائج مطابقة للبحث" : "لا يوجد مستخدمين حتى الآن"}</div>`;
                 return;
             }
 
@@ -564,7 +888,7 @@
                 card.innerHTML = `
                     <div class="user-header">
                         <div class="username">
-                            <span>👤 ${escapeHTML(username)}</span>
+                            <span>👤 ${escapeHTML(username)} ${user.isMainReferrer ? '<span style="color:var(--primary-blue); font-size:12px;">(محيل رئيسي ⭐)</span>' : ''}</span>
                             <button class="copy-btn" data-copy="${escapeAttribute(username)}" title="نسخ اسم المستخدم">📋</button>
                         </div>
                         <span class="arrow-icon">▼</span>
@@ -573,7 +897,7 @@
                     <div class="user-details">
                         <div class="user-body">
                             <div class="data-row">
-                                <span class="data-label">📧 البريد الإلكتروني (Email)</span>
+                                <span class="data-label">📧 البريد الإلكتروني</span>
                                 <div class="data-value">${escapeHTML(email) || "غير محدد"}</div>
                             </div>
 
@@ -585,9 +909,7 @@
                             <div class="data-row">
                                 <span class="data-label">🔗 Reff Link</span>
                                 <div class="data-value">
-                                    ${reff
-                                        ? `<a class="reff-link" href="${escapeAttribute(reff)}" target="_blank" rel="noopener">${escapeHTML(reff)}</a>`
-                                        : "لا يوجد"}
+                                    ${reff ? `<a class="reff-link" href="${escapeAttribute(reff)}" target="_blank">${escapeHTML(reff)}</a>` : "لا يوجد"}
                                 </div>
                             </div>
 
@@ -612,27 +934,22 @@
                                     <label class="form-label">اسم المستخدم</label>
                                     <input type="text" id="username-${userId}" value="${escapeAttribute(username)}">
                                 </div>
-
                                 <div class="form-group">
                                     <label class="form-label">📧 البريد الإلكتروني</label>
                                     <input type="email" id="email-${userId}" value="${escapeAttribute(email)}">
                                 </div>
-
                                 <div class="form-group">
                                     <label class="form-label">👥 المُحيل (Referred By)</label>
                                     <input type="text" id="referrer-${userId}" value="${escapeAttribute(referrer)}">
                                 </div>
-
                                 <div class="form-group">
                                     <label class="form-label">💰 الرصيد</label>
                                     <input type="number" id="balance-${userId}" value="${escapeAttribute(String(balance))}" step="0.01">
                                 </div>
-
                                 <div class="form-group full-width">
                                     <label class="form-label">🔗 Reff Link</label>
                                     <input type="url" id="reff-${userId}" value="${escapeAttribute(reff)}">
                                 </div>
-
                                 <div class="form-group full-width">
                                     <label class="form-label">📝 ملاحظات</label>
                                     <textarea id="notes-${userId}">${escapeHTML(notes)}</textarea>
@@ -647,57 +964,351 @@
                     </div>
                 `;
 
-                // Toggle User Details on Header Click
-                const header = card.querySelector(".user-header");
-                header.addEventListener("click", () => {
-                    card.classList.toggle("active");
-                });
+                card.querySelector(".user-header").addEventListener("click", () => card.classList.toggle("active"));
 
-                // Copy Username Event
                 const copyBtn = card.querySelector(`[data-copy]`);
                 copyBtn.addEventListener("click", async (e) => {
-                    e.stopPropagation(); // منع فتح/إغلاق الكارت عند الضغط على زر النسخ
+                    e.stopPropagation();
                     const textToCopy = copyBtn.getAttribute("data-copy");
-
-                    const success = await copyToClipboard(textToCopy);
-
-                    if (success) {
+                    if (await copyToClipboard(textToCopy)) {
                         copyBtn.textContent = "✓ تم النسخ";
                         copyBtn.classList.add("copied");
-
                         setTimeout(() => {
                             copyBtn.textContent = "📋";
                             copyBtn.classList.remove("copied");
                         }, 1500);
-                    } else {
-                        alert("تعذر النسخ التلقائي، يمكنك تحديد الاسم ونسخه يدوياً.");
                     }
                 });
 
-                // Toggle Edit Form
-                const editButton = card.querySelector(`[data-edit="${userId}"]`);
-                editButton.addEventListener("click", (e) => {
-                    e.stopPropagation(); // منع إغلاق الكارت
-                    const form = document.getElementById(`edit-${userId}`);
-                    form.classList.toggle("open");
+                card.querySelector(`[data-edit="${userId}"]`).addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    document.getElementById(`edit-${userId}`).classList.toggle("open");
                 });
 
-                // Save Data
-                const saveButton = card.querySelector(`[data-save="${userId}"]`);
-                saveButton.addEventListener("click", (e) => {
+                card.querySelector(`[data-save="${userId}"]`).addEventListener("click", (e) => {
                     e.stopPropagation();
-                    saveUserData(userId, saveButton);
+                    saveUserData(userId, card.querySelector(`[data-save="${userId}"]`));
                 });
 
-                // Cancel Edit
-                const cancelButton = card.querySelector(`[data-cancel="${userId}"]`);
-                cancelButton.addEventListener("click", (e) => {
+                card.querySelector(`[data-cancel="${userId}"]`).addEventListener("click", (e) => {
                     e.stopPropagation();
-                    const form = document.getElementById(`edit-${userId}`);
-                    form.classList.remove("open");
+                    document.getElementById(`edit-${userId}`).classList.remove("open");
                 });
 
                 container.appendChild(card);
+            });
+        }
+
+        // عرض قسم المحيلين
+        function displayReferrals() {
+            const container = document.getElementById("referralsContainer");
+            const searchQuery = searchReferralInput.value.trim().toLowerCase();
+
+            container.innerHTML = "";
+
+            const userEntries = Object.entries(users);
+
+            const mainReferrers = userEntries.filter(([userId, user]) => {
+                const name = (user.username || userId).toLowerCase();
+                return user.isMainReferrer === true && name.includes(searchQuery);
+            });
+
+            if (mainReferrers.length === 0) {
+                container.innerHTML = `<div class="empty">${searchQuery ? "لا توجد نتائج مطابقة" : "لم يتم تحديد أي محيل رئيسي بعد."}</div>`;
+                return;
+            }
+
+            mainReferrers.forEach(([userId, user]) => {
+                const username = user.username || userId;
+                const referrals = userEntries.filter(([_, u]) => u.referrer === username || u.referrer === userId);
+
+                let totalSubscribersBalance = 0;
+                let calculatedReferrerEarnings = 0;
+
+                referrals.forEach(([_, refUser]) => {
+                    const refBal = Number(refUser.balance || 0);
+                    const userRate = Number(refUser.referralRate || 0);
+                    totalSubscribersBalance += refBal;
+                    calculatedReferrerEarnings += (refBal * (userRate / 100));
+                });
+
+                const card = document.createElement("div");
+                card.className = "referrer-card";
+
+                let selectOptions = `<option value="">-- اختر مستخدم لإضافته كمحال --</option>`;
+                userEntries.forEach(([uId, u]) => {
+                    const uName = u.username || uId;
+                    if (uName !== username && uId !== userId && !u.referrer) {
+                        selectOptions += `<option value="${escapeAttribute(uId)}">${escapeHTML(uName)} (${escapeHTML(u.email || 'بدون بريد')}) - رصيده: ${u.balance || 0}</option>`;
+                    }
+                });
+
+                let referralsListHTML = "";
+                if (referrals.length === 0) {
+                    referralsListHTML = `<div style="color: var(--text-secondary); font-size: 13px; margin-bottom: 10px;">لا يوجد محالين مضافين لهذا المحيل بعد.</div>`;
+                } else {
+                    referralsListHTML = `<ul class="referrals-list">` +
+                        referrals.map(([refId, refUser]) => {
+                            const refBal = Number(refUser.balance || 0);
+                            const userRate = Number(refUser.referralRate || 0);
+                            const refEarnings = (refBal * (userRate / 100)).toFixed(2);
+
+                            return `
+                            <li class="referral-item">
+                                <div>
+                                    <b>👤 ${escapeHTML(refUser.username || refId)}</b> 
+                                    <span style="font-size: 12px; color: var(--text-secondary); margin-right: 5px;">(الرصيد: ${refBal} | الربح: ${refEarnings})</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 5px;">
+                                    <label style="font-size: 12px;">النسبة:</label>
+                                    <input type="number" id="user-rate-${refId}" value="${userRate}" min="0" max="100" class="rate-input-inline">%
+                                    <button class="action-btn" data-save-user-rate="${refId}" style="padding: 3px 8px; font-size: 11px;">تعديل</button>
+                                    <button class="remove-btn" data-remove-ref="${refId}" title="إزالة الإحالة">إزالة ✖</button>
+                                </div>
+                            </li>`;
+                        }).join('') +
+                        `</ul>`;
+                }
+
+                card.innerHTML = `
+                    <div class="user-header">
+                        <div class="username">
+                            <span>👑 المحيل الرئيسي: <b>${escapeHTML(username)}</b></span>
+                        </div>
+                        <div>
+                            <span style="font-size: 13px; color: var(--primary-blue); font-weight: bold; margin-left: 10px;">
+                                💵 الأرباح الحالية: ${calculatedReferrerEarnings.toFixed(2)}
+                            </span>
+                            <span class="arrow-icon">▼</span>
+                        </div>
+                    </div>
+
+                    <div class="user-details">
+                        <div class="user-body" style="grid-template-columns: 1fr;">
+                            
+                            <div class="rate-box">
+                                <span>إجمالي عدد المحالين: <b>${referrals.length}</b></span>
+                                <span>إجمالي رصيد المحالين: <b>${totalSubscribersBalance.toFixed(2)}</b></span>
+                            </div>
+
+                            <div>
+                                <span class="data-label">👥 قائمة المحالين والنسبة المئوية لكل مستخدم:</span>
+                                ${referralsListHTML}
+                            </div>
+
+                            <div style="border-top: 1px solid var(--border-color); padding-top: 10px; margin-top: 10px;">
+                                <span class="data-label">➕ إضافة محال جديد وإدخال نسبته الخاصة:</span>
+                                <div class="add-referral-box">
+                                    <select id="select-ref-${userId}">
+                                        ${selectOptions}
+                                    </select>
+                                    <input type="number" id="new-ref-rate-${userId}" placeholder="النسبة %" value="10" min="0" max="100" style="width: 90px;">
+                                    <button class="action-btn" data-add-ref="${userId}" style="white-space: nowrap;">إضافة كمحال</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-actions" style="justify-content: space-between;">
+                            <button class="save-btn" data-claim-earnings="${userId}">
+                                💰 نقل الأرباح (${calculatedReferrerEarnings.toFixed(2)}) إلى رصيد المستخدم الأساسي
+                            </button>
+                            <button class="remove-btn" data-remove-main="${userId}">إلغاء كونه محيل رئيسي</button>
+                        </div>
+                    </div>
+                `;
+
+                card.querySelector(".user-header").addEventListener("click", () => card.classList.toggle("active"));
+
+                card.querySelectorAll(`[data-save-user-rate]`).forEach(btn => {
+                    btn.addEventListener("click", async (e) => {
+                        e.stopPropagation();
+                        const refId = btn.getAttribute("data-save-user-rate");
+                        const newRate = Number(document.getElementById(`user-rate-${refId}`).value) || 0;
+
+                        try {
+                            await update(ref(db, "users/" + refId), { referralRate: newRate });
+                            alert("تم تحديث نسبة المستخدم بنجاح ✅");
+                        } catch (err) {
+                            alert("حدث خطأ أثناء تعديل النسبة: " + err.message);
+                        }
+                    });
+                });
+
+                const claimBtn = card.querySelector(`[data-claim-earnings="${userId}"]`);
+                claimBtn.addEventListener("click", async (e) => {
+                    e.stopPropagation();
+                    if (calculatedReferrerEarnings <= 0) {
+                        alert("لا توجد أرباح متاحة لنقلها للرصيد الرئيسي");
+                        return;
+                    }
+
+                    if (confirm(`هل تريد نقل مبلغ ${calculatedReferrerEarnings.toFixed(2)} إلى الرصيد الأساسي للمستخدم ${username}؟`)) {
+                        try {
+                            const currentBalance = Number(user.balance || 0);
+                            await update(ref(db, "users/" + userId), {
+                                balance: currentBalance + calculatedReferrerEarnings
+                            });
+                            alert("تم إضافة الأرباح بنجاح إلى الرصيد ✅");
+                        } catch (err) {
+                            alert("حدث خطأ: " + err.message);
+                        }
+                    }
+                });
+
+                const addBtn = card.querySelector(`[data-add-ref="${userId}"]`);
+                addBtn.addEventListener("click", async (e) => {
+                    e.stopPropagation();
+                    const selectedUserId = document.getElementById(`select-ref-${userId}`).value;
+                    const initialRate = Number(document.getElementById(`new-ref-rate-${userId}`).value) || 0;
+
+                    if (!selectedUserId) {
+                        alert("يرجى اختيار مستخدم من القائمة أولاً");
+                        return;
+                    }
+
+                    try {
+                        addBtn.disabled = true;
+                        addBtn.textContent = "جاري الإضافة...";
+
+                        await update(ref(db, "users/" + selectedUserId), {
+                            referrer: username,
+                            referralRate: initialRate
+                        });
+
+                        alert(`تمت إضافة المستخدم بنجاح بنسبة إحالة ${initialRate}% ✅`);
+                    } catch (err) {
+                        alert("حدث خطأ أثناء الإضافة: " + err.message);
+                    } finally {
+                        addBtn.disabled = false;
+                        addBtn.textContent = "إضافة كمحال";
+                    }
+                });
+
+                card.querySelectorAll(`[data-remove-ref]`).forEach(btn => {
+                    btn.addEventListener("click", async (e) => {
+                        e.stopPropagation();
+                        const refIdToRemove = btn.getAttribute("data-remove-ref");
+                        if (confirm("هل أنت متأكد من إزالة هذا المستخدم من قائمة المحالين؟")) {
+                            try {
+                                await update(ref(db, "users/" + refIdToRemove), {
+                                    referrer: ""
+                                });
+                                alert("تمت إزالة المحال بنجاح ✅");
+                            } catch (err) {
+                                alert("حدث خطأ أثناء الإزالة: " + err.message);
+                            }
+                        }
+                    });
+                });
+
+                const removeMainBtn = card.querySelector(`[data-remove-main="${userId}"]`);
+                removeMainBtn.addEventListener("click", async (e) => {
+                    e.stopPropagation();
+                    if (confirm(`هل تريد إزالة صفة المحيل الرئيسي عن ${username}؟`)) {
+                        try {
+                            await update(ref(db, "users/" + userId), {
+                                isMainReferrer: false
+                            });
+                            alert("تم إزالة الصفة بنجاح ✅");
+                        } catch (err) {
+                            alert("حدث خطأ: " + err.message);
+                        }
+                    }
+                });
+
+                container.appendChild(card);
+            });
+        }
+
+        // عرض ملخص الأداء الأسبوعي للمحيل المختار
+        function renderWeeklyReport() {
+            const container = document.getElementById("weeklyReportContainer");
+            const rangeLabel = document.getElementById("weeklyRangeLabel");
+            const startVal = startDateInput.value;
+            const selectedReferrerId = weeklyReferrerSelect.value;
+
+            if (!startVal) {
+                container.innerHTML = `<div class="empty">يرجى اختيار تاريخ بداية الأسبوع أولاً</div>`;
+                return;
+            }
+
+            const startDate = new Date(startVal);
+            const endDate = new Date(startDate);
+            endDate.setDate(startDate.getDate() + 7);
+
+            const formatOpt = { year: 'numeric', month: 'short', day: 'numeric' };
+            rangeLabel.innerHTML = `📅 <b>تقرير الأداء الأسبوعي:</b> من <u>${startDate.toLocaleDateString('ar-EG', formatOpt)}</u> إلى <u>${endDate.toLocaleDateString('ar-EG', formatOpt)}</u>`;
+
+            container.innerHTML = "";
+
+            const userEntries = Object.entries(users);
+            
+            // تصفية المحيلين حسب الخيار المحدد (إما الكل أو محيل معُين)
+            let mainReferrers = userEntries.filter(([_, user]) => user.isMainReferrer === true);
+
+            if (selectedReferrerId && selectedReferrerId !== "all") {
+                mainReferrers = mainReferrers.filter(([uId, _]) => uId === selectedReferrerId);
+            }
+
+            if (mainReferrers.length === 0) {
+                container.innerHTML = `<div class="empty">لم يتم العثور على تقرير للمحيل المحدد.</div>`;
+                return;
+            }
+
+            mainReferrers.forEach(([userId, mainUser]) => {
+                const username = mainUser.username || userId;
+                const referrals = userEntries.filter(([_, u]) => u.referrer === username || u.referrer === userId);
+
+                let totalWeeklyEarnings = 0;
+                let tableRows = "";
+
+                if (referrals.length === 0) {
+                    tableRows = `<tr><td colspan="4" style="text-align:center; color:var(--text-secondary);">لا يوجد محالين مسجلين تحت هذا المحيل.</td></tr>`;
+                } else {
+                    referrals.forEach(([refId, refUser]) => {
+                        const refBal = Number(refUser.balance || 0);
+                        const userRate = Number(refUser.referralRate || 0);
+                        const earningsFromUser = refBal * (userRate / 100);
+                        totalWeeklyEarnings += earningsFromUser;
+
+                        tableRows += `
+                            <tr>
+                                <td><b>👤 ${escapeHTML(refUser.username || refId)}</b></td>
+                                <td>${refBal.toFixed(2)}</td>
+                                <td><b>${userRate}%</b></td>
+                                <td style="color: var(--primary-blue); font-weight: bold;">${earningsFromUser.toFixed(2)}</td>
+                            </tr>
+                        `;
+                    });
+                }
+
+                const reportCard = document.createElement("div");
+                reportCard.className = "report-card";
+                reportCard.innerHTML = `
+                    <div style="background: var(--light-blue); padding: 15px; border-bottom: 1px solid var(--border-blue); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                        <h3 style="margin: 0; color: var(--primary-blue);">👑 تقرير المحيل الرئيسي: ${escapeHTML(username)}</h3>
+                        <div style="font-size: 15px; font-weight: bold; background: white; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border-blue); color: var(--primary-blue);">
+                            💵 إجمالي أرباح المحيل الأسبوعية: <span>${totalWeeklyEarnings.toFixed(2)}</span>
+                        </div>
+                    </div>
+                    <div style="padding: 15px;">
+                        <table class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>اسم المستخدم المحال</th>
+                                    <th>رصيد المستخدم</th>
+                                    <th>نسبة المحيل المحددة</th>
+                                    <th>أرباح المحيل الأسبوعية</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${tableRows}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+
+                container.appendChild(reportCard);
             });
         }
 
