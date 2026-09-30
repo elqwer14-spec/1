@@ -16,7 +16,42 @@
             margin: 0;
             padding: 20px;
             display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* شريط روابط الصفحات (Navigation Bar) */
+        .nav-links {
+            width: 100%;
+            max-width: 1000px;
+            background: #ffffff;
+            padding: 12px 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
             justify-content: center;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #2c3e50;
+            background: #f1f2f6;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            border: 1px solid #dcdde1;
+        }
+
+        .nav-links a:hover {
+            background: #2980b9;
+            color: #ffffff;
+            border-color: #2980b9;
         }
 
         .container {
@@ -151,9 +186,27 @@
 
 <body>
 
+    <!-- شريط اللينكات المضافة -->
+    <div class="nav-links">
+        <a href="https://elqwer14-spec.github.io/1/1.html">Data_Entry_links_Users</a>
+        <a href="https://elqwer14-spec.github.io/1/2.html">Data_Users</a>
+        <a href="https://elqwer14-spec.github.io/1/3.html">Last_add</a>
+        <a href="https://elqwer14-spec.github.io/1/4.html">Wallet</a>
+        <a href="https://elqwer14-spec.github.io/1/5.html">Clients</a>
+        <a href="https://elqwer14-spec.github.io/1/6.html">not_done_for_User</a>
+        <a href="https://elqwer14-spec.github.io/1/7.html">last_login</a>
+        <a href="https://elqwer14-spec.github.io/1/8.html">sereach</a>
+        <a href="https://elqwer14-spec.github.io/1/9.html">User/ref</a>
+        <a href="https://elqwer14-spec.github.io/1/10.html">code/rdp</a>
+        <a href="https://elqwer14-spec.github.io/1/11.html">Chat</a>
+        <a href="https://elqwer14-spec.github.io/1/12.html">sheet</a>
+        <a href="https://elqwer14-spec.github.io/1/13.html">GENERATOR USER</a>
+    </div>
+
     <div class="container">
+        <!-- عنوان وتعريف الصفحة -->
         <h1>🎯 مولد الأسماء لـ +1000 يوزر مختلف</h1>
-        <p class="subtitle">اضغط على أي يوزر لنسخه وحذفه فوراً بشكل صامت بدون أرقام أو رسائل</p>
+        <p class="subtitle">أداة توليد أسماء مستخدمين عشوائية ومتنوعة بدون أرقام - اضغط على أي يوزر لنسخه وحذفه فوراً بشكل صامت</p>
 
         <!-- أدوات التحكم -->
         <div class="controls">
@@ -186,14 +239,13 @@
     </div>
 
     <script>
-        // مصفوفة ضخمة جداً للألقاب والأسماء الأولى لتفادي التكرار
         const arabicFirst = [
             "mohamed", "ahmed", "mahmoud", "youssef", "ali", "hassan", "hussein", "omar", "khalid", 
             "tarek", "samy", "mostafa", "ehab", "zeyad", "hamza", "karim", "amr", "walid", "yasser", 
             "amjad", "fady", "ramy", "osama", "hany", "moustafa", "sayed", "sherif", "wael", "ziad",
             "bassam", "tamer", "hazem", "maged", "ismail", "ashraf", "mounir", "alaa", "saad", "eslam",
             "khaled", "adham", "seif", "marwan", "ziyad", "salah", "yassin", "ayman", "mohab", "riad",
-            "nader", "saber", "حاتم", "hatem", "tamim", "medhat", "shady", "hisham", "gamal", "farouk",
+            "nader", "saber", "hatem", "tamim", "medhat", "shady", "hisham", "gamal", "farouk",
             "faysal", "badr", "rafeek", "monir", "samir", "emad", "atef", "sami", "magdy", "akram"
         ];
         
@@ -220,14 +272,12 @@
 
         let currentUsers = [];
 
-        // إضافة حرف مكرر عشوائي كبديل لتنويع النمط عند الحاجه
         function addCharVariant(str) {
             if (Math.random() > 0.5) return str;
             const idx = Math.floor(Math.random() * (str.length - 1)) + 1;
             return str.slice(0, idx) + str[idx] + str.slice(idx);
         }
 
-        // تطبيق التنسيق والتنوع بالأحرف بدون حروف كابيتال كاملة
         function formatUsername(first, last) {
             const separators = ['', '-', '_'];
             const sep = separators[Math.floor(Math.random() * separators.length)];
@@ -278,7 +328,6 @@
                 let f = fPool[Math.floor(Math.random() * fPool.length)];
                 let l = lPool[Math.floor(Math.random() * lPool.length)];
 
-                // إمكانية تنويع الحروف للحصول على تشكيلات هائلة بدون أرقام
                 if (Math.random() > 0.6) f = addCharVariant(f);
                 if (Math.random() > 0.7) l = addCharVariant(l);
 
@@ -338,7 +387,6 @@
 
         document.getElementById('generateBtn').addEventListener('click', generateUsers);
 
-        // توليد تلقائي لـ 1000 يوزر فور فتح الصفحة
         generateUsers();
     </script>
 
