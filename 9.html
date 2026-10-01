@@ -17,6 +17,8 @@
             --text-color: #212529;
             --text-secondary: #6c757d;
             --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --success-color: #198754;
             --border-color: #e3e8ee;
         }
 
@@ -55,8 +57,8 @@
         }
 
         .tab-btn {
-            padding: 10px 20px;
-            font-size: 15px;
+            padding: 10px 18px;
+            font-size: 14px;
             font-weight: bold;
             background: #ffffff;
             color: var(--text-secondary);
@@ -135,6 +137,21 @@
             background: var(--primary-hover);
         }
 
+        .activate-btn {
+            background: var(--success-color);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .activate-btn:hover {
+            background: #157347;
+        }
+
         /* كروت الإضافة */
         .add-user-card {
             display: none;
@@ -157,7 +174,7 @@
             color: var(--primary-blue);
         }
 
-        /* كروت المستخدمين والمحيلين وتقارير الأداء */
+        /* كروت المستخدمين */
         .user-card, .referrer-card, .report-card {
             background: var(--card-bg);
             border-radius: 10px;
@@ -166,6 +183,10 @@
             overflow: hidden;
             border: 1px solid var(--border-color);
             transition: all 0.2s ease;
+        }
+
+        .user-card.inactive {
+            border-right: 5px solid var(--warning-color);
         }
 
         .user-header {
@@ -208,9 +229,9 @@
         }
 
         .copy-btn.copied {
-            background: #198754;
+            background: var(--success-color);
             color: white;
-            border-color: #198754;
+            border-color: var(--success-color);
         }
 
         .arrow-icon {
@@ -262,6 +283,7 @@
             padding: 0 20px 15px 20px;
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
         .edit-btn {
@@ -458,6 +480,15 @@
             color: var(--primary-blue);
         }
 
+        .badge-inactive {
+            background: #fff3cd;
+            color: #856404;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            border: 1px solid #ffeeba;
+        }
+
         @media (max-width: 600px) {
             body {
                 padding: 10px;
@@ -492,20 +523,21 @@
 
         <!-- شريط التبويبات -->
         <div class="nav-tabs">
-            <button class="tab-btn active" id="tabUsersBtn">👤 قائمة المستخدمين</button>
+            <button class="tab-btn active" id="tabUsersBtn">👤 المستخدمين النشطين</button>
+            <button class="tab-btn" id="tabInactiveUsersBtn">📥 مستخدمين غير نشطين (قيد التجهيز)</button>
             <button class="tab-btn" id="tabReferralsBtn">🔗 قسم المحيلين والإحالات</button>
             <button class="tab-btn" id="tabWeeklyBtn">📊 ملخص الأداء الأسبوعي</button>
         </div>
 
-        <!-- التبويب الأول: قائمة المستخدمين -->
+        <!-- التبويب الأول: المستخدمين النشطين -->
         <div class="tab-content active" id="tabUsers">
             <div class="actions-bar">
-                <span id="totalUsers">إجمالي المستخدمين: 0</span>
-                <input type="text" id="searchInput" class="search-input" placeholder="🔍 بحث عن مستخدم...">
+                <span id="totalUsers">إجمالي النشطين: 0</span>
+                <input type="text" id="searchInput" class="search-input" placeholder="🔍 بحث عن مستخدم نشط...">
                 <button class="add-user-btn" id="toggleAddUserBtn">➕ إضافة مستخدم جديد</button>
             </div>
 
-            <!-- نموذج إضافة مستخدم جديد -->
+            <!-- نموذج إضافة مستخدم جديد (النشطين) -->
             <div class="add-user-card" id="addUserCard">
                 <h2>➕ إضافة مستخدم جديد</h2>
                 <div class="form-grid">
@@ -516,6 +548,13 @@
                     <div class="form-group">
                         <label class="form-label">البريد الإلكتروني (Email)</label>
                         <input type="email" id="newEmail" placeholder="example@mail.com">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">حالة المستخدم عند الإضافة</label>
+                        <select id="newStatus">
+                            <option value="active" selected>نشط (جاهز للإحالات)</option>
+                            <option value="inactive">غير نشط (قيد التجهيز)</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label class="form-label">المُحيل (Referred By)</label>
@@ -541,11 +580,66 @@
             </div>
 
             <div id="usersContainer" class="loading">
-                جاري تحميل المستخدمين...
+                جاري تحميل المستخدمين النشطين...
             </div>
         </div>
 
-        <!-- التبويب الثاني: قسم المحيلين -->
+        <!-- التبويب الثاني: مستخدمين غير نشطين -->
+        <div class="tab-content" id="tabInactiveUsers">
+            <div class="actions-bar">
+                <span id="totalInactiveUsers">إجمالي قيد التجهيز: 0</span>
+                <input type="text" id="searchInactiveInput" class="search-input" placeholder="🔍 بحث عن مستخدم غير نشط...">
+                <button class="add-user-btn" id="toggleAddInactiveUserBtn">➕ إضافة مستخدم جديد</button>
+            </div>
+
+            <!-- نموذج إضافة مستخدم جديد (غير النشطين) -->
+            <div class="add-user-card" id="addInactiveUserCard">
+                <h2>➕ إضافة مستخدم جديد (قيد التجهيز)</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">اسم المستخدم *</label>
+                        <input type="text" id="newInactiveUsername" placeholder="مثال: أحمد محمد">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">البريد الإلكتروني (Email)</label>
+                        <input type="email" id="newInactiveEmail" placeholder="example@mail.com">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">حالة المستخدم عند الإضافة</label>
+                        <select id="newInactiveStatus">
+                            <option value="inactive" selected>غير نشط (قيد التجهيز)</option>
+                            <option value="active">نشط (جاهز للإحالات)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">المُحيل (Referred By)</label>
+                        <input type="text" id="newInactiveReferrer" placeholder="اسم أو ID المحيل">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">الرصيد الابتدائي</label>
+                        <input type="number" id="newInactiveBalance" value="0" step="0.01">
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label">رابط Reff</label>
+                        <input type="url" id="newInactiveReff" placeholder="https://...">
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label">ملاحظات</label>
+                        <textarea id="newInactiveNotes" placeholder="أدخل أي ملاحظات هنا..."></textarea>
+                    </div>
+                </div>
+                <div class="buttons">
+                    <button class="save-btn" id="submitNewInactiveUserBtn">💾 حفظ المستخدم</button>
+                    <button class="cancel-btn" id="closeAddInactiveUserBtn">إلغاء</button>
+                </div>
+            </div>
+
+            <div id="inactiveUsersContainer" class="loading">
+                جاري تحميل المستخدمين غير النشطين...
+            </div>
+        </div>
+
+        <!-- التبويب الثالث: قسم المحيلين -->
         <div class="tab-content" id="tabReferrals">
             <div class="actions-bar">
                 <span>🔗 إدارة المحيلين والرئيسيين</span>
@@ -558,7 +652,7 @@
                 <h2>👑 إضافة محيل رئيسي يدويًا</h2>
                 <div class="form-grid">
                     <div class="form-group full-width">
-                        <label class="form-label">اختر مستخدم من القائمة:</label>
+                        <label class="form-label">اختر مستخدم من القائمة (المستخدمين النشطين فقط):</label>
                         <select id="mainReferrerSelect">
                             <option value="">-- اختر مستخدم --</option>
                         </select>
@@ -575,7 +669,7 @@
             </div>
         </div>
 
-        <!-- التبويب الثالث: ملخص الأداء الأسبوعي -->
+        <!-- التبويب الرابع: ملخص الأداء الأسبوعي -->
         <div class="tab-content" id="tabWeekly">
             <div class="actions-bar">
                 <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; width: 100%;">
@@ -672,20 +766,30 @@
 
         // عناصر التبويبات
         const tabUsersBtn = document.getElementById("tabUsersBtn");
+        const tabInactiveUsersBtn = document.getElementById("tabInactiveUsersBtn");
         const tabReferralsBtn = document.getElementById("tabReferralsBtn");
         const tabWeeklyBtn = document.getElementById("tabWeeklyBtn");
 
         const tabUsers = document.getElementById("tabUsers");
+        const tabInactiveUsers = document.getElementById("tabInactiveUsers");
         const tabReferrals = document.getElementById("tabReferrals");
         const tabWeekly = document.getElementById("tabWeekly");
 
         const searchInput = document.getElementById("searchInput");
+        const searchInactiveInput = document.getElementById("searchInactiveInput");
         const searchReferralInput = document.getElementById("searchReferralInput");
         
+        // زرار الإضافة الأول (النشطين)
         const toggleAddUserBtn = document.getElementById("toggleAddUserBtn");
         const closeAddUserBtn = document.getElementById("closeAddUserBtn");
         const addUserCard = document.getElementById("addUserCard");
         const submitNewUserBtn = document.getElementById("submitNewUserBtn");
+
+        // زرار الإضافة الثاني (غير النشطين)
+        const toggleAddInactiveUserBtn = document.getElementById("toggleAddInactiveUserBtn");
+        const closeAddInactiveUserBtn = document.getElementById("closeAddInactiveUserBtn");
+        const addInactiveUserCard = document.getElementById("addInactiveUserCard");
+        const submitNewInactiveUserBtn = document.getElementById("submitNewInactiveUserBtn");
 
         const toggleAddMainReferrerBtn = document.getElementById("toggleAddMainReferrerBtn");
         const closeAddMainReferrerBtn = document.getElementById("closeAddMainReferrerBtn");
@@ -696,12 +800,12 @@
         const weeklyReferrerSelect = document.getElementById("weeklyReferrerSelect");
         const generateWeeklyReportBtn = document.getElementById("generateWeeklyReportBtn");
 
-        // ضبط التاريخ التلقائي لاليوم
         const today = new Date().toISOString().split('T')[0];
         startDateInput.value = today;
 
         // التنقل بين التبويبات
         tabUsersBtn.addEventListener("click", () => switchTab(tabUsersBtn, tabUsers));
+        tabInactiveUsersBtn.addEventListener("click", () => switchTab(tabInactiveUsersBtn, tabInactiveUsers));
         tabReferralsBtn.addEventListener("click", () => switchTab(tabReferralsBtn, tabReferrals));
         tabWeeklyBtn.addEventListener("click", () => {
             switchTab(tabWeeklyBtn, tabWeekly);
@@ -710,14 +814,19 @@
         });
 
         function switchTab(activeBtn, activeTab) {
-            [tabUsersBtn, tabReferralsBtn, tabWeeklyBtn].forEach(b => b.classList.remove("active"));
-            [tabUsers, tabReferrals, tabWeekly].forEach(t => t.classList.remove("active"));
+            [tabUsersBtn, tabInactiveUsersBtn, tabReferralsBtn, tabWeeklyBtn].forEach(b => b.classList.remove("active"));
+            [tabUsers, tabInactiveUsers, tabReferrals, tabWeekly].forEach(t => t.classList.remove("active"));
             activeBtn.classList.add("active");
             activeTab.classList.add("active");
         }
 
+        // فتح وإغلاق كارت النشطين
         toggleAddUserBtn.addEventListener("click", () => addUserCard.classList.toggle("open"));
         closeAddUserBtn.addEventListener("click", () => addUserCard.classList.remove("open"));
+
+        // فتح وإغلاق كارت غير النشطين
+        toggleAddInactiveUserBtn.addEventListener("click", () => addInactiveUserCard.classList.toggle("open"));
+        closeAddInactiveUserBtn.addEventListener("click", () => addInactiveUserCard.classList.remove("open"));
 
         toggleAddMainReferrerBtn.addEventListener("click", () => {
             populateMainReferrerDropdown();
@@ -725,17 +834,20 @@
         });
         closeAddMainReferrerBtn.addEventListener("click", () => addMainReferrerCard.classList.remove("open"));
 
-        submitNewUserBtn.addEventListener("click", createNewUser);
+        submitNewUserBtn.addEventListener("click", () => createNewUser('active'));
+        submitNewInactiveUserBtn.addEventListener("click", () => createNewUser('inactive'));
         submitMainReferrerBtn.addEventListener("click", setMainReferrer);
         generateWeeklyReportBtn.addEventListener("click", renderWeeklyReport);
 
-        searchInput.addEventListener("input", displayUsers);
+        searchInput.addEventListener("input", displayActiveUsers);
+        searchInactiveInput.addEventListener("input", displayInactiveUsers);
         searchReferralInput.addEventListener("input", displayReferrals);
 
         // جلب البيانات من Firebase
         onValue(ref(db, "users"), (snapshot) => {
             users = snapshot.val() || {};
-            displayUsers();
+            displayActiveUsers();
+            displayInactiveUsers();
             displayReferrals();
             populateWeeklyReferrerDropdown();
             if (tabWeekly.classList.contains("active")) {
@@ -743,14 +855,21 @@
             }
         });
 
-        async function createNewUser() {
-            const username = document.getElementById("newUsername").value.trim();
-            const email = document.getElementById("newEmail").value.trim();
-            const referrer = document.getElementById("newReferrer").value.trim();
-            const reff = document.getElementById("newReff").value.trim();
-            const notes = document.getElementById("newNotes").value.trim();
-            const balanceValue = document.getElementById("newBalance").value;
+        async function createNewUser(source = 'active') {
+            const isInactiveSource = source === 'inactive';
+            const suffix = isInactiveSource ? 'Inactive' : '';
+
+            const username = document.getElementById(`new${suffix}Username`).value.trim();
+            const email = document.getElementById(`new${suffix}Email`).value.trim();
+            const status = document.getElementById(`new${suffix}Status`).value;
+            const referrer = document.getElementById(`new${suffix}Referrer`).value.trim();
+            const reff = document.getElementById(`new${suffix}Reff`).value.trim();
+            const notes = document.getElementById(`new${suffix}Notes`).value.trim();
+            const balanceValue = document.getElementById(`new${suffix}Balance`).value;
             const balance = Number(balanceValue);
+
+            const submitBtn = isInactiveSource ? submitNewInactiveUserBtn : submitNewUserBtn;
+            const cardElement = isInactiveSource ? addInactiveUserCard : addUserCard;
 
             if (!username) {
                 alert("برجاء كتابة اسم المستخدم على الأقل");
@@ -758,13 +877,14 @@
             }
 
             try {
-                submitNewUserBtn.disabled = true;
-                submitNewUserBtn.textContent = "جاري الإضافة...";
+                submitBtn.disabled = true;
+                submitBtn.textContent = "جاري الإضافة...";
 
                 const newUserRef = push(ref(db, "users"));
                 await set(newUserRef, {
                     username: username,
                     email: email,
+                    status: status, // active or inactive
                     referrer: referrer,
                     reff: reff,
                     notes: notes,
@@ -776,22 +896,206 @@
 
                 alert("تمت إضافة المستخدم بنجاح ✅");
                 
-                document.getElementById("newUsername").value = "";
-                document.getElementById("newEmail").value = "";
-                document.getElementById("newReferrer").value = "";
-                document.getElementById("newReff").value = "";
-                document.getElementById("newNotes").value = "";
-                document.getElementById("newBalance").value = "0";
+                document.getElementById(`new${suffix}Username`).value = "";
+                document.getElementById(`new${suffix}Email`).value = "";
+                document.getElementById(`new${suffix}Referrer`).value = "";
+                document.getElementById(`new${suffix}Reff`).value = "";
+                document.getElementById(`new${suffix}Notes`).value = "";
+                document.getElementById(`new${suffix}Balance`).value = "0";
                 
-                addUserCard.classList.remove("open");
+                cardElement.classList.remove("open");
 
             } catch (error) {
                 console.error(error);
                 alert("حدث خطأ أثناء إدخال المستخدم:\n" + error.message);
             } finally {
-                submitNewUserBtn.disabled = false;
-                submitNewUserBtn.textContent = "💾 حفظ المستخدم";
+                submitBtn.disabled = false;
+                submitBtn.textContent = "💾 حفظ المستخدم";
             }
+        }
+
+        // عرض المستخدمين النشطين
+        function displayActiveUsers() {
+            renderUsersList("usersContainer", "totalUsers", searchInput.value, true);
+        }
+
+        // عرض المستخدمين غير النشطين
+        function displayInactiveUsers() {
+            renderUsersList("inactiveUsersContainer", "totalInactiveUsers", searchInactiveInput.value, false);
+        }
+
+        function renderUsersList(containerId, countId, query, isActive) {
+            const container = document.getElementById(containerId);
+            const totalCount = document.getElementById(countId);
+            const searchQuery = query.trim().toLowerCase();
+
+            container.innerHTML = "";
+
+            const userEntries = Object.entries(users).filter(([userId, user]) => {
+                const userStatus = user.status || "active";
+                const matchesStatus = isActive ? (userStatus === "active") : (userStatus === "inactive");
+
+                const name = (user.username || userId).toLowerCase();
+                const email = (user.email || "").toLowerCase();
+                const referrer = (user.referrer || "").toLowerCase();
+
+                return matchesStatus && (name.includes(searchQuery) || email.includes(searchQuery) || referrer.includes(searchQuery));
+            });
+
+            totalCount.innerHTML = `${isActive ? 'إجمالي النشطين' : 'إجمالي قيد التجهيز'}: <b>${userEntries.length}</b>`;
+
+            if (userEntries.length === 0) {
+                container.innerHTML = `<div class="empty">${searchQuery ? "لا توجد نتائج مطابقة للبحث" : "لا يوجد مستخدمين في هذا القسم"}</div>`;
+                return;
+            }
+
+            userEntries.forEach(([userId, user]) => {
+                const card = document.createElement("div");
+                card.className = `user-card ${!isActive ? 'inactive' : ''}`;
+
+                const username = user.username || userId;
+                const email = user.email || "";
+                const referrer = user.referrer || "";
+                const reff = user.reff || "";
+                const notes = user.notes || "";
+                const balance = user.balance !== undefined ? user.balance : 0;
+
+                card.innerHTML = `
+                    <div class="user-header">
+                        <div class="username">
+                            <span>👤 ${escapeHTML(username)} ${user.isMainReferrer ? '<span style="color:var(--primary-blue); font-size:12px;">(محيل رئيسي ⭐)</span>' : ''}</span>
+                            ${!isActive ? '<span class="badge-inactive">قيد التجهيز</span>' : ''}
+                            <button class="copy-btn" data-copy="${escapeAttribute(username)}" title="نسخ اسم المستخدم">📋</button>
+                        </div>
+                        <span class="arrow-icon">▼</span>
+                    </div>
+
+                    <div class="user-details">
+                        <div class="user-body">
+                            <div class="data-row">
+                                <span class="data-label">📧 البريد الإلكتروني</span>
+                                <div class="data-value">${escapeHTML(email) || "غير محدد"}</div>
+                            </div>
+
+                            <div class="data-row">
+                                <span class="data-label">👥 المُحيل (Referred By)</span>
+                                <div class="data-value">${escapeHTML(referrer) || "لا يوجد"}</div>
+                            </div>
+
+                            <div class="data-row">
+                                <span class="data-label">🔗 Reff Link</span>
+                                <div class="data-value">
+                                    ${reff ? `<a class="reff-link" href="${escapeAttribute(reff)}" target="_blank">${escapeHTML(reff)}</a>` : "لا يوجد"}
+                                </div>
+                            </div>
+
+                            <div class="data-row">
+                                <span class="data-label">💰 الرصيد</span>
+                                <div class="data-value balance">${escapeHTML(String(balance))}</div>
+                            </div>
+
+                            <div class="data-row" style="grid-column: 1 / -1;">
+                                <span class="data-label">📝 ملاحظات</span>
+                                <div class="data-value">${escapeHTML(notes) || "لا توجد ملاحظات"}</div>
+                            </div>
+                        </div>
+
+                        <div class="card-actions">
+                            ${!isActive ? `<button class="activate-btn" data-activate="${userId}">⚡ تفعيل لتحويله لمستخدم نشط (جاهز للإحالات)</button>` : ''}
+                            <button class="edit-btn" data-edit="${userId}">✏️ تعديل البيانات</button>
+                        </div>
+
+                        <div class="edit-form" id="edit-${userId}">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">اسم المستخدم</label>
+                                    <input type="text" id="username-${userId}" value="${escapeAttribute(username)}">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">📧 البريد الإلكتروني</label>
+                                    <input type="email" id="email-${userId}" value="${escapeAttribute(email)}">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">الحالة</label>
+                                    <select id="status-${userId}">
+                                        <option value="active" ${user.status !== 'inactive' ? 'selected' : ''}>نشط</option>
+                                        <option value="inactive" ${user.status === 'inactive' ? 'selected' : ''}>غير نشط (قيد التجهيز)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">👥 المُحيل (Referred By)</label>
+                                    <input type="text" id="referrer-${userId}" value="${escapeAttribute(referrer)}">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">💰 الرصيد</label>
+                                    <input type="number" id="balance-${userId}" value="${escapeAttribute(String(balance))}" step="0.01">
+                                </div>
+                                <div class="form-group full-width">
+                                    <label class="form-label">🔗 Reff Link</label>
+                                    <input type="url" id="reff-${userId}" value="${escapeAttribute(reff)}">
+                                </div>
+                                <div class="form-group full-width">
+                                    <label class="form-label">📝 ملاحظات</label>
+                                    <textarea id="notes-${userId}">${escapeHTML(notes)}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="buttons">
+                                <button class="save-btn" data-save="${userId}">💾 حفظ التعديلات</button>
+                                <button class="cancel-btn" data-cancel="${userId}">إلغاء</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                card.querySelector(".user-header").addEventListener("click", () => card.classList.toggle("active"));
+
+                const copyBtn = card.querySelector(`[data-copy]`);
+                copyBtn.addEventListener("click", async (e) => {
+                    e.stopPropagation();
+                    const textToCopy = copyBtn.getAttribute("data-copy");
+                    if (await copyToClipboard(textToCopy)) {
+                        copyBtn.textContent = "✓ تم النسخ";
+                        copyBtn.classList.add("copied");
+                        setTimeout(() => {
+                            copyBtn.textContent = "📋";
+                            copyBtn.classList.remove("copied");
+                        }, 1500);
+                    }
+                });
+
+                if (!isActive) {
+                    const activateBtn = card.querySelector(`[data-activate="${userId}"]`);
+                    activateBtn.addEventListener("click", async (e) => {
+                        e.stopPropagation();
+                        if (confirm(`هل أنت متأكد من نقل المستخدم ${username} إلى قائمة المستخدمين النشطين؟`)) {
+                            try {
+                                await update(ref(db, "users/" + userId), { status: "active" });
+                                alert("تم تفعيل المستخدم بنجاح وأصبح جاهزاً للإحالات 🚀");
+                            } catch (err) {
+                                alert("حدث خطأ: " + err.message);
+                            }
+                        }
+                    });
+                }
+
+                card.querySelector(`[data-edit="${userId}"]`).addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    document.getElementById(`edit-${userId}`).classList.toggle("open");
+                });
+
+                card.querySelector(`[data-save="${userId}"]`).addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    saveUserData(userId, card.querySelector(`[data-save="${userId}"]`));
+                });
+
+                card.querySelector(`[data-cancel="${userId}"]`).addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    document.getElementById(`edit-${userId}`).classList.remove("open");
+                });
+
+                container.appendChild(card);
+            });
         }
 
         function populateMainReferrerDropdown() {
@@ -799,7 +1103,7 @@
             select.innerHTML = `<option value="">-- اختر مستخدم لتحديده كمحيل رئيسي --</option>`;
 
             Object.entries(users).forEach(([userId, user]) => {
-                if (!user.isMainReferrer) {
+                if (!user.isMainReferrer && (user.status || "active") === "active") {
                     const option = document.createElement("option");
                     option.value = userId;
                     option.textContent = `${user.username || userId} (${user.email || 'بدون بريد'})`;
@@ -852,153 +1156,6 @@
             }
         }
 
-        function displayUsers() {
-            const container = document.getElementById("usersContainer");
-            const totalUsers = document.getElementById("totalUsers");
-            const searchQuery = searchInput.value.trim().toLowerCase();
-
-            container.innerHTML = "";
-
-            const userEntries = Object.entries(users).filter(([userId, user]) => {
-                const name = (user.username || userId).toLowerCase();
-                const email = (user.email || "").toLowerCase();
-                const referrer = (user.referrer || "").toLowerCase();
-
-                return name.includes(searchQuery) || email.includes(searchQuery) || referrer.includes(searchQuery);
-            });
-
-            totalUsers.innerHTML = `إجمالي المستخدمين: <b>${userEntries.length}</b>`;
-
-            if (userEntries.length === 0) {
-                container.innerHTML = `<div class="empty">${searchQuery ? "لا توجد نتائج مطابقة للبحث" : "لا يوجد مستخدمين حتى الآن"}</div>`;
-                return;
-            }
-
-            userEntries.forEach(([userId, user]) => {
-                const card = document.createElement("div");
-                card.className = "user-card";
-
-                const username = user.username || userId;
-                const email = user.email || "";
-                const referrer = user.referrer || "";
-                const reff = user.reff || "";
-                const notes = user.notes || "";
-                const balance = user.balance !== undefined ? user.balance : 0;
-
-                card.innerHTML = `
-                    <div class="user-header">
-                        <div class="username">
-                            <span>👤 ${escapeHTML(username)} ${user.isMainReferrer ? '<span style="color:var(--primary-blue); font-size:12px;">(محيل رئيسي ⭐)</span>' : ''}</span>
-                            <button class="copy-btn" data-copy="${escapeAttribute(username)}" title="نسخ اسم المستخدم">📋</button>
-                        </div>
-                        <span class="arrow-icon">▼</span>
-                    </div>
-
-                    <div class="user-details">
-                        <div class="user-body">
-                            <div class="data-row">
-                                <span class="data-label">📧 البريد الإلكتروني</span>
-                                <div class="data-value">${escapeHTML(email) || "غير محدد"}</div>
-                            </div>
-
-                            <div class="data-row">
-                                <span class="data-label">👥 المُحيل (Referred By)</span>
-                                <div class="data-value">${escapeHTML(referrer) || "لا يوجد"}</div>
-                            </div>
-
-                            <div class="data-row">
-                                <span class="data-label">🔗 Reff Link</span>
-                                <div class="data-value">
-                                    ${reff ? `<a class="reff-link" href="${escapeAttribute(reff)}" target="_blank">${escapeHTML(reff)}</a>` : "لا يوجد"}
-                                </div>
-                            </div>
-
-                            <div class="data-row">
-                                <span class="data-label">💰 الرصيد</span>
-                                <div class="data-value balance">${escapeHTML(String(balance))}</div>
-                            </div>
-
-                            <div class="data-row" style="grid-column: 1 / -1;">
-                                <span class="data-label">📝 ملاحظات</span>
-                                <div class="data-value">${escapeHTML(notes) || "لا توجد ملاحظات"}</div>
-                            </div>
-                        </div>
-
-                        <div class="card-actions">
-                            <button class="edit-btn" data-edit="${userId}">✏️ تعديل البيانات</button>
-                        </div>
-
-                        <div class="edit-form" id="edit-${userId}">
-                            <div class="form-grid">
-                                <div class="form-group">
-                                    <label class="form-label">اسم المستخدم</label>
-                                    <input type="text" id="username-${userId}" value="${escapeAttribute(username)}">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">📧 البريد الإلكتروني</label>
-                                    <input type="email" id="email-${userId}" value="${escapeAttribute(email)}">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">👥 المُحيل (Referred By)</label>
-                                    <input type="text" id="referrer-${userId}" value="${escapeAttribute(referrer)}">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">💰 الرصيد</label>
-                                    <input type="number" id="balance-${userId}" value="${escapeAttribute(String(balance))}" step="0.01">
-                                </div>
-                                <div class="form-group full-width">
-                                    <label class="form-label">🔗 Reff Link</label>
-                                    <input type="url" id="reff-${userId}" value="${escapeAttribute(reff)}">
-                                </div>
-                                <div class="form-group full-width">
-                                    <label class="form-label">📝 ملاحظات</label>
-                                    <textarea id="notes-${userId}">${escapeHTML(notes)}</textarea>
-                                </div>
-                            </div>
-
-                            <div class="buttons">
-                                <button class="save-btn" data-save="${userId}">💾 حفظ التعديلات</button>
-                                <button class="cancel-btn" data-cancel="${userId}">إلغاء</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-
-                card.querySelector(".user-header").addEventListener("click", () => card.classList.toggle("active"));
-
-                const copyBtn = card.querySelector(`[data-copy]`);
-                copyBtn.addEventListener("click", async (e) => {
-                    e.stopPropagation();
-                    const textToCopy = copyBtn.getAttribute("data-copy");
-                    if (await copyToClipboard(textToCopy)) {
-                        copyBtn.textContent = "✓ تم النسخ";
-                        copyBtn.classList.add("copied");
-                        setTimeout(() => {
-                            copyBtn.textContent = "📋";
-                            copyBtn.classList.remove("copied");
-                        }, 1500);
-                    }
-                });
-
-                card.querySelector(`[data-edit="${userId}"]`).addEventListener("click", (e) => {
-                    e.stopPropagation();
-                    document.getElementById(`edit-${userId}`).classList.toggle("open");
-                });
-
-                card.querySelector(`[data-save="${userId}"]`).addEventListener("click", (e) => {
-                    e.stopPropagation();
-                    saveUserData(userId, card.querySelector(`[data-save="${userId}"]`));
-                });
-
-                card.querySelector(`[data-cancel="${userId}"]`).addEventListener("click", (e) => {
-                    e.stopPropagation();
-                    document.getElementById(`edit-${userId}`).classList.remove("open");
-                });
-
-                container.appendChild(card);
-            });
-        }
-
         // عرض قسم المحيلين
         function displayReferrals() {
             const container = document.getElementById("referralsContainer");
@@ -1020,7 +1177,7 @@
 
             mainReferrers.forEach(([userId, user]) => {
                 const username = user.username || userId;
-                const referrals = userEntries.filter(([_, u]) => u.referrer === username || u.referrer === userId);
+                const referrals = userEntries.filter(([_, u]) => (u.referrer === username || u.referrer === userId) && (u.status || "active") === "active");
 
                 let totalSubscribersBalance = 0;
                 let calculatedReferrerEarnings = 0;
@@ -1035,17 +1192,18 @@
                 const card = document.createElement("div");
                 card.className = "referrer-card";
 
-                let selectOptions = `<option value="">-- اختر مستخدم لإضافته كمحال --</option>`;
+                let selectOptions = `<option value="">-- اختر مستخدم نشط لإضافته كمحال --</option>`;
                 userEntries.forEach(([uId, u]) => {
                     const uName = u.username || uId;
-                    if (uName !== username && uId !== userId && !u.referrer) {
+                    const uStatus = u.status || "active";
+                    if (uName !== username && uId !== userId && !u.referrer && uStatus === "active") {
                         selectOptions += `<option value="${escapeAttribute(uId)}">${escapeHTML(uName)} (${escapeHTML(u.email || 'بدون بريد')}) - رصيده: ${u.balance || 0}</option>`;
                     }
                 });
 
                 let referralsListHTML = "";
                 if (referrals.length === 0) {
-                    referralsListHTML = `<div style="color: var(--text-secondary); font-size: 13px; margin-bottom: 10px;">لا يوجد محالين مضافين لهذا المحيل بعد.</div>`;
+                    referralsListHTML = `<div style="color: var(--text-secondary); font-size: 13px; margin-bottom: 10px;">لا يوجد محالين نشطين مضافين لهذا المحيل بعد.</div>`;
                 } else {
                     referralsListHTML = `<ul class="referrals-list">` +
                         referrals.map(([refId, refUser]) => {
@@ -1087,7 +1245,7 @@
                         <div class="user-body" style="grid-template-columns: 1fr;">
                             
                             <div class="rate-box">
-                                <span>إجمالي عدد المحالين: <b>${referrals.length}</b></span>
+                                <span>إجمالي عدد المحالين النشطين: <b>${referrals.length}</b></span>
                                 <span>إجمالي رصيد المحالين: <b>${totalSubscribersBalance.toFixed(2)}</b></span>
                             </div>
 
@@ -1220,7 +1378,7 @@
             });
         }
 
-        // عرض ملخص الأداء الأسبوعي للمحيل المختار
+        // عرض ملخص الأداء الأسبوعي
         function renderWeeklyReport() {
             const container = document.getElementById("weeklyReportContainer");
             const rangeLabel = document.getElementById("weeklyRangeLabel");
@@ -1242,8 +1400,7 @@
             container.innerHTML = "";
 
             const userEntries = Object.entries(users);
-            
-            // تصفية المحيلين حسب الخيار المحدد (إما الكل أو محيل معُين)
+
             let mainReferrers = userEntries.filter(([_, user]) => user.isMainReferrer === true);
 
             if (selectedReferrerId && selectedReferrerId !== "all") {
@@ -1257,13 +1414,13 @@
 
             mainReferrers.forEach(([userId, mainUser]) => {
                 const username = mainUser.username || userId;
-                const referrals = userEntries.filter(([_, u]) => u.referrer === username || u.referrer === userId);
+                const referrals = userEntries.filter(([_, u]) => (u.referrer === username || u.referrer === userId) && (u.status || "active") === "active");
 
                 let totalWeeklyEarnings = 0;
                 let tableRows = "";
 
                 if (referrals.length === 0) {
-                    tableRows = `<tr><td colspan="4" style="text-align:center; color:var(--text-secondary);">لا يوجد محالين مسجلين تحت هذا المحيل.</td></tr>`;
+                    tableRows = `<tr><td colspan="4" style="text-align:center; color:var(--text-secondary);">لا يوجد محالين نشطين مسجلين تحت هذا المحيل.</td></tr>`;
                 } else {
                     referrals.forEach(([refId, refUser]) => {
                         const refBal = Number(refUser.balance || 0);
@@ -1315,6 +1472,7 @@
         async function saveUserData(userId, btn) {
             const username = document.getElementById(`username-${userId}`).value.trim();
             const email = document.getElementById(`email-${userId}`).value.trim();
+            const status = document.getElementById(`status-${userId}`).value;
             const referrer = document.getElementById(`referrer-${userId}`).value.trim();
             const reff = document.getElementById(`reff-${userId}`).value.trim();
             const notes = document.getElementById(`notes-${userId}`).value.trim();
@@ -1333,6 +1491,7 @@
                 await update(ref(db, "users/" + userId), {
                     username: username,
                     email: email,
+                    status: status,
                     referrer: referrer,
                     reff: reff,
                     notes: notes,
