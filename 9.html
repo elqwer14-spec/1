@@ -39,6 +39,39 @@
             margin: auto;
         }
 
+        /* شريط الروابط السريعة العلوي */
+        .top-links-bar {
+            background: var(--card-bg);
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .top-links-bar a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 13px;
+            padding: 6px 12px;
+            background: var(--light-blue);
+            border-radius: 6px;
+            border: 1px solid var(--border-blue);
+            transition: all 0.2s ease;
+        }
+
+        .top-links-bar a:hover {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
         h1 {
             text-align: center;
             margin-bottom: 25px;
@@ -519,6 +552,22 @@
 <body>
 
     <div class="container">
+        <!-- شريط الروابط المضافة -->
+        <div class="top-links-bar">
+            <a href="https://elqwer14-spec.github.io/1/1.html">Data_Entry_links_Users</a>
+            <a href="https://elqwer14-spec.github.io/1/2.html">Data_Users</a>
+            <a href="https://elqwer14-spec.github.io/1/3.html">Last_add</a>
+            <a href="https://elqwer14-spec.github.io/1/4.html">Wallet</a>
+            <a href="https://elqwer14-spec.github.io/1/5.html">Clients</a>
+            <a href="https://elqwer14-spec.github.io/1/6.html">not_done_for_User</a>
+            <a href="https://elqwer14-spec.github.io/1/7.html">last_login</a>
+            <a href="https://elqwer14-spec.github.io/1/8.html">sereach</a>
+            <a href="https://elqwer14-spec.github.io/1/9.html">User/ref</a>
+            <a href="https://elqwer14-spec.github.io/1/10.html">code/rdp</a>
+            <a href="https://elqwer14-spec.github.io/1/11.html">Chat</a>
+            <a href="https://elqwer14-spec.github.io/1/12.html">sheet</a>
+        </div>
+
         <h1>نظام إدارة المستخدمين والإحالات</h1>
 
         <!-- شريط التبويبات -->
