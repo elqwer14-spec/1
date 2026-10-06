@@ -146,6 +146,11 @@
             border-color: var(--primary-blue);
         }
 
+        .tab-btn.blocked-tab.active {
+            background: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+
         .tab-content {
             display: none;
         }
@@ -218,6 +223,36 @@
             background: #157347;
         }
 
+        .block-btn {
+            background: var(--danger-color);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .block-btn:hover {
+            background: #bb2d3b;
+        }
+
+        .unblock-btn {
+            background: var(--warning-color);
+            color: #212529;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .unblock-btn:hover {
+            background: #ffca2c;
+        }
+
         /* كروت الإضافة */
         .add-user-card {
             display: none;
@@ -253,6 +288,11 @@
 
         .user-card.inactive {
             border-right: 5px solid var(--warning-color);
+        }
+
+        .user-card.blocked {
+            border-right: 5px solid var(--danger-color);
+            background: #fff8f8;
         }
 
         .user-header {
@@ -555,6 +595,15 @@
             border: 1px solid #ffeeba;
         }
 
+        .badge-blocked {
+            background: #f8d7da;
+            color: #842029;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            border: 1px solid #f5c2c7;
+        }
+
         @media (max-width: 600px) {
             body {
                 padding: 10px;
@@ -611,6 +660,7 @@
         <div class="nav-tabs">
             <button class="tab-btn active" id="tabUsersBtn">👤 المستخدمين النشطين</button>
             <button class="tab-btn" id="tabInactiveUsersBtn">📥 مستخدمين غير نشطين (قيد التجهيز)</button>
+            <button class="tab-btn blocked-tab" id="tabBlockedUsersBtn">🚫 المستخدمين المحظورين (Blocked)</button>
             <button class="tab-btn" id="tabReferralsBtn">🔗 قسم المحيلين والإحالات</button>
             <button class="tab-btn" id="tabWeeklyBtn">📊 ملخص الأداء الأسبوعي</button>
         </div>
@@ -640,6 +690,7 @@
                         <select id="newStatus">
                             <option value="active" selected>نشط (جاهز للإحالات)</option>
                             <option value="inactive">غير نشط (قيد التجهيز)</option>
+                            <option value="blocked">محظور (Blocked)</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -695,6 +746,7 @@
                         <select id="newInactiveStatus">
                             <option value="inactive" selected>غير نشط (قيد التجهيز)</option>
                             <option value="active">نشط (جاهز للإحالات)</option>
+                            <option value="blocked">محظور (Blocked)</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -725,7 +777,19 @@
             </div>
         </div>
 
-        <!-- التبويب الثالث: قسم المحيلين -->
+        <!-- التبويب الجديد: المستخدمين المحظورين -->
+        <div class="tab-content" id="tabBlockedUsers">
+            <div class="actions-bar">
+                <span id="totalBlockedUsers">إجمالي المحظورين: 0</span>
+                <input type="text" id="searchBlockedInput" class="search-input" placeholder="🔍 بحث عن مستخدم محظور...">
+            </div>
+
+            <div id="blockedUsersContainer" class="loading">
+                جاري تحميل المستخدمين المحظورين...
+            </div>
+        </div>
+
+        <!-- التبويب الرابع: قسم المحيلين -->
         <div class="tab-content" id="tabReferrals">
             <div class="actions-bar">
                 <span>🔗 إدارة المحيلين والرئيسيين</span>
@@ -755,7 +819,7 @@
             </div>
         </div>
 
-        <!-- التبويب الرابع: ملخص الأداء الأسبوعي -->
+        <!-- التبويب الخامس: ملخص الأداء الأسبوعي -->
         <div class="tab-content" id="tabWeekly">
             <div class="actions-bar">
                 <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; width: 100%;">
@@ -853,16 +917,19 @@
         // عناصر التبويبات
         const tabUsersBtn = document.getElementById("tabUsersBtn");
         const tabInactiveUsersBtn = document.getElementById("tabInactiveUsersBtn");
+        const tabBlockedUsersBtn = document.getElementById("tabBlockedUsersBtn");
         const tabReferralsBtn = document.getElementById("tabReferralsBtn");
         const tabWeeklyBtn = document.getElementById("tabWeeklyBtn");
 
         const tabUsers = document.getElementById("tabUsers");
         const tabInactiveUsers = document.getElementById("tabInactiveUsers");
+        const tabBlockedUsers = document.getElementById("tabBlockedUsers");
         const tabReferrals = document.getElementById("tabReferrals");
         const tabWeekly = document.getElementById("tabWeekly");
 
         const searchInput = document.getElementById("searchInput");
         const searchInactiveInput = document.getElementById("searchInactiveInput");
+        const searchBlockedInput = document.getElementById("searchBlockedInput");
         const searchReferralInput = document.getElementById("searchReferralInput");
         
         // زرار الإضافة الأول (النشطين)
@@ -892,6 +959,7 @@
         // التنقل بين التبويبات
         tabUsersBtn.addEventListener("click", () => switchTab(tabUsersBtn, tabUsers));
         tabInactiveUsersBtn.addEventListener("click", () => switchTab(tabInactiveUsersBtn, tabInactiveUsers));
+        tabBlockedUsersBtn.addEventListener("click", () => switchTab(tabBlockedUsersBtn, tabBlockedUsers));
         tabReferralsBtn.addEventListener("click", () => switchTab(tabReferralsBtn, tabReferrals));
         tabWeeklyBtn.addEventListener("click", () => {
             switchTab(tabWeeklyBtn, tabWeekly);
@@ -900,8 +968,8 @@
         });
 
         function switchTab(activeBtn, activeTab) {
-            [tabUsersBtn, tabInactiveUsersBtn, tabReferralsBtn, tabWeeklyBtn].forEach(b => b.classList.remove("active"));
-            [tabUsers, tabInactiveUsers, tabReferrals, tabWeekly].forEach(t => t.classList.remove("active"));
+            [tabUsersBtn, tabInactiveUsersBtn, tabBlockedUsersBtn, tabReferralsBtn, tabWeeklyBtn].forEach(b => b.classList.remove("active"));
+            [tabUsers, tabInactiveUsers, tabBlockedUsers, tabReferrals, tabWeekly].forEach(t => t.classList.remove("active"));
             activeBtn.classList.add("active");
             activeTab.classList.add("active");
         }
@@ -927,6 +995,7 @@
 
         searchInput.addEventListener("input", displayActiveUsers);
         searchInactiveInput.addEventListener("input", displayInactiveUsers);
+        searchBlockedInput.addEventListener("input", displayBlockedUsers);
         searchReferralInput.addEventListener("input", displayReferrals);
 
         // جلب البيانات من Firebase
@@ -934,6 +1003,7 @@
             users = snapshot.val() || {};
             displayActiveUsers();
             displayInactiveUsers();
+            displayBlockedUsers();
             displayReferrals();
             populateWeeklyReferrerDropdown();
             if (tabWeekly.classList.contains("active")) {
@@ -970,7 +1040,7 @@
                 await set(newUserRef, {
                     username: username,
                     email: email,
-                    status: status, // active or inactive
+                    status: status, // active, inactive, or blocked
                     referrer: referrer,
                     reff: reff,
                     notes: notes,
@@ -1002,15 +1072,20 @@
 
         // عرض المستخدمين النشطين
         function displayActiveUsers() {
-            renderUsersList("usersContainer", "totalUsers", searchInput.value, true);
+            renderUsersList("usersContainer", "totalUsers", searchInput.value, "active");
         }
 
         // عرض المستخدمين غير النشطين
         function displayInactiveUsers() {
-            renderUsersList("inactiveUsersContainer", "totalInactiveUsers", searchInactiveInput.value, false);
+            renderUsersList("inactiveUsersContainer", "totalInactiveUsers", searchInactiveInput.value, "inactive");
         }
 
-        function renderUsersList(containerId, countId, query, isActive) {
+        // عرض المستخدمين المحظورين
+        function displayBlockedUsers() {
+            renderUsersList("blockedUsersContainer", "totalBlockedUsers", searchBlockedInput.value, "blocked");
+        }
+
+        function renderUsersList(containerId, countId, query, targetStatus) {
             const container = document.getElementById(containerId);
             const totalCount = document.getElementById(countId);
             const searchQuery = query.trim().toLowerCase();
@@ -1019,7 +1094,7 @@
 
             const userEntries = Object.entries(users).filter(([userId, user]) => {
                 const userStatus = user.status || "active";
-                const matchesStatus = isActive ? (userStatus === "active") : (userStatus === "inactive");
+                const matchesStatus = (userStatus === targetStatus);
 
                 const name = (user.username || userId).toLowerCase();
                 const email = (user.email || "").toLowerCase();
@@ -1028,7 +1103,11 @@
                 return matchesStatus && (name.includes(searchQuery) || email.includes(searchQuery) || referrer.includes(searchQuery));
             });
 
-            totalCount.innerHTML = `${isActive ? 'إجمالي النشطين' : 'إجمالي قيد التجهيز'}: <b>${userEntries.length}</b>`;
+            let statusText = 'إجمالي النشطين';
+            if (targetStatus === 'inactive') statusText = 'إجمالي قيد التجهيز';
+            if (targetStatus === 'blocked') statusText = 'إجمالي المحظورين';
+
+            totalCount.innerHTML = `${statusText}: <b>${userEntries.length}</b>`;
 
             if (userEntries.length === 0) {
                 container.innerHTML = `<div class="empty">${searchQuery ? "لا توجد نتائج مطابقة للبحث" : "لا يوجد مستخدمين في هذا القسم"}</div>`;
@@ -1037,7 +1116,11 @@
 
             userEntries.forEach(([userId, user]) => {
                 const card = document.createElement("div");
-                card.className = `user-card ${!isActive ? 'inactive' : ''}`;
+                let cardClass = "user-card";
+                if (targetStatus === 'inactive') cardClass += " inactive";
+                if (targetStatus === 'blocked') cardClass += " blocked";
+
+                card.className = cardClass;
 
                 const username = user.username || userId;
                 const email = user.email || "";
@@ -1046,11 +1129,15 @@
                 const notes = user.notes || "";
                 const balance = user.balance !== undefined ? user.balance : 0;
 
+                let badgeHTML = '';
+                if (targetStatus === 'inactive') badgeHTML = '<span class="badge-inactive">قيد التجهيز</span>';
+                if (targetStatus === 'blocked') badgeHTML = '<span class="badge-blocked">محظور 🚫</span>';
+
                 card.innerHTML = `
                     <div class="user-header">
                         <div class="username">
                             <span>👤 ${escapeHTML(username)} ${user.isMainReferrer ? '<span style="color:var(--primary-blue); font-size:12px;">(محيل رئيسي ⭐)</span>' : ''}</span>
-                            ${!isActive ? '<span class="badge-inactive">قيد التجهيز</span>' : ''}
+                            ${badgeHTML}
                             <button class="copy-btn" data-copy="${escapeAttribute(username)}" title="نسخ اسم المستخدم">📋</button>
                         </div>
                         <span class="arrow-icon">▼</span>
@@ -1087,7 +1174,8 @@
                         </div>
 
                         <div class="card-actions">
-                            ${!isActive ? `<button class="activate-btn" data-activate="${userId}">⚡ تفعيل لتحويله لمستخدم نشط (جاهز للإحالات)</button>` : ''}
+                            ${targetStatus === 'inactive' ? `<button class="activate-btn" data-activate="${userId}">⚡ تفعيل لتحويله لمستخدم نشط</button>` : ''}
+                            ${targetStatus !== 'blocked' ? `<button class="block-btn" data-block="${userId}">🚫 حظر (Block)</button>` : `<button class="unblock-btn" data-unblock="${userId}">🔓 فك الحظر (Unblock)</button>`}
                             <button class="edit-btn" data-edit="${userId}">✏️ تعديل البيانات</button>
                         </div>
 
@@ -1104,8 +1192,9 @@
                                 <div class="form-group">
                                     <label class="form-label">الحالة</label>
                                     <select id="status-${userId}">
-                                        <option value="active" ${user.status !== 'inactive' ? 'selected' : ''}>نشط</option>
+                                        <option value="active" ${user.status === 'active' || !user.status ? 'selected' : ''}>نشط</option>
                                         <option value="inactive" ${user.status === 'inactive' ? 'selected' : ''}>غير نشط (قيد التجهيز)</option>
+                                        <option value="blocked" ${user.status === 'blocked' ? 'selected' : ''}>محظور (Blocked)</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -1150,7 +1239,8 @@
                     }
                 });
 
-                if (!isActive) {
+                // زر التفعيل
+                if (targetStatus === 'inactive') {
                     const activateBtn = card.querySelector(`[data-activate="${userId}"]`);
                     activateBtn.addEventListener("click", async (e) => {
                         e.stopPropagation();
@@ -1158,6 +1248,36 @@
                             try {
                                 await update(ref(db, "users/" + userId), { status: "active" });
                                 alert("تم تفعيل المستخدم بنجاح وأصبح جاهزاً للإحالات 🚀");
+                            } catch (err) {
+                                alert("حدث خطأ: " + err.message);
+                            }
+                        }
+                    });
+                }
+
+                // زر الحظر Block
+                if (targetStatus !== 'blocked') {
+                    const blockBtn = card.querySelector(`[data-block="${userId}"]`);
+                    blockBtn.addEventListener("click", async (e) => {
+                        e.stopPropagation();
+                        if (confirm(`هل أنت متأكد من حظر المستخدم ${username} ونقله لقسم المحظورين؟`)) {
+                            try {
+                                await update(ref(db, "users/" + userId), { status: "blocked" });
+                                alert("تم حظر المستخدم ونقله لقسم Blocked بنجاح 🚫");
+                            } catch (err) {
+                                alert("حدث خطأ: " + err.message);
+                            }
+                        }
+                    });
+                } else {
+                    // زر فك الحظر Unblock
+                    const unblockBtn = card.querySelector(`[data-unblock="${userId}"]`);
+                    unblockBtn.addEventListener("click", async (e) => {
+                        e.stopPropagation();
+                        if (confirm(`هل تريد فك الحظر عن المستخدم ${username} وتحويله لنشط؟`)) {
+                            try {
+                                await update(ref(db, "users/" + userId), { status: "active" });
+                                alert("تم فك الحظر ونقل المستخدم لقائمة النشطين بنجاح ✅");
                             } catch (err) {
                                 alert("حدث خطأ: " + err.message);
                             }
@@ -1203,7 +1323,7 @@
             weeklyReferrerSelect.innerHTML = `<option value="all">-- عرض جميع المحيلين --</option>`;
 
             Object.entries(users).forEach(([userId, user]) => {
-                if (user.isMainReferrer) {
+                if (user.isMainReferrer && (user.status || "active") === "active") {
                     const option = document.createElement("option");
                     option.value = userId;
                     option.textContent = `👑 ${user.username || userId}`;
@@ -1251,9 +1371,11 @@
 
             const userEntries = Object.entries(users);
 
+            // استبعاد المحظورين من قوائم المحيلين
             const mainReferrers = userEntries.filter(([userId, user]) => {
                 const name = (user.username || userId).toLowerCase();
-                return user.isMainReferrer === true && name.includes(searchQuery);
+                const userStatus = user.status || "active";
+                return user.isMainReferrer === true && userStatus === "active" && name.includes(searchQuery);
             });
 
             if (mainReferrers.length === 0) {
@@ -1487,7 +1609,7 @@
 
             const userEntries = Object.entries(users);
 
-            let mainReferrers = userEntries.filter(([_, user]) => user.isMainReferrer === true);
+            let mainReferrers = userEntries.filter(([_, user]) => user.isMainReferrer === true && (user.status || "active") === "active");
 
             if (selectedReferrerId && selectedReferrerId !== "all") {
                 mainReferrers = mainReferrers.filter(([uId, _]) => uId === selectedReferrerId);
