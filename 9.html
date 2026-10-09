@@ -316,6 +316,15 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* تنسيق الملاحظات الخارجية بجانب اسم المستخدم */
+        .outer-notes {
+            font-size: 13px;
+            font-weight: normal;
+            color: #8898aa;
+            margin-right: 4px;
         }
 
         .copy-btn {
@@ -1093,8 +1102,9 @@
                 const name = (user.username || userId).toLowerCase();
                 const email = (user.email || "").toLowerCase();
                 const referrer = (user.referrer || "").toLowerCase();
+                const notes = (user.notes || "").toLowerCase();
 
-                return matchesStatus && (name.includes(searchQuery) || email.includes(searchQuery) || referrer.includes(searchQuery));
+                return matchesStatus && (name.includes(searchQuery) || email.includes(searchQuery) || referrer.includes(searchQuery) || notes.includes(searchQuery));
             });
 
             let statusText = 'إجمالي النشطين';
@@ -1127,10 +1137,13 @@
                 if (targetStatus === 'inactive') badgeHTML = '<span class="badge-inactive">قيد التجهيز</span>';
                 if (targetStatus === 'blocked') badgeHTML = '<span class="badge-blocked">محظور 🚫</span>';
 
+                // تجهيز نص الملاحظات الظاهر بالخارج بجانب اسم المستخدم
+                let outerNotesHTML = notes ? `<span class="outer-notes">(${escapeHTML(notes)})</span>` : '';
+
                 card.innerHTML = `
                     <div class="user-header">
                         <div class="username">
-                            <span>👤 ${escapeHTML(username)} ${user.isMainReferrer ? '<span style="color:var(--primary-blue); font-size:12px;">(محيل رئيسي ⭐)</span>' : ''}</span>
+                            <span>👤 ${escapeHTML(username)} ${outerNotesHTML} ${user.isMainReferrer ? '<span style="color:var(--primary-blue); font-size:12px;">(محيل رئيسي ⭐)</span>' : ''}</span>
                             ${badgeHTML}
                             <button class="copy-btn" data-copy="${escapeAttribute(username)}" title="نسخ اسم المستخدم">📋</button>
                         </div>
