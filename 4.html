@@ -110,6 +110,36 @@ h1 {
 }
 
 /* =========================
+   صندوق إجمالي الأرصدة (مربع صغير بلون أزرق خفيف)
+========================= */
+
+.total-balance-box {
+    background: #eef6ff;
+    border: 1px solid #d0e1fd;
+    color: #1f3a60;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 320px;
+    box-shadow: 0 2px 6px rgba(13, 110, 253, 0.05);
+}
+
+.total-balance-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #4a658a;
+}
+
+.total-balance-amount {
+    font-size: 16px;
+    font-weight: bold;
+    color: #1769d1;
+}
+
+/* =========================
    صندوق الإضافة
 ========================= */
 
@@ -374,6 +404,10 @@ select:focus {
 
 @media (max-width: 600px) {
 
+    .total-balance-box {
+        max-width: 100%;
+    }
+
     .form-row {
         flex-direction: column;
     }
@@ -419,6 +453,16 @@ select:focus {
 <div class="container">
 
     <h1>المحفظة</h1>
+
+
+    <!-- =========================
+         إجمالي الرصيد الإجمالي
+    ========================== -->
+
+    <div class="total-balance-box">
+        <span class="total-balance-title">إجمالي الرصيد:</span>
+        <span class="total-balance-amount" id="totalBalance">0.00</span>
+    </div>
 
 
     <!-- =========================
@@ -592,9 +636,34 @@ onValue(walletsRef, (snapshot) => {
     wallets =
         snapshot.val() || {};
 
+    calculateTotalBalance();
     displayUsers();
 
 });
+
+
+/* =========================
+   حساب إجمالي الأرصدة
+========================= */
+
+function calculateTotalBalance() {
+
+    const total = Object.values(wallets).reduce((sum, item) => {
+
+        return sum + Number(item.balance || 0);
+
+    }, 0);
+
+
+    const totalEl = document.getElementById("totalBalance");
+
+    if (totalEl) {
+
+        totalEl.textContent = formatBalance(total);
+
+    }
+
+}
 
 
 /* =========================
